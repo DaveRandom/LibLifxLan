@@ -1,0 +1,17 @@
+{
+    "name": "daverandom/lifx-lan",
+    "description": "LifX LAN protocol implementation",
+    "minimum-stability": "dev",
+    "license": "mit",
+    "authors": [
+        {
+            "name": "Chris Wright",
+            "email": "me@daverandom.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DaveRandom\\LifxLan\\": "src/"
+        }
+    }
+}

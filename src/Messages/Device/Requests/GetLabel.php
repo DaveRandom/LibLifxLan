@@ -1,0 +1,15 @@
+<?php declare(strict_types=1);
+
+namespace DaveRandom\LifxLan\Messages\Device\Requests;
+
+use DaveRandom\LifxLan\Messages\RequestMessage;
+
+final class GetLabel extends RequestMessage
+{
+    public const MESSAGE_TYPE_ID = 23;
+
+    public function getTypeId(): int
+    {
+        return self::MESSAGE_TYPE_ID;
+    }
+}
