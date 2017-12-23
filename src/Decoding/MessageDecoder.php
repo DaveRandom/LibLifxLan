@@ -2,6 +2,8 @@
 
 namespace DaveRandom\LifxLan\Decoding;
 
+use DaveRandom\LifxLan\Decoding\Exceptions\DecodingException;
+use DaveRandom\LifxLan\Decoding\Exceptions\InvalidMessagePayloadException;
 use DaveRandom\LifxLan\Decoding\Exceptions\UnknownMessageTypeException;
 use DaveRandom\LifxLan\Messages\Device\Responses\Acknowledgement;
 use DaveRandom\LifxLan\Messages\Device\Responses\EchoResponse;
@@ -24,21 +26,33 @@ final class MessageDecoder
 {
     /**
      * @var callable[]
+     * @uses decodeAcknowledgement
+     * @uses decodeEchoResponse
+     * @uses decodeStateGroup
+     * @uses decodeStateHostFirmware
+     * @uses decodeStateHostInfo
+     * @uses decodeStateLabel
+     * @uses decodeStateLocation
+     * @uses decodeStateDevicePower
+     * @uses decodeStateService
+     * @uses decodeStateVersion
+     * @uses decodeStateWifiFirmware
+     * @uses decodeStateWifiInfo
      */
     private const DECODER_ROUTINES = [
         // Device messages
         Acknowledgement::MESSAGE_TYPE_ID => ['self', 'decodeAcknowledgement'],
-        EchoResponse::MESSAGE_TYPE_ID => [], // todo
-        StateGroup::MESSAGE_TYPE_ID => [], // todo
-        StateHostFirmware::MESSAGE_TYPE_ID => [], // todo
-        StateHostInfo::MESSAGE_TYPE_ID => [], // todo
-        StateLabel::MESSAGE_TYPE_ID => [], // todo
-        StateLocation::MESSAGE_TYPE_ID => [], // todo
-        StateDevicePower::MESSAGE_TYPE_ID => [], // todo
-        StateService::MESSAGE_TYPE_ID => [], // todo
-        StateVersion::MESSAGE_TYPE_ID => [], // todo
-        StateWifiFirmware::MESSAGE_TYPE_ID => [], // todo
-        StateWifiInfo::MESSAGE_TYPE_ID => [], // todo
+        EchoResponse::MESSAGE_TYPE_ID => ['self', 'decodeEchoResponse'],
+        StateGroup::MESSAGE_TYPE_ID => ['self', 'decodeStateGroup'],
+        StateHostFirmware::MESSAGE_TYPE_ID => ['self', 'decodeStateHostFirmware'],
+        StateHostInfo::MESSAGE_TYPE_ID => ['self', 'decodeStateHostInfo'],
+        StateLabel::MESSAGE_TYPE_ID => ['self', 'decodeStateLabel'],
+        StateLocation::MESSAGE_TYPE_ID => ['self', 'decodeStateLocation'],
+        StateDevicePower::MESSAGE_TYPE_ID => ['self', 'decodeStateDevicePower'],
+        StateService::MESSAGE_TYPE_ID => ['self', 'decodeStateService'],
+        StateVersion::MESSAGE_TYPE_ID => ['self', 'decodeStateVersion'],
+        StateWifiFirmware::MESSAGE_TYPE_ID => ['self', 'decodeStateWifiFirmware'],
+        StateWifiInfo::MESSAGE_TYPE_ID => ['self', 'decodeStateWifiInfo'],
 
         // Light messages
         State::MESSAGE_TYPE_ID => [], // todo
@@ -46,20 +60,82 @@ final class MessageDecoder
         StateLightPower::MESSAGE_TYPE_ID => [], // todo
     ];
 
-    /**
-     * @return Acknowledgement
-     * @uses decodeAcknowledgement
-     */
     private static function decodeAcknowledgement(): Acknowledgement
     {
         return new Acknowledgement();
+    }
+
+    private static function decodeEchoResponse(string $data): EchoResponse
+    {
+        return new EchoResponse($data);
+    }
+
+    private static function decodeStateGroup(string $data): StateGroup
+    {
+        // todo
+    }
+
+    private static function decodeStateHostFirmware(string $data): StateHostFirmware
+    {
+        // todo
+    }
+
+    private static function decodeStateHostInfo(string $data): StateHostInfo
+    {
+        // todo
+    }
+
+    private static function decodeStateLabel(string $data): StateLabel
+    {
+        // todo
+    }
+
+    private static function decodeStateLocation(string $data): StateLocation
+    {
+        // todo
+    }
+
+    private static function decodeStateDevicePower(string $data): StateDevicePower
+    {
+        // todo
+    }
+
+    /**
+     * @param string $data
+     * @return StateService
+     * @throws InvalidMessagePayloadException
+     */
+    private static function decodeStateService(string $data): StateService
+    {
+        if (\strlen($data) !== 5) {
+            throw new InvalidMessagePayloadException("Invalid payload length for StateService message, expecting 5 bytes, got " . \strlen($data));
+        }
+
+        ['service' => $service, 'port' => $port] = \unpack('Cservice/Vport', $data);
+
+        return new StateService($service, $port);
+    }
+
+    private static function decodeStateVersion(string $data): StateVersion
+    {
+        // todo
+    }
+
+    private static function decodeStateWifiFirmware(string $data): StateWifiFirmware
+    {
+        // todo
+    }
+
+    private static function decodeStateWifiInfo(string $data): StateWifiInfo
+    {
+        // todo
     }
 
     /**
      * @param int $type
      * @param string $data
      * @return Message
-     * @throws UnknownMessageTypeException
+     * @throws DecodingException
      */
     public function decodeMessage(int $type, string $data): Message
     {
