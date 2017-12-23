@@ -2,7 +2,7 @@
 
 namespace DaveRandom\LifxLan\Encoding;
 
-use DaveRandom\LifxLan\Exceptions\InvalidMessageHeaderException;
+use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LifxLan\Header\Frame;
 
 final class FrameEncoder extends Encoder
@@ -50,7 +50,7 @@ final class FrameEncoder extends Encoder
             throw new InvalidMessageHeaderException("Message origin value {$origin} outside allowable range 0 - 3");
         }
 
-        return $origin << 13;
+        return $origin << 14;
     }
 
     private function getFlags(Frame $frame): int

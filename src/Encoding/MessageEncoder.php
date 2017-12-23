@@ -2,8 +2,8 @@
 
 namespace DaveRandom\LifxLan\Encoding;
 
-use DaveRandom\LifxLan\Exceptions\InvalidMessageException;
-use DaveRandom\LifxLan\Exceptions\InvalidMessageHeaderException;
+use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageException;
+use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LifxLan\Header\Frame;
 use DaveRandom\LifxLan\Header\FrameAddress;
 use DaveRandom\LifxLan\Header\Header;
@@ -23,11 +23,12 @@ use DaveRandom\LifxLan\Network\MacAddress;
 final class MessageEncoder extends Encoder
 {
     private const DEFAULT_SOURCE_ID = 0x0da7e51d;
+    private const DEFAULT_MESSAGE_ORIGIN = 0;
+    private const DEFAULT_PROTOCOL_NUMBER = 1024;
 
-    private const MESSAGE_ORIGIN = 0;
-    private const PROTOCOL_NUMBER = 1024;
-
-    public const OP_SOURCE_ID = 0b01;
+    public const OP_SOURCE_ID       = 1;
+    public const OP_MESSAGE_ORIGIN  = 2;
+    public const OP_PROTOCOL_NUMBER = 3;
 
     private $headerEncoder;
 
@@ -40,10 +41,10 @@ final class MessageEncoder extends Encoder
     {
         $frame = new Frame(
             Header::WIRE_SIZE + $payloadSize,
-            self::MESSAGE_ORIGIN,
+            $this->options[self::OP_MESSAGE_ORIGIN],
             /* tagged */ $destination === null,
             /* addressable */ true,
-            self::PROTOCOL_NUMBER,
+            $this->options[self::OP_PROTOCOL_NUMBER],
             $this->options[self::OP_SOURCE_ID]
         );
 
@@ -72,6 +73,8 @@ final class MessageEncoder extends Encoder
     {
         parent::__construct($options + [
             self::OP_SOURCE_ID => self::DEFAULT_SOURCE_ID,
+            self::OP_MESSAGE_ORIGIN => self::DEFAULT_MESSAGE_ORIGIN,
+            self::OP_PROTOCOL_NUMBER => self::DEFAULT_PROTOCOL_NUMBER,
         ]);
 
         $this->headerEncoder = $headerEncoder ?? new HeaderEncoder;

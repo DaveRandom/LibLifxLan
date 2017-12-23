@@ -2,7 +2,7 @@
 
 namespace DaveRandom\LifxLan\Encoding;
 
-use DaveRandom\LifxLan\Exceptions\InvalidMessageHeaderException;
+use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LifxLan\Header\Header;
 
 final class HeaderEncoder
