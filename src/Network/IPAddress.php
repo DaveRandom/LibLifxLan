@@ -23,7 +23,6 @@ abstract class IPAddress
         throw new \InvalidArgumentException("Unknown IP address type: {$address}");
     }
 
-    abstract public function getStreamsUri(string $scheme, int $port): string;
     abstract public function getProtocolFamily(): int;
     abstract public function __toString(): string;
 }

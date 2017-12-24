@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LifxLan\Messages;
 
-final class Service
+use DaveRandom\LifxLan\Enum;
+
+final class Service extends Enum
 {
     public const UDP = 1;
-
-    private function __construct() { }
 }

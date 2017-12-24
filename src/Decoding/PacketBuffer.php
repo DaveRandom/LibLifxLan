@@ -4,19 +4,27 @@ namespace DaveRandom\LifxLan\Decoding;
 
 use DaveRandom\LifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LifxLan\Decoding\Exceptions\InvalidReadException;
+use DaveRandom\LifxLan\Network\IPEndpoint;
 
-final class DataBuffer
+final class PacketBuffer
 {
     private $data;
+    private $source;
 
-    public function __construct(string $data = '')
+    /**
+     * PacketBuffer constructor.
+     * @param string $data
+     * @param IPEndpoint $source
+     */
+    public function __construct(string $data, IPEndpoint $source)
     {
         $this->data = $data;
+        $this->source = $source;
     }
 
-    public function appendData(string $data = ''): void
+    public function getSource(): IPEndpoint
     {
-        $this->data .= $data;
+        return $this->source;
     }
 
     /**

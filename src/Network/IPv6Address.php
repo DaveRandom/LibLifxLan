@@ -110,11 +110,6 @@ final class IPv6Address extends IPAddress
         return $this->hextet4;
     }
 
-    public function getStreamsUri(string $scheme, int $port): string
-    {
-        return \sprintf("%s://[%s]:%d", $scheme, (string)$this, $port);
-    }
-
     public function getProtocolFamily(): int
     {
         return \STREAM_PF_INET6;

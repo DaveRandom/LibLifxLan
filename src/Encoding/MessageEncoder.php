@@ -22,9 +22,9 @@ use DaveRandom\LifxLan\Network\MacAddress;
 
 final class MessageEncoder extends Encoder
 {
-    private const DEFAULT_SOURCE_ID = 0x0da7e51d;
-    private const DEFAULT_MESSAGE_ORIGIN = 0;
-    private const DEFAULT_PROTOCOL_NUMBER = 1024;
+    public const DEFAULT_SOURCE_ID = 0x0da7e51d;
+    public const DEFAULT_MESSAGE_ORIGIN = 0;
+    public const DEFAULT_PROTOCOL_NUMBER = 1024;
 
     public const OP_SOURCE_ID       = 1;
     public const OP_MESSAGE_ORIGIN  = 2;

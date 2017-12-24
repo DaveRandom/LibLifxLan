@@ -17,11 +17,11 @@ final class HeaderDecoder
     private $frameAddressDecoder;
     private $protocolHeaderDecoder;
 
-    public function __construct(?FrameDecoder $frameDecoder = null, ?FrameAddressDecoder $frameAddressDecoder = null, ?ProtocolHeaderDecoder $protocolHeaderDecoder = null)
+    public function __construct(FrameDecoder $frameDecoder = null, FrameAddressDecoder $frameAddressDecoder = null, ProtocolHeaderDecoder $protocolHeaderDecoder = null)
     {
-        $this->frameDecoder = $frameDecoder;
-        $this->frameAddressDecoder = $frameAddressDecoder;
-        $this->protocolHeaderDecoder = $protocolHeaderDecoder;
+        $this->frameDecoder = $frameDecoder ?? new FrameDecoder;
+        $this->frameAddressDecoder = $frameAddressDecoder ?? new FrameAddressDecoder;
+        $this->protocolHeaderDecoder = $protocolHeaderDecoder ?? new ProtocolHeaderDecoder;
     }
 
     public function decodeHeader(string $data): Header
