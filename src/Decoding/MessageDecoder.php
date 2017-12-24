@@ -2,6 +2,8 @@
 
 namespace DaveRandom\LifxLan\Decoding;
 
+use DaveRandom\LifxLan\DataTypes\HostInfo;
+use DaveRandom\LifxLan\DataTypes\Service;
 use DaveRandom\LifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LifxLan\Decoding\Exceptions\InvalidMessagePayloadException;
 use DaveRandom\LifxLan\Decoding\Exceptions\UnknownMessageTypeException;
@@ -155,9 +157,28 @@ final class MessageDecoder
         return new DeviceRequests\GetHostInfo;
     }
 
+    /**
+     * @param string $data
+     * @return DeviceResponses\StateHostInfo
+     * @throws InvalidMessagePayloadException
+     */
     private static function decodeStateHostInfo(string $data): DeviceResponses\StateHostInfo
     {
-        // todo
+        static $format;
+
+        if (\strlen($data) !== 14) {
+            throw new InvalidMessagePayloadException(
+                "Invalid payload length for StateService message, expecting 14 bytes, got " . \strlen($data)
+            );
+        }
+
+        if (!isset($format)) {
+            $format = \sprintf('%ssignal/Vtx/Vrx');
+        }
+
+        ['signal' => $signal, 'tx' => $tx, 'rx' => $rx] = \unpack($format, $data);
+
+        return new DeviceResponses\StateHostInfo(new HostInfo($signal, $tx, $rx));
     }
 
     private static function decodeGetInfo(string $data): DeviceRequests\GetInfo
@@ -233,9 +254,9 @@ final class MessageDecoder
             );
         }
 
-        ['service' => $service, 'port' => $port] = \unpack('Cservice/Vport', $data);
+        ['serviceType' => $serviceType, 'port' => $port] = \unpack('CserviceType/Vport', $data);
 
-        return new DeviceResponses\StateService($service, $port);
+        return new DeviceResponses\StateService(new Service($serviceType, $port));
     }
 
     private static function decodeGetVersion(string $data): DeviceRequests\GetVersion

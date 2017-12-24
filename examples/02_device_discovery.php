@@ -5,7 +5,7 @@ use DaveRandom\LifxLan\Decoding\PacketDecoder;
 use DaveRandom\LifxLan\Encoding\MessageEncoder;
 use DaveRandom\LifxLan\Messages\Device\Requests\GetService;
 use DaveRandom\LifxLan\Messages\Device\Responses\StateService;
-use DaveRandom\LifxLan\Messages\Service;
+use DaveRandom\LifxLan\DataTypes\ServiceType;
 use DaveRandom\LifxLan\Network\IPEndpoint;
 use function DaveRandom\LifxLan\Examples\udp_await_packets;
 use function DaveRandom\LifxLan\Examples\udp_create_socket;
@@ -35,12 +35,6 @@ foreach (udp_await_packets($socket, 1000) as $buffer) {
     $message = $packet->getMessage();
 
     if ($header->getFrame()->getSource() === MessageEncoder::DEFAULT_SOURCE_ID && $message instanceof StateService) {
-        try {
-            $serviceName = Service::parseValue($message->getService());
-        } catch (\InvalidArgumentException $e) {
-            $serviceName = "Unknown({$message->getService()})";
-        }
-
-        echo "{$packet->getSource()} announced service: {$serviceName} on port {$message->getPort()}\n";
+        echo "{$packet->getSource()} announced service: {$message->getService()->getName()} on port {$message->getService()->getPort()}\n";
     }
 }
