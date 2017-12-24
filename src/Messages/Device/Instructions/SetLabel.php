@@ -12,6 +12,8 @@ final class SetLabel extends InstructionMessage
 
     public function __construct(string $label)
     {
+        parent::__construct();
+
         $this->label = $label;
     }
 

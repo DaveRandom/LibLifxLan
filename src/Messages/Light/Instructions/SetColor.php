@@ -2,32 +2,26 @@
 
 namespace DaveRandom\LifxLan\Messages\Light\Instructions;
 
-use DaveRandom\LifxLan\HsbkColor;
+use DaveRandom\LifxLan\DataTypes\ColorTransition;
 use DaveRandom\LifxLan\Messages\InstructionMessage;
 
 final class SetColor extends InstructionMessage
 {
     public const MESSAGE_TYPE_ID = 102;
 
-    private $color;
-    private $transitionDuration;
+    private $colorTransition;
 
-    public function __construct(HsbkColor $color, int $transitionDuration)
+    public function __construct(ColorTransition $colorTransition)
     {
-        $this->color = $color;
-        $this->transitionDuration = $transitionDuration;
+        parent::__construct();
+
+        $this->colorTransition = $colorTransition;
     }
 
-    public function getColor(): HsbkColor
+    public function getColorTransition(): ColorTransition
     {
-        return $this->color;
+        return $this->colorTransition;
     }
-
-    public function getTransitionDuration(): int
-    {
-        return $this->transitionDuration;
-    }
-
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;

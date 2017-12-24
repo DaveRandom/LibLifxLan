@@ -3,9 +3,9 @@
 namespace DaveRandom\LifxLan\Messages\Device\Responses;
 
 use DaveRandom\LifxLan\DataTypes\Service;
-use DaveRandom\LifxLan\Messages\Message;
+use DaveRandom\LifxLan\Messages\ResponseMessage;
 
-final class StateService extends Message
+final class StateService extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 3;
 
@@ -13,6 +13,8 @@ final class StateService extends Message
 
     public function __construct(Service $service)
     {
+        parent::__construct();
+
         $this->service = $service;
     }
 

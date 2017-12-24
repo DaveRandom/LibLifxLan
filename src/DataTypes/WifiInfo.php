@@ -1,8 +1,14 @@
 <?php declare(strict_types=1);
+/**
+ * Created by PhpStorm.
+ * User: chris.wright
+ * Date: 24/12/2017
+ * Time: 15:53
+ */
 
 namespace DaveRandom\LifxLan\DataTypes;
 
-final class HostInfo
+final class WifiInfo
 {
     private $signal;
     private $tx;

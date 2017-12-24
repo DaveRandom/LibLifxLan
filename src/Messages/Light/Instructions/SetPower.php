@@ -2,29 +2,25 @@
 
 namespace DaveRandom\LifxLan\Messages\Light\Instructions;
 
+use DaveRandom\LifxLan\DataTypes\PowerTransition;
 use DaveRandom\LifxLan\Messages\InstructionMessage;
 
 final class SetPower extends InstructionMessage
 {
     public const MESSAGE_TYPE_ID = 117;
 
-    private $level;
-    private $transitionDuration;
+    private $powerTransition;
 
-    public function __construct(int $level, int $transitionDuration)
+    public function __construct(PowerTransition $powerTransition)
     {
-        $this->level = $level;
-        $this->transitionDuration = $transitionDuration;
+        parent::__construct();
+
+        $this->powerTransition = $powerTransition;
     }
 
-    public function getLevel(): int
+    public function getPowerTransition(): PowerTransition
     {
-        return $this->level;
-    }
-
-    public function getTransitionDuration(): int
-    {
-        return $this->transitionDuration;
+        return $this->powerTransition;
     }
 
     public function getTypeId(): int

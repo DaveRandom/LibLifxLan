@@ -12,6 +12,8 @@ final class SetPower extends InstructionMessage
 
     public function __construct(int $level)
     {
+        parent::__construct();
+
         $this->level = $level;
     }
 

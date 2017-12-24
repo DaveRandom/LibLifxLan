@@ -2,4 +2,4 @@
 
 namespace DaveRandom\LifxLan\Decoding\Exceptions;
 
-final class InvalidMessagePayloadException extends DecodingException { }
+final class InvalidMessagePayloadLengthException extends DecodingException { }

@@ -4,8 +4,8 @@ namespace DaveRandom\LifxLan\Messages;
 
 abstract class RequestMessage extends Message
 {
-    public function isResponseRequired(): bool
+    public function __construct(int $responsePattern = self::REQUIRE_RESPONSE)
     {
-        return true;
+        parent::__construct($responsePattern);
     }
 }

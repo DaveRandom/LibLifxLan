@@ -4,8 +4,8 @@ namespace DaveRandom\LifxLan\Messages;
 
 abstract class InstructionMessage extends Message
 {
-    public function isAckRequired(): bool
+    public function __construct(int $responsePattern = self::REQUIRE_ACK)
     {
-        return true;
+        parent::__construct($responsePattern);
     }
 }

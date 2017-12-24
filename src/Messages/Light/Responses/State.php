@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LifxLan\Messages\Light\Responses;
 
-use DaveRandom\LifxLan\Messages\Message;
+use DaveRandom\LifxLan\Messages\ResponseMessage;
 
-final class State extends Message
+final class State extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 107;
 

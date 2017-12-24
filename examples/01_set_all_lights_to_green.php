@@ -4,6 +4,7 @@
 // https://lan.developer.lifx.com/docs/building-a-lifx-packet
 // The packet produced by this code should be identical to the example, except the "ack_required" bit will be set
 
+use DaveRandom\LifxLan\DataTypes\ColorTransition;
 use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageException;
 use DaveRandom\LifxLan\Encoding\MessageEncoder;
 use DaveRandom\LifxLan\HsbkColor;
@@ -14,7 +15,7 @@ use function DaveRandom\LifxLan\Examples\udp_create_socket;
 require __DIR__ . '/00_bootstrap.php';
 
 $green = new HsbkColor(21845, 65535, 65535, 3500);
-$message = new SetColor($green, 1024);
+$message = new SetColor(new ColorTransition($green, 1024));
 
 $encoder = new MessageEncoder([MessageEncoder::OP_SOURCE_ID => 0]);
 

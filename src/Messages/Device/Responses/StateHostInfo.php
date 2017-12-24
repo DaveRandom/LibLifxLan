@@ -3,9 +3,9 @@
 namespace DaveRandom\LifxLan\Messages\Device\Responses;
 
 use DaveRandom\LifxLan\DataTypes\HostInfo;
-use DaveRandom\LifxLan\Messages\Message;
+use DaveRandom\LifxLan\Messages\ResponseMessage;
 
-final class StateHostInfo extends Message
+final class StateHostInfo extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 12;
 
@@ -13,6 +13,8 @@ final class StateHostInfo extends Message
 
     public function __construct(HostInfo $hostInfo)
     {
+        parent::__construct();
+
         $this->hostInfo = $hostInfo;
     }
 

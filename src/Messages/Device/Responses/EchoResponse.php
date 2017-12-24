@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LifxLan\Messages\Device\Responses;
 
-use DaveRandom\LifxLan\Messages\Message;
+use DaveRandom\LifxLan\Messages\ResponseMessage;
 
-final class EchoResponse extends Message
+final class EchoResponse extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 59;
 
@@ -12,6 +12,8 @@ final class EchoResponse extends Message
 
     public function __construct(string $payload)
     {
+        parent::__construct();
+
         $this->payload = $payload;
     }
 

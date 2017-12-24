@@ -2,36 +2,25 @@
 
 namespace DaveRandom\LifxLan\Messages\Device\Instructions;
 
+use DaveRandom\LifxLan\DataTypes\Location;
 use DaveRandom\LifxLan\Messages\InstructionMessage;
 
 final class SetLocation extends InstructionMessage
 {
     public const MESSAGE_TYPE_ID = 49;
 
-    private $locationGuid;
-    private $label;
-    private $updatedAt;
+    private $location;
 
-    public function __construct(string $locationGuid, string $label, int $updatedAt = null)
+    public function __construct(Location $location)
     {
-        $this->locationGuid = $locationGuid;
-        $this->label = $label;
-        $this->updatedAt = $updatedAt ?? (int)(\microtime(true) * 1e9);
+        parent::__construct();
+
+        $this->location = $location;
     }
 
-    public function getLocationGuid(): string
+    public function getLocation(): Location
     {
-        return $this->locationGuid;
-    }
-
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    public function getUpdatedAt(): int
-    {
-        return $this->updatedAt;
+        return $this->location;
     }
 
     public function getTypeId(): int

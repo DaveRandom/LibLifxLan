@@ -12,6 +12,8 @@ final class EchoRequest extends RequestMessage
 
     public function __construct(string $payload)
     {
+        parent::__construct();
+
         $this->payload = $payload;
     }
 

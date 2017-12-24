@@ -131,11 +131,12 @@ final class MessageEncoder extends Encoder
      */
     public function encodeSetGroupMessage(SetGroup $message, ?MacAddress $destination, int $sequenceNo): string
     {
-        $group = $message->getGroupGuid();
-        $label = $message->getLabel();
-        $updatedAt = $message->getUpdatedAt();
+        $group = $message->getGroup();
+        $guid = $group->getGuid();
+        $label = $group->getLabel();
+        $updatedAt = $group->getUpdatedAt();
 
-        if (\strlen($group) !== 16) {
+        if (\strlen($guid) !== 16) {
             throw new InvalidMessageException("Group GUID must be exactly 16 bytes");
         }
 
@@ -147,7 +148,7 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        $payload = $group . \str_pad($label, 32, "\x00", \STR_PAD_RIGHT) . \pack('P', $updatedAt);
+        $payload = $guid . \str_pad($label, 32, "\x00", \STR_PAD_RIGHT) . \pack('P', $updatedAt);
 
         return $this->encodeMessage($message, $destination, $sequenceNo, $payload);
     }
@@ -179,11 +180,12 @@ final class MessageEncoder extends Encoder
      */
     public function encodeSetLocationMessage(SetLocation $message, ?MacAddress $destination, int $sequenceNo): string
     {
-        $location = $message->getLocationGuid();
-        $label = $message->getLabel();
-        $updatedAt = $message->getUpdatedAt();
+        $location = $message->getLocation();
+        $guid = $location->getGuid();
+        $label = $location->getLabel();
+        $updatedAt = $location->getUpdatedAt();
 
-        if (\strlen($location) !== 16) {
+        if (\strlen($guid) !== 16) {
             throw new InvalidMessageException("Location GUID must be exactly 16 bytes");
         }
 
@@ -195,7 +197,7 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        $payload = $location . \str_pad($label, 32, "\x00", \STR_PAD_RIGHT) . \pack('P', $updatedAt);
+        $payload = $guid . \str_pad($label, 32, "\x00", \STR_PAD_RIGHT) . \pack('P', $updatedAt);
 
         return $this->encodeMessage($message, $destination, $sequenceNo, $payload);
     }
@@ -227,8 +229,9 @@ final class MessageEncoder extends Encoder
      */
     public function encodeSetColorMessage(SetColor $message, ?MacAddress $destination, int $sequenceNo): string
     {
-        $color = $message->getColor();
-        $duration = $message->getTransitionDuration();
+        $transition = $message->getColorTransition();
+        $color = $transition->getColor();
+        $duration = $transition->getDuration();
 
         if ($duration < 0 || $duration > 4294967295) {
             throw new InvalidMessageException("Transition duration {$duration} outside allowable range of 0 - 4294967295");
@@ -248,8 +251,9 @@ final class MessageEncoder extends Encoder
      */
     public function encodeSetLightPowerMessage(SetLightPower $message, ?MacAddress $destination, int $sequenceNo): string
     {
-        $level = $message->getLevel();
-        $duration = $message->getTransitionDuration();
+        $transition = $message->getPowerTransition();
+        $level = $transition->getLevel();
+        $duration = $transition->getDuration();
 
         if ($level < 0 || $level > 65535) {
             throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");

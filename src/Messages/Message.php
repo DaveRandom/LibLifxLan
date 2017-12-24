@@ -4,15 +4,25 @@ namespace DaveRandom\LifxLan\Messages;
 
 abstract class Message
 {
-    abstract public function getTypeId(): int;
+    public const REQUIRE_ACK = 0b01;
+    public const REQUIRE_RESPONSE = 0b10;
+
+    private $responsePattern;
+
+    protected function __construct(int $responsePattern)
+    {
+        $this->responsePattern = $responsePattern;
+    }
 
     public function isAckRequired(): bool
     {
-        return false;
+        return (bool)($this->responsePattern & self::REQUIRE_ACK);
     }
 
     public function isResponseRequired(): bool
     {
-        return false;
+        return (bool)($this->responsePattern & self::REQUIRE_RESPONSE);
     }
+
+    abstract public function getTypeId(): int;
 }

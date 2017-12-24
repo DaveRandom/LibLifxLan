@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LifxLan\Messages\Device\Responses;
 
-use DaveRandom\LifxLan\Messages\Message;
+use DaveRandom\LifxLan\Messages\ResponseMessage;
 
-final class Acknowledgement extends Message
+final class Acknowledgement extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 45;
 
