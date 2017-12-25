@@ -1,6 +1,6 @@
 {
-    "name": "daverandom/lifx-lan",
-    "description": "LifX LAN protocol implementation",
+    "name": "daverandom/lifx-lan-protocol",
+    "description": "LIFX LAN protocol implementation",
     "minimum-stability": "stable",
     "license": "mit",
     "authors": [
