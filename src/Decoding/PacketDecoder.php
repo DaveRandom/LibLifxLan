@@ -5,7 +5,6 @@ namespace DaveRandom\LifxLan\Decoding;
 use DaveRandom\LifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LifxLan\Header\Header;
-use DaveRandom\LifxLan\Packet;
 
 final class PacketDecoder
 {

@@ -1,13 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Light\Instructions;
+namespace DaveRandom\LifxLan\Messages\Light\Commands;
 
-use DaveRandom\LifxLan\DataTypes\PowerTransition;
-use DaveRandom\LifxLan\Messages\InstructionMessage;
+use DaveRandom\LifxLan\DataTypes\Light\PowerTransition;
+use DaveRandom\LifxLan\Messages\CommandMessage;
 
-final class SetPower extends InstructionMessage
+final class SetPower extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 117;
+    public const PAYLOAD_SIZE = 6;
 
     private $powerTransition;
 

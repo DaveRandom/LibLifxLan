@@ -5,7 +5,6 @@ use DaveRandom\LifxLan\Decoding\PacketDecoder;
 use DaveRandom\LifxLan\Encoding\MessageEncoder;
 use DaveRandom\LifxLan\Messages\Device\Requests\GetService;
 use DaveRandom\LifxLan\Messages\Device\Responses\StateService;
-use DaveRandom\LifxLan\DataTypes\ServiceType;
 use DaveRandom\LifxLan\Network\IPEndpoint;
 use function DaveRandom\LifxLan\Examples\udp_await_packets;
 use function DaveRandom\LifxLan\Examples\udp_create_socket;

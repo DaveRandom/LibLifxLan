@@ -1,13 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Device\Instructions;
+namespace DaveRandom\LifxLan\Messages\Device\Commands;
 
 use DaveRandom\LifxLan\DataTypes\Location;
-use DaveRandom\LifxLan\Messages\InstructionMessage;
+use DaveRandom\LifxLan\Messages\CommandMessage;
 
-final class SetLocation extends InstructionMessage
+final class SetLocation extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 49;
+    public const PAYLOAD_SIZE = 28;
 
     private $location;
 

@@ -7,6 +7,7 @@ use DaveRandom\LifxLan\Messages\ResponseMessage;
 final class StatePower extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 22;
+    public const PAYLOAD_SIZE = 2;
 
     private $level;
 

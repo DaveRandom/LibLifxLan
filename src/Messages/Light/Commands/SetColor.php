@@ -1,13 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Light\Instructions;
+namespace DaveRandom\LifxLan\Messages\Light\Commands;
 
-use DaveRandom\LifxLan\DataTypes\ColorTransition;
-use DaveRandom\LifxLan\Messages\InstructionMessage;
+use DaveRandom\LifxLan\DataTypes\Light\ColorTransition;
+use DaveRandom\LifxLan\Messages\CommandMessage;
 
-final class SetColor extends InstructionMessage
+final class SetColor extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 102;
+    public const PAYLOAD_SIZE = 13;
 
     private $colorTransition;
 

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Light\Responses;
+namespace DaveRandom\LifxLan\Messages\Light\Commands;
 
-use DaveRandom\LifxLan\Messages\ResponseMessage;
+use DaveRandom\LifxLan\Messages\CommandMessage;
 
-final class StateInfrared extends ResponseMessage
+final class SetInfrared extends CommandMessage
 {
-    public const MESSAGE_TYPE_ID = 122;
+    public const MESSAGE_TYPE_ID = 121;
     public const PAYLOAD_SIZE = 2;
 
     private $brightness;

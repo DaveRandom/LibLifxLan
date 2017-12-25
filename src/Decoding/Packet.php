@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan;
+namespace DaveRandom\LifxLan\Decoding;
 
 use DaveRandom\LifxLan\Header\Header;
 use DaveRandom\LifxLan\Messages\Message;

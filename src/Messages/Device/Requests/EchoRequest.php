@@ -7,6 +7,7 @@ use DaveRandom\LifxLan\Messages\RequestMessage;
 final class EchoRequest extends RequestMessage
 {
     public const MESSAGE_TYPE_ID = 58;
+    public const PAYLOAD_SIZE = 64;
 
     private $payload;
 

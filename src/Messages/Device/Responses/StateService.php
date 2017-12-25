@@ -8,6 +8,7 @@ use DaveRandom\LifxLan\Messages\ResponseMessage;
 final class StateService extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 3;
+    public const PAYLOAD_SIZE = 5;
 
     private $service;
 

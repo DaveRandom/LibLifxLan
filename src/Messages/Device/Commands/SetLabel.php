@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Device\Instructions;
+namespace DaveRandom\LifxLan\Messages\Device\Commands;
 
-use DaveRandom\LifxLan\Messages\InstructionMessage;
+use DaveRandom\LifxLan\Messages\CommandMessage;
 
-final class SetLabel extends InstructionMessage
+final class SetLabel extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 24;
+    public const PAYLOAD_SIZE = 32;
 
     private $label;
 

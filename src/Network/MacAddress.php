@@ -93,4 +93,9 @@ final class MacAddress
             $this->octet1, $this->octet2, $this->octet3, $this->octet4, $this->octet5, $this->octet6
         );
     }
+
+    public function __debugInfo(): array
+    {
+        return ['string' => $this->__toString()];
+    }
 }

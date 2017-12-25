@@ -8,6 +8,7 @@ use DaveRandom\LifxLan\Messages\ResponseMessage;
 final class StateHostFirmware extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 15;
+    public const PAYLOAD_SIZE = 20;
 
     private $hostFirmware;
 

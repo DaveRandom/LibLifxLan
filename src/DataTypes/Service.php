@@ -26,7 +26,7 @@ final class Service
     public function getName(): string
     {
         try {
-            return ServiceType::parseValue($this->typeId);
+            return ServiceTypes::parseValue($this->typeId);
         } catch (\InvalidArgumentException $e) {
             return "Unknown({$this->typeId})";
         }

@@ -7,6 +7,7 @@ use DaveRandom\LifxLan\Messages\RequestMessage;
 final class GetHostFirmware extends RequestMessage
 {
     public const MESSAGE_TYPE_ID = 14;
+    public const PAYLOAD_SIZE = 0;
 
     public function getTypeId(): int
     {

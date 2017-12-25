@@ -25,4 +25,9 @@ abstract class IPAddress
 
     abstract public function getProtocolFamily(): int;
     abstract public function __toString(): string;
+
+    public function __debugInfo(): array
+    {
+        return ['string' => $this->__toString()];
+    }
 }

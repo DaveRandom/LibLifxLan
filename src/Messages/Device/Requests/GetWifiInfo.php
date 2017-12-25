@@ -7,6 +7,7 @@ use DaveRandom\LifxLan\Messages\RequestMessage;
 final class GetWifiInfo extends RequestMessage
 {
     public const MESSAGE_TYPE_ID = 16;
+    public const PAYLOAD_SIZE = 0;
 
     public function getTypeId(): int
     {

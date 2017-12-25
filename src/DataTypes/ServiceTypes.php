@@ -4,7 +4,7 @@ namespace DaveRandom\LifxLan\DataTypes;
 
 use DaveRandom\LifxLan\Enum;
 
-final class ServiceType extends Enum
+final class ServiceTypes extends Enum
 {
     public const UDP = 1;
 }

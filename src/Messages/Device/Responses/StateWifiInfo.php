@@ -8,6 +8,7 @@ use DaveRandom\LifxLan\Messages\ResponseMessage;
 final class StateWifiInfo extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 17;
+    public const PAYLOAD_SIZE = 14;
 
     private $wifiInfo;
 

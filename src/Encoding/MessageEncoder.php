@@ -8,13 +8,13 @@ use DaveRandom\LifxLan\Header\Frame;
 use DaveRandom\LifxLan\Header\FrameAddress;
 use DaveRandom\LifxLan\Header\Header;
 use DaveRandom\LifxLan\Header\ProtocolHeader;
-use DaveRandom\LifxLan\HsbkColor;
-use DaveRandom\LifxLan\Messages\Device\Instructions\SetGroup;
-use DaveRandom\LifxLan\Messages\Device\Instructions\SetLabel;
-use DaveRandom\LifxLan\Messages\Device\Instructions\SetLocation;
-use DaveRandom\LifxLan\Messages\Device\Instructions\SetPower as SetDevicePower;
-use DaveRandom\LifxLan\Messages\Light\Instructions\SetColor;
-use DaveRandom\LifxLan\Messages\Light\Instructions\SetPower as SetLightPower;
+use DaveRandom\LifxLan\DataTypes\Light\HsbkColor;
+use DaveRandom\LifxLan\Messages\Device\Commands\SetGroup;
+use DaveRandom\LifxLan\Messages\Device\Commands\SetLabel;
+use DaveRandom\LifxLan\Messages\Device\Commands\SetLocation;
+use DaveRandom\LifxLan\Messages\Device\Commands\SetPower as SetDevicePower;
+use DaveRandom\LifxLan\Messages\Light\Commands\SetColor;
+use DaveRandom\LifxLan\Messages\Light\Commands\SetPower as SetLightPower;
 use DaveRandom\LifxLan\Messages\Device\Requests\EchoRequest;
 use DaveRandom\LifxLan\Messages\Device\Requests\GetService;
 use DaveRandom\LifxLan\Messages\Message;
@@ -148,9 +148,7 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        $payload = $guid . \str_pad($label, 32, "\x00", \STR_PAD_RIGHT) . \pack('P', $updatedAt);
-
-        return $this->encodeMessage($message, $destination, $sequenceNo, $payload);
+        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid, $label, $updatedAt));
     }
 
     /**
@@ -168,7 +166,7 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Label cannot be larger than 32 bytes");
         }
 
-        return $this->encodeMessage($message, $destination, $sequenceNo, \str_pad($label, 32, "\x00", \STR_PAD_RIGHT));
+        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a32', $label));
     }
 
     /**
@@ -197,9 +195,7 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        $payload = $guid . \str_pad($label, 32, "\x00", \STR_PAD_RIGHT) . \pack('P', $updatedAt);
-
-        return $this->encodeMessage($message, $destination, $sequenceNo, $payload);
+        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid, $label, $updatedAt));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace DaveRandom\LifxLan\Messages;
 
-abstract class InstructionMessage extends Message
+abstract class CommandMessage extends Message
 {
     public function __construct(int $responsePattern = self::REQUIRE_ACK)
     {

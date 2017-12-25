@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\DataTypes;
-
-use DaveRandom\LifxLan\HsbkColor;
+namespace DaveRandom\LifxLan\DataTypes\Light;
 
 final class ColorTransition
 {
