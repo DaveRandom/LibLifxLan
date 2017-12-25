@@ -6,7 +6,7 @@
  * Time: 15:53
  */
 
-namespace DaveRandom\LifxLan\DataTypes;
+namespace DaveRandom\LibLifxLan\DataTypes;
 
 final class WifiInfo
 {

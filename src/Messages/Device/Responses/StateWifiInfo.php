@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Device\Responses;
+namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
-use DaveRandom\LifxLan\DataTypes\WifiInfo;
-use DaveRandom\LifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\DataTypes\WifiInfo;
+use DaveRandom\LibLifxLan\Messages\ResponseMessage;
 
 final class StateWifiInfo extends ResponseMessage
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Header;
+namespace DaveRandom\LibLifxLan\Header;
 
 final class ProtocolHeader
 {

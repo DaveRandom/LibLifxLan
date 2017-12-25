@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\Header\Frame;
+use DaveRandom\LibLifxLan\Header\Frame;
 
 final class FrameDecoder
 {

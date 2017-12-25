@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Light\Responses;
+namespace DaveRandom\LibLifxLan\Messages\Light\Responses;
 
-use DaveRandom\LifxLan\DataTypes\Light\State as LightState;
-use DaveRandom\LifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\DataTypes\Light\State as LightState;
+use DaveRandom\LibLifxLan\Messages\ResponseMessage;
 
 final class State extends ResponseMessage
 {

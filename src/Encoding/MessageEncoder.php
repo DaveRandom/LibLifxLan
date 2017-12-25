@@ -1,24 +1,24 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Encoding;
+namespace DaveRandom\LibLifxLan\Encoding;
 
-use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageException;
-use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
-use DaveRandom\LifxLan\Header\Frame;
-use DaveRandom\LifxLan\Header\FrameAddress;
-use DaveRandom\LifxLan\Header\Header;
-use DaveRandom\LifxLan\Header\ProtocolHeader;
-use DaveRandom\LifxLan\DataTypes\Light\HsbkColor;
-use DaveRandom\LifxLan\Messages\Device\Commands\SetGroup;
-use DaveRandom\LifxLan\Messages\Device\Commands\SetLabel;
-use DaveRandom\LifxLan\Messages\Device\Commands\SetLocation;
-use DaveRandom\LifxLan\Messages\Device\Commands\SetPower as SetDevicePower;
-use DaveRandom\LifxLan\Messages\Light\Commands\SetColor;
-use DaveRandom\LifxLan\Messages\Light\Commands\SetPower as SetLightPower;
-use DaveRandom\LifxLan\Messages\Device\Requests\EchoRequest;
-use DaveRandom\LifxLan\Messages\Device\Requests\GetService;
-use DaveRandom\LifxLan\Messages\Message;
-use DaveRandom\LifxLan\Network\MacAddress;
+use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
+use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
+use DaveRandom\LibLifxLan\Header\Frame;
+use DaveRandom\LibLifxLan\Header\FrameAddress;
+use DaveRandom\LibLifxLan\Header\Header;
+use DaveRandom\LibLifxLan\Header\ProtocolHeader;
+use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
+use DaveRandom\LibLifxLan\Messages\Device\Commands\SetGroup;
+use DaveRandom\LibLifxLan\Messages\Device\Commands\SetLabel;
+use DaveRandom\LibLifxLan\Messages\Device\Commands\SetLocation;
+use DaveRandom\LibLifxLan\Messages\Device\Commands\SetPower as SetDevicePower;
+use DaveRandom\LibLifxLan\Messages\Light\Commands\SetColor;
+use DaveRandom\LibLifxLan\Messages\Light\Commands\SetPower as SetLightPower;
+use DaveRandom\LibLifxLan\Messages\Device\Requests\EchoRequest;
+use DaveRandom\LibLifxLan\Messages\Device\Requests\GetService;
+use DaveRandom\LibLifxLan\Messages\Message;
+use DaveRandom\LibLifxLan\Network\MacAddress;
 
 final class MessageEncoder extends Encoder
 {

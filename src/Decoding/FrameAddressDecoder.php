@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\Header\FrameAddress;
-use DaveRandom\LifxLan\Network\MacAddress;
+use DaveRandom\LibLifxLan\Header\FrameAddress;
+use DaveRandom\LibLifxLan\Network\MacAddress;
 
 final class FrameAddressDecoder
 {

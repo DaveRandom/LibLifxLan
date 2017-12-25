@@ -6,7 +6,7 @@
  * Time: 18:11
  */
 
-namespace DaveRandom\LifxLan\Messages;
+namespace DaveRandom\LibLifxLan\Messages;
 
 abstract class ResponseMessage extends Message
 {

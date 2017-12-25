@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\DataTypes\Light;
+namespace DaveRandom\LibLifxLan\DataTypes\Light;
 
 final class PowerTransition
 {

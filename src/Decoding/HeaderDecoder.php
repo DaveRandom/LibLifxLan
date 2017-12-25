@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\Header\Frame;
-use DaveRandom\LifxLan\Header\FrameAddress;
-use DaveRandom\LifxLan\Header\Header;
-use DaveRandom\LifxLan\Header\ProtocolHeader;
+use DaveRandom\LibLifxLan\Header\Frame;
+use DaveRandom\LibLifxLan\Header\FrameAddress;
+use DaveRandom\LibLifxLan\Header\Header;
+use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 
 final class HeaderDecoder
 {

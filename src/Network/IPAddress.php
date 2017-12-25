@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Network;
+namespace DaveRandom\LibLifxLan\Network;
 
 abstract class IPAddress
 {

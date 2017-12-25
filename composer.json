@@ -10,7 +10,7 @@
         }
     ],
     "autoload": {
-        "psr-4": { "DaveRandom\\LifxLan\\": "src/" },
+        "psr-4": { "DaveRandom\\LibLifxLan\\": "src/" },
         "files": [ "src/functions.php" ]
     },
     "require": {

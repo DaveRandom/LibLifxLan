@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Header;
+namespace DaveRandom\LibLifxLan\Header;
 
-use DaveRandom\LifxLan\Network\MacAddress;
+use DaveRandom\LibLifxLan\Network\MacAddress;
 
 final class FrameAddress
 {

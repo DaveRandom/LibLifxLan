@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Device\Commands;
+namespace DaveRandom\LibLifxLan\Messages\Device\Commands;
 
-use DaveRandom\LifxLan\DataTypes\Location;
-use DaveRandom\LifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\DataTypes\Location;
+use DaveRandom\LibLifxLan\Messages\CommandMessage;
 
 final class SetLocation extends CommandMessage
 {

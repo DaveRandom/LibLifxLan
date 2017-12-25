@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan;
+namespace DaveRandom\LibLifxLan;
 
 if (\strlen(\pack('e', 0.1)) === 4) {
     \define(__NAMESPACE__ . '\\FLOAT32_CODE', 'e');

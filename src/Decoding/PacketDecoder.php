@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\Decoding\Exceptions\DecodingException;
-use DaveRandom\LifxLan\Decoding\Exceptions\InsufficientDataException;
-use DaveRandom\LifxLan\Header\Header;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
+use DaveRandom\LibLifxLan\Header\Header;
 
 final class PacketDecoder
 {

@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\Decoding\Exceptions\InsufficientDataException;
-use DaveRandom\LifxLan\Decoding\Exceptions\InvalidReadException;
-use DaveRandom\LifxLan\Network\IPEndpoint;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidReadException;
+use DaveRandom\LibLifxLan\Network\IPEndpoint;
 
 final class PacketBuffer
 {

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\DataTypes;
+namespace DaveRandom\LibLifxLan\DataTypes;
 
-use DaveRandom\LifxLan\Enum;
+use DaveRandom\LibLifxLan\Enum;
 
 final class ServiceTypes extends Enum
 {

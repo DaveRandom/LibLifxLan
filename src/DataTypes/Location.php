@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\DataTypes;
+namespace DaveRandom\LibLifxLan\DataTypes;
 
 use Ramsey\Uuid\UuidInterface;
 

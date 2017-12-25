@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Device\Requests;
+namespace DaveRandom\LibLifxLan\Messages\Device\Requests;
 
-use DaveRandom\LifxLan\Messages\RequestMessage;
+use DaveRandom\LibLifxLan\Messages\RequestMessage;
 
 final class GetHostInfo extends RequestMessage
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan;
+namespace DaveRandom\LibLifxLan;
 
 abstract class Enum
 {

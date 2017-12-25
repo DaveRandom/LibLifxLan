@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-use DaveRandom\LifxLan\Decoding\Exceptions\DecodingException;
-use DaveRandom\LifxLan\Decoding\PacketDecoder;
-use DaveRandom\LifxLan\Encoding\MessageEncoder;
-use DaveRandom\LifxLan\Messages\Device\Requests\GetService;
-use DaveRandom\LifxLan\Messages\Device\Responses\StateService;
-use DaveRandom\LifxLan\Network\IPEndpoint;
-use function DaveRandom\LifxLan\Examples\udp_await_packets;
-use function DaveRandom\LifxLan\Examples\udp_create_socket;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
+use DaveRandom\LibLifxLan\Decoding\PacketDecoder;
+use DaveRandom\LibLifxLan\Encoding\MessageEncoder;
+use DaveRandom\LibLifxLan\Messages\Device\Requests\GetService;
+use DaveRandom\LibLifxLan\Messages\Device\Responses\StateService;
+use DaveRandom\LibLifxLan\Network\IPEndpoint;
+use function DaveRandom\LibLifxLan\Examples\udp_await_packets;
+use function DaveRandom\LibLifxLan\Examples\udp_create_socket;
 
 require __DIR__ . '/00_bootstrap.php';
 

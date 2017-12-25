@@ -4,13 +4,13 @@
 // https://lan.developer.lifx.com/docs/building-a-lifx-packet
 // The packet produced by this code should be identical to the example, except the "ack_required" bit will be set
 
-use DaveRandom\LifxLan\DataTypes\Light\ColorTransition;
-use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageException;
-use DaveRandom\LifxLan\Encoding\MessageEncoder;
-use DaveRandom\LifxLan\DataTypes\Light\HsbkColor;
-use DaveRandom\LifxLan\Messages\Light\Commands\SetColor;
-use DaveRandom\LifxLan\Network\IPEndpoint;
-use function DaveRandom\LifxLan\Examples\udp_create_socket;
+use DaveRandom\LibLifxLan\DataTypes\Light\ColorTransition;
+use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
+use DaveRandom\LibLifxLan\Encoding\MessageEncoder;
+use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
+use DaveRandom\LibLifxLan\Messages\Light\Commands\SetColor;
+use DaveRandom\LibLifxLan\Network\IPEndpoint;
+use function DaveRandom\LibLifxLan\Examples\udp_create_socket;
 
 require __DIR__ . '/00_bootstrap.php';
 

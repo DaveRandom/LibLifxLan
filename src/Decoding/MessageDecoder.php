@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\DataTypes as DeviceDataTypes;
-use DaveRandom\LifxLan\DataTypes\Light as LightDataTypes;
-use DaveRandom\LifxLan\Decoding\Exceptions\DecodingException;
-use DaveRandom\LifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException;
-use DaveRandom\LifxLan\Decoding\Exceptions\MalformedMessagePayloadException;
-use DaveRandom\LifxLan\Decoding\Exceptions\UnknownMessageTypeException;
-use DaveRandom\LifxLan\Messages\Device\Commands as DeviceCommands;
-use DaveRandom\LifxLan\Messages\Device\Requests as DeviceRequests;
-use DaveRandom\LifxLan\Messages\Device\Responses as DeviceResponses;
-use DaveRandom\LifxLan\Messages\Light\Commands as LightCommmands;
-use DaveRandom\LifxLan\Messages\Light\Requests as LightRequests;
-use DaveRandom\LifxLan\Messages\Light\Responses as LightResponses;
-use DaveRandom\LifxLan\Messages\Message;
+use DaveRandom\LibLifxLan\DataTypes as DeviceDataTypes;
+use DaveRandom\LibLifxLan\DataTypes\Light as LightDataTypes;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\MalformedMessagePayloadException;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\UnknownMessageTypeException;
+use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
+use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
+use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
+use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommmands;
+use DaveRandom\LibLifxLan\Messages\Light\Requests as LightRequests;
+use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
+use DaveRandom\LibLifxLan\Messages\Message;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 
@@ -208,7 +208,7 @@ final class MessageDecoder
             'tx'       => $tx,
             'rx'       => $rx,
             'reserved' => $reserved,
-        ] = \unpack(\DaveRandom\LifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
+        ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
 
         $reserved = $this->unsignedShortToSignedShort($reserved);
 
@@ -361,7 +361,7 @@ final class MessageDecoder
             'tx'       => $tx,
             'rx'       => $rx,
             'reserved' => $reserved,
-        ] = \unpack(\DaveRandom\LifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
+        ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
 
         $reserved = $this->unsignedShortToSignedShort($reserved);
 
@@ -408,7 +408,7 @@ final class MessageDecoder
         $format
             = 'Creserved/Ctransient/'
             . self::HSBK_FORMAT
-            . '/Vperiod/' . \DaveRandom\LifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
+            . '/Vperiod/' . \DaveRandom\LibLifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
         ;
 
         [
@@ -446,7 +446,7 @@ final class MessageDecoder
         $format
             = 'Creserved/Ctransient/'
             . self::HSBK_FORMAT
-            . '/Vperiod/' . \DaveRandom\LifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
+            . '/Vperiod/' . \DaveRandom\LibLifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
             . '/CsetHue/CsetSaturation/CsetBrightness/CsetTemperature'
         ;
 

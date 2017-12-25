@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\DataTypes\Light;
+namespace DaveRandom\LibLifxLan\DataTypes\Light;
 
-use DaveRandom\LifxLan\Enum;
+use DaveRandom\LibLifxLan\Enum;
 
 final class Waveforms extends Enum
 {

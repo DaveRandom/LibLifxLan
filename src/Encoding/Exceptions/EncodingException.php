@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Encoding\Exceptions;
+namespace DaveRandom\LibLifxLan\Encoding\Exceptions;
 
-use DaveRandom\LifxLan\Exception;
+use DaveRandom\LibLifxLan\Exception;
 
 abstract class EncodingException extends Exception { }

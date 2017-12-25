@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Light\Commands;
+namespace DaveRandom\LibLifxLan\Messages\Light\Commands;
 
-use DaveRandom\LifxLan\DataTypes\Light\PowerTransition;
-use DaveRandom\LifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\DataTypes\Light\PowerTransition;
+use DaveRandom\LibLifxLan\Messages\CommandMessage;
 
 final class SetPower extends CommandMessage
 {

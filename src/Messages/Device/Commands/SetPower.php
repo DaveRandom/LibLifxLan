@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Device\Commands;
+namespace DaveRandom\LibLifxLan\Messages\Device\Commands;
 
-use DaveRandom\LifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\CommandMessage;
 
 final class SetPower extends CommandMessage
 {

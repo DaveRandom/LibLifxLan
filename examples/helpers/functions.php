@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Examples;
-use DaveRandom\LifxLan\Decoding\PacketBuffer;
-use DaveRandom\LifxLan\Network\IPEndpoint;
+namespace DaveRandom\LibLifxLan\Examples;
+
+use DaveRandom\LibLifxLan\Decoding\PacketBuffer;
+use DaveRandom\LibLifxLan\Network\IPEndpoint;
 
 /**
  * @param IPEndpoint $localEndpoint

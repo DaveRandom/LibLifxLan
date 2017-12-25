@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Encoding;
+namespace DaveRandom\LibLifxLan\Encoding;
 
-use DaveRandom\LifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
-use DaveRandom\LifxLan\Header\Frame;
+use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
+use DaveRandom\LibLifxLan\Header\Frame;
 
 final class FrameEncoder extends Encoder
 {

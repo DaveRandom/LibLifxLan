@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\Header\Header;
-use DaveRandom\LifxLan\Messages\Message;
-use DaveRandom\LifxLan\Network\IPEndpoint;
+use DaveRandom\LibLifxLan\Header\Header;
+use DaveRandom\LibLifxLan\Messages\Message;
+use DaveRandom\LibLifxLan\Network\IPEndpoint;
 
 final class Packet
 {

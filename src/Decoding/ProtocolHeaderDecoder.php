@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Decoding;
+namespace DaveRandom\LibLifxLan\Decoding;
 
-use DaveRandom\LifxLan\Header\ProtocolHeader;
+use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 
 final class ProtocolHeaderDecoder
 {

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LifxLan\Messages\Light\Commands;
+namespace DaveRandom\LibLifxLan\Messages\Light\Commands;
 
-use DaveRandom\LifxLan\DataTypes\Light\Effect;
-use DaveRandom\LifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\DataTypes\Light\Effect;
+use DaveRandom\LibLifxLan\Messages\CommandMessage;
 
 final class SetWaveformOptional extends CommandMessage
 {
