@@ -2,20 +2,8 @@
 
 namespace DaveRandom\LifxLan\Decoding;
 
-use DaveRandom\LifxLan\DataTypes\Group;
-use DaveRandom\LifxLan\DataTypes\HostFirmware;
-use DaveRandom\LifxLan\DataTypes\HostInfo;
-use DaveRandom\LifxLan\DataTypes\Info;
-use DaveRandom\LifxLan\DataTypes\Light\ColorTransition;
-use DaveRandom\LifxLan\DataTypes\Light\Effect;
-use DaveRandom\LifxLan\DataTypes\Light\HsbkColor;
-use DaveRandom\LifxLan\DataTypes\Light\PowerTransition;
-use DaveRandom\LifxLan\DataTypes\Light\State;
-use DaveRandom\LifxLan\DataTypes\Location;
-use DaveRandom\LifxLan\DataTypes\Service;
-use DaveRandom\LifxLan\DataTypes\Version;
-use DaveRandom\LifxLan\DataTypes\WifiFirmware;
-use DaveRandom\LifxLan\DataTypes\WifiInfo;
+use DaveRandom\LifxLan\DataTypes as DeviceDataTypes;
+use DaveRandom\LifxLan\DataTypes\Light as LightDataTypes;
 use DaveRandom\LifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException;
 use DaveRandom\LifxLan\Decoding\Exceptions\MalformedMessagePayloadException;
@@ -171,7 +159,7 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
 
-        return new DeviceCommands\SetGroup(new Group($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceCommands\SetGroup(new DeviceDataTypes\Group($guid, \rtrim($label, "\x00"), $updatedAt));
     }
 
     private function decodeStateGroup(string $data): DeviceResponses\StateGroup
@@ -184,7 +172,7 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
 
-        return new DeviceResponses\StateGroup(new Group($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceResponses\StateGroup(new DeviceDataTypes\Group($guid, \rtrim($label, "\x00"), $updatedAt));
     }
 
     private function decodeGetHostFirmware(): DeviceRequests\GetHostFirmware
@@ -200,7 +188,7 @@ final class MessageDecoder
             'version'  => $version,
         ] = \unpack('Pbuild/Preserved/Vversion', $data);
 
-        return new DeviceResponses\StateHostFirmware(new HostFirmware($build, $reserved, $version));
+        return new DeviceResponses\StateHostFirmware(new DeviceDataTypes\HostFirmware($build, $reserved, $version));
     }
 
     private function decodeGetHostInfo(): DeviceRequests\GetHostInfo
@@ -224,7 +212,7 @@ final class MessageDecoder
 
         $reserved = $this->unsignedShortToSignedShort($reserved);
 
-        return new DeviceResponses\StateHostInfo(new HostInfo($signal, $tx, $rx, $reserved));
+        return new DeviceResponses\StateHostInfo(new DeviceDataTypes\HostInfo($signal, $tx, $rx, $reserved));
     }
 
     private function decodeGetInfo(): DeviceRequests\GetInfo
@@ -240,7 +228,7 @@ final class MessageDecoder
             'downtime' => $downtime,
         ] = \unpack('Ptime/Puptime/Pdowntime', $data);
 
-        return new DeviceResponses\StateInfo(new Info($time, $uptime, $downtime));
+        return new DeviceResponses\StateInfo(new DeviceDataTypes\Info($time, $uptime, $downtime));
     }
 
     private function decodeGetLabel(): DeviceRequests\GetLabel
@@ -273,7 +261,7 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
 
-        return new DeviceCommands\SetLocation(new Location($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceCommands\SetLocation(new DeviceDataTypes\Location($guid, \rtrim($label, "\x00"), $updatedAt));
     }
 
     private function decodeStateLocation(string $data): DeviceResponses\StateLocation
@@ -286,7 +274,7 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
 
-        return new DeviceResponses\StateLocation(new Location($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceResponses\StateLocation(new DeviceDataTypes\Location($guid, \rtrim($label, "\x00"), $updatedAt));
     }
 
     private function decodeGetDevicePower(): DeviceRequests\GetPower
@@ -320,7 +308,7 @@ final class MessageDecoder
             'port' => $port,
         ] = \unpack('CserviceType/Vport', $data);
 
-        return new DeviceResponses\StateService(new Service($serviceType, $port));
+        return new DeviceResponses\StateService(new DeviceDataTypes\Service($serviceType, $port));
     }
 
     private function decodeGetVersion(): DeviceRequests\GetVersion
@@ -336,7 +324,7 @@ final class MessageDecoder
             'version' => $version,
         ] = \unpack('Vvendor/Vproduct/Vversion', $data);
 
-        return new DeviceResponses\StateVersion(new Version($vendor, $product, $version));
+        return new DeviceResponses\StateVersion(new DeviceDataTypes\Version($vendor, $product, $version));
     }
 
     private function decodeGetWifiFirmware(): DeviceRequests\GetWifiFirmware
@@ -352,7 +340,7 @@ final class MessageDecoder
             'version'  => $version,
         ] = \unpack('Pbuild/Preserved/Vversion', $data);
 
-        return new DeviceResponses\StateWifiFirmware(new WifiFirmware($build, $reserved, $version));
+        return new DeviceResponses\StateWifiFirmware(new DeviceDataTypes\WifiFirmware($build, $reserved, $version));
     }
 
     private function decodeGetWifiInfo(): DeviceRequests\GetWifiInfo
@@ -377,7 +365,7 @@ final class MessageDecoder
 
         $reserved = $this->unsignedShortToSignedShort($reserved);
 
-        return new DeviceResponses\StateWifiInfo(new WifiInfo($signal, $tx, $rx, $reserved));
+        return new DeviceResponses\StateWifiInfo(new DeviceDataTypes\WifiInfo($signal, $tx, $rx, $reserved));
     }
 
     private function decodeGet(): LightRequests\Get
@@ -401,12 +389,12 @@ final class MessageDecoder
         ] = \unpack('Creserved/' . self::HSBK_FORMAT . '/Vduration', $data);
 
         try {
-            $color = new HsbkColor($hue, $saturation, $brightness, $temperature);
+            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         } catch (\OutOfBoundsException $e) {
             throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
         }
 
-        return new LightCommmands\SetColor(new ColorTransition($color, $duration));
+        return new LightCommmands\SetColor(new LightDataTypes\ColorTransition($color, $duration));
     }
 
     /**
@@ -436,13 +424,13 @@ final class MessageDecoder
         ] = \unpack($format, $data);
 
         try {
-            $color = new HsbkColor($hue, $saturation, $brightness, $temperature);
+            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         } catch (\OutOfBoundsException $e) {
             throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
         }
 
         $skewRatio = $this->unsignedShortToSignedShort($skewRatio);
-        $effect = new Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform);
+        $effect = new LightDataTypes\Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform);
 
         return new LightCommmands\SetWaveform($effect);
     }
@@ -479,19 +467,19 @@ final class MessageDecoder
         ] = \unpack($format, $data);
 
         try {
-            $color = new HsbkColor($hue, $saturation, $brightness, $temperature);
+            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         } catch (\OutOfBoundsException $e) {
             throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
         }
 
         $skewRatio = $this->unsignedShortToSignedShort($skewRatio);
 
-        $options = ($setHue ? Effect::SET_HUE : 0)
-            | ($setSaturation ? Effect::SET_SATURATION : 0)
-            | ($setBrightness ? Effect::SET_BRIGHTNESS : 0)
-            | ($setTemperature ? Effect::SET_TEMPERATURE : 0);
+        $options = ($setHue ? LightDataTypes\Effect::SET_HUE : 0)
+            | ($setSaturation ? LightDataTypes\Effect::SET_SATURATION : 0)
+            | ($setBrightness ? LightDataTypes\Effect::SET_BRIGHTNESS : 0)
+            | ($setTemperature ? LightDataTypes\Effect::SET_TEMPERATURE : 0);
 
-        $effect = new Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform, $options);
+        $effect = new LightDataTypes\Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform, $options);
 
         return new LightCommmands\SetWaveformOptional($effect);
     }
@@ -513,12 +501,12 @@ final class MessageDecoder
         ] = \unpack(self::HSBK_FORMAT . '/vreserved/vpower/a32label/Preserved', $data);
 
         try {
-            $color = new HsbkColor($hue, $saturation, $brightness, $temperature);
+            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         } catch (\OutOfBoundsException $e) {
             throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
         }
 
-        return new LightResponses\State(new State($color, $power, \rtrim($label, "\x00")));
+        return new LightResponses\State(new LightDataTypes\State($color, $power, \rtrim($label, "\x00")));
     }
 
     private function decodeGetInfrared(): LightRequests\GetInfrared
@@ -552,7 +540,7 @@ final class MessageDecoder
             'duration' => $duration,
         ] = \unpack('vlevel/Vduration', $data);
 
-        return new LightCommmands\SetPower(new PowerTransition($level, $duration));
+        return new LightCommmands\SetPower(new LightDataTypes\PowerTransition($level, $duration));
     }
 
     private function decodeStateLightPower(string $data): LightResponses\StatePower
