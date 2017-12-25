@@ -215,18 +215,12 @@ final class MessageDecoder
      */
     private function decodeStateHostInfo(string $data): DeviceResponses\StateHostInfo
     {
-        static $format;
-
-        if (!isset($format)) {
-            $format = \sprintf('%ssignal/Vtx/Vrx/vreserved', get_float_code());
-        }
-
         [
             'signal'   => $signal,
             'tx'       => $tx,
             'rx'       => $rx,
             'reserved' => $reserved,
-        ] = \unpack($format, $data);
+        ] = \unpack(\DaveRandom\LifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
 
         $reserved = $this->unsignedShortToSignedShort($reserved);
 
@@ -373,18 +367,13 @@ final class MessageDecoder
      */
     private function decodeStateWifiInfo(string $data): DeviceResponses\StateWifiInfo
     {
-        static $format;
-
-        if (!isset($format)) {
-            $format = \sprintf('%ssignal/Vtx/Vrx/vreserved', get_float_code());
-        }
 
         [
             'signal'   => $signal,
             'tx'       => $tx,
             'rx'       => $rx,
             'reserved' => $reserved,
-        ] = \unpack($format, $data);
+        ] = \unpack(\DaveRandom\LifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
 
         $reserved = $this->unsignedShortToSignedShort($reserved);
 
@@ -428,16 +417,11 @@ final class MessageDecoder
      */
     private function decodeSetWaveform(string $data): LightCommmands\SetWaveform
     {
-        static $format;
-
-        if (!isset($format)) {
-            $code = get_float_code();
-            $format
-                = 'Creserved/Ctransient/'
-                . self::HSBK_FORMAT
-                . "/Vperiod/{$code}cycles/vskewRatio/Cwaveform"
-            ;
-        }
+        $format
+            = 'Creserved/Ctransient/'
+            . self::HSBK_FORMAT
+            . '/Vperiod/' . \DaveRandom\LifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
+        ;
 
         [
             'transient'   => $transient,
@@ -471,17 +455,12 @@ final class MessageDecoder
      */
     private function decodeSetWaveformOptional(string $data): LightCommmands\SetWaveformOptional
     {
-        static $format;
-
-        if (!isset($format)) {
-            $code = get_float_code();
-            $format
-                = 'Creserved/Ctransient/'
-                . self::HSBK_FORMAT
-                . "/Vperiod/{$code}cycles/vskewRatio/Cwaveform"
-                . "/CsetHue/CsetSaturation/CsetBrightness/CsetTemperature"
-            ;
-        }
+        $format
+            = 'Creserved/Ctransient/'
+            . self::HSBK_FORMAT
+            . '/Vperiod/' . \DaveRandom\LifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
+            . '/CsetHue/CsetSaturation/CsetBrightness/CsetTemperature'
+        ;
 
         [
             'transient'      => $transient,

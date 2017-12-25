@@ -1,28 +1,12 @@
 <?php declare(strict_types=1);
 
-/**
- * @return string
- * @throws Error
- */
-function get_float_code(): string
-{
-    static $code;
+namespace DaveRandom\LifxLan;
 
-    if (isset($code)) {
-        return $code;
-    }
-
-    $bin = \pack('e', 0.1);
-
-    if (\strlen($bin) === 4) {
-        return $code = 'g';
-    }
-
-    $bin = \pack('g', 0.1);
-
-    if (\strlen($bin) === 4) {
-        return $code = 'e';
-    }
-
+if (\strlen(\pack('e', 0.1)) === 4) {
+    \define(__NAMESPACE__ . '\\FLOAT32_CODE', 'e');
+} else if (\strlen(\pack('g', 0.1)) === 4) {
+    \define(__NAMESPACE__ . '\\FLOAT32_CODE', 'g');
+} else {
+    /** @noinspection PhpUnhandledExceptionInspection */
     throw new \Error('Cannot pack()/unpack() floating point numbers to a 32-bit little-endian representation');
 }
