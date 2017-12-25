@@ -3,7 +3,7 @@
 namespace DaveRandom\LibLifxLan\Decoding;
 
 use DaveRandom\LibLifxLan\Header\FrameAddress;
-use DaveRandom\LibLifxLan\Network\MacAddress;
+use DaveRandom\Network\MacAddress;
 
 final class FrameAddressDecoder
 {

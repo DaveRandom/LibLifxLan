@@ -2,23 +2,23 @@
 
 namespace DaveRandom\LibLifxLan\Encoding;
 
+use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LibLifxLan\Header\Frame;
 use DaveRandom\LibLifxLan\Header\FrameAddress;
 use DaveRandom\LibLifxLan\Header\Header;
 use DaveRandom\LibLifxLan\Header\ProtocolHeader;
-use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use DaveRandom\LibLifxLan\Messages\Device\Commands\SetGroup;
 use DaveRandom\LibLifxLan\Messages\Device\Commands\SetLabel;
 use DaveRandom\LibLifxLan\Messages\Device\Commands\SetLocation;
 use DaveRandom\LibLifxLan\Messages\Device\Commands\SetPower as SetDevicePower;
-use DaveRandom\LibLifxLan\Messages\Light\Commands\SetColor;
-use DaveRandom\LibLifxLan\Messages\Light\Commands\SetPower as SetLightPower;
 use DaveRandom\LibLifxLan\Messages\Device\Requests\EchoRequest;
 use DaveRandom\LibLifxLan\Messages\Device\Requests\GetService;
+use DaveRandom\LibLifxLan\Messages\Light\Commands\SetColor;
+use DaveRandom\LibLifxLan\Messages\Light\Commands\SetPower as SetLightPower;
 use DaveRandom\LibLifxLan\Messages\Message;
-use DaveRandom\LibLifxLan\Network\MacAddress;
+use DaveRandom\Network\MacAddress;
 
 final class MessageEncoder extends Encoder
 {

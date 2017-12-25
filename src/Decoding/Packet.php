@@ -4,7 +4,7 @@ namespace DaveRandom\LibLifxLan\Decoding;
 
 use DaveRandom\LibLifxLan\Header\Header;
 use DaveRandom\LibLifxLan\Messages\Message;
-use DaveRandom\LibLifxLan\Network\IPEndpoint;
+use DaveRandom\Network\IPEndpoint;
 
 final class Packet
 {

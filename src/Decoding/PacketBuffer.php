@@ -4,7 +4,7 @@ namespace DaveRandom\LibLifxLan\Decoding;
 
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidReadException;
-use DaveRandom\LibLifxLan\Network\IPEndpoint;
+use DaveRandom\Network\IPEndpoint;
 
 final class PacketBuffer
 {

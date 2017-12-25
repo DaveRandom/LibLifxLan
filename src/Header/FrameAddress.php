@@ -2,7 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\Header;
 
-use DaveRandom\LibLifxLan\Network\MacAddress;
+use DaveRandom\Network\MacAddress;
 
 final class FrameAddress
 {
