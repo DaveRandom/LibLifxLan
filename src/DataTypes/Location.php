@@ -2,20 +2,22 @@
 
 namespace DaveRandom\LifxLan\DataTypes;
 
+use Ramsey\Uuid\UuidInterface;
+
 final class Location
 {
     private $guid;
     private $label;
     private $updatedAt;
 
-    public function __construct(string $guid, string $label, int $updatedAt = null)
+    public function __construct(UuidInterface $guid, string $label, int $updatedAt = null)
     {
         $this->guid = $guid;
         $this->label = $label;
         $this->updatedAt = $updatedAt ?? (int)(\microtime(true) * 1e9);
     }
 
-    public function getGuid(): string
+    public function getGuid(): UuidInterface
     {
         return $this->guid;
     }

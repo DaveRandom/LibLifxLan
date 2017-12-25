@@ -27,6 +27,8 @@ use DaveRandom\LifxLan\Messages\Light\Commands as LightCommmands;
 use DaveRandom\LifxLan\Messages\Light\Requests as LightRequests;
 use DaveRandom\LifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LifxLan\Messages\Message;
+use Ramsey\Uuid\UuidFactory;
+use Ramsey\Uuid\UuidFactoryInterface;
 
 final class MessageDecoder
 {
@@ -128,6 +130,8 @@ final class MessageDecoder
         LightResponses\StatePower::MESSAGE_TYPE_ID => [LightResponses\StatePower::PAYLOAD_SIZE, 'StateLightPower'],
     ];
 
+    private $uuidFactory;
+
     private function unsignedShortToSignedShort(int $unsigned): int
     {
         if (!($unsigned & 0x8000)) {
@@ -165,6 +169,8 @@ final class MessageDecoder
             'updated' => $updatedAt,
         ] = \unpack('aguid/a32label/Pupdated', $data);
 
+        $guid = $this->uuidFactory->fromBytes($guid);
+
         return new DeviceCommands\SetGroup(new Group($guid, \rtrim($label, "\x00"), $updatedAt));
     }
 
@@ -175,6 +181,8 @@ final class MessageDecoder
             'label'   => $label,
             'updated' => $updatedAt,
         ] = \unpack('aguid/a32label/Pupdated', $data);
+
+        $guid = $this->uuidFactory->fromBytes($guid);
 
         return new DeviceResponses\StateGroup(new Group($guid, \rtrim($label, "\x00"), $updatedAt));
     }
@@ -269,6 +277,8 @@ final class MessageDecoder
             'updated' => $updatedAt,
         ] = \unpack('aguid/a32label/Pupdated', $data);
 
+        $guid = $this->uuidFactory->fromBytes($guid);
+
         return new DeviceCommands\SetLocation(new Location($guid, \rtrim($label, "\x00"), $updatedAt));
     }
 
@@ -279,6 +289,8 @@ final class MessageDecoder
             'label'   => $label,
             'updated' => $updatedAt,
         ] = \unpack('aguid/a32label/Pupdated', $data);
+
+        $guid = $this->uuidFactory->fromBytes($guid);
 
         return new DeviceResponses\StateLocation(new Location($guid, \rtrim($label, "\x00"), $updatedAt));
     }
@@ -569,6 +581,11 @@ final class MessageDecoder
         $level = \unpack('vlevel', $data)['level'];
 
         return new LightResponses\StatePower($level);
+    }
+
+    public function __construct(UuidFactoryInterface $uuidFactory = null)
+    {
+        $this->uuidFactory = $uuidFactory ?? new UuidFactory;
     }
 
     /**

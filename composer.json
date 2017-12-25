@@ -1,7 +1,7 @@
 {
     "name": "daverandom/lifx-lan",
     "description": "LifX LAN protocol implementation",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "license": "mit",
     "authors": [
         {
@@ -14,6 +14,7 @@
         "files": [ "src/functions.php" ]
     },
     "require": {
-        "php": ">=7.1.1"
+        "php": ">=7.1.1",
+        "ramsey/uuid": "^3"
     }
 }

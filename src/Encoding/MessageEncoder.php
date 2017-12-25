@@ -136,10 +136,6 @@ final class MessageEncoder extends Encoder
         $label = $group->getLabel();
         $updatedAt = $group->getUpdatedAt();
 
-        if (\strlen($guid) !== 16) {
-            throw new InvalidMessageException("Group GUID must be exactly 16 bytes");
-        }
-
         if (\strlen($label) > 32) {
             throw new InvalidMessageException("Label cannot be larger than 32 bytes");
         }
@@ -148,7 +144,7 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid, $label, $updatedAt));
+        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid->getBytes(), $label, $updatedAt));
     }
 
     /**
@@ -183,10 +179,6 @@ final class MessageEncoder extends Encoder
         $label = $location->getLabel();
         $updatedAt = $location->getUpdatedAt();
 
-        if (\strlen($guid) !== 16) {
-            throw new InvalidMessageException("Location GUID must be exactly 16 bytes");
-        }
-
         if (\strlen($label) > 32) {
             throw new InvalidMessageException("Label cannot be larger than 32 bytes");
         }
@@ -195,7 +187,7 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid, $label, $updatedAt));
+        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid->getBytes(), $label, $updatedAt));
     }
 
     /**
