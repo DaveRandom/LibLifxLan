@@ -3,6 +3,7 @@
 namespace DaveRandom\LibLifxLan\DataTypes;
 
 use Ramsey\Uuid\UuidInterface;
+use function DaveRandom\LibLifxLan\datetimeinterface_to_datetimeimmutable;
 
 final class Location
 {
@@ -10,11 +11,11 @@ final class Location
     private $label;
     private $updatedAt;
 
-    public function __construct(UuidInterface $guid, string $label, int $updatedAt = null)
+    public function __construct(UuidInterface $guid, string $label, \DateTimeInterface $updatedAt = null)
     {
         $this->guid = $guid;
         $this->label = $label;
-        $this->updatedAt = $updatedAt ?? (int)(\microtime(true) * 1e9);
+        $this->updatedAt = datetimeinterface_to_datetimeimmutable($updatedAt ?? new \DateTimeImmutable);
     }
 
     public function getGuid(): UuidInterface
@@ -27,7 +28,7 @@ final class Location
         return $this->label;
     }
 
-    public function getUpdatedAt(): int
+    public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
     }

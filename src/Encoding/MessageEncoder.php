@@ -2,26 +2,89 @@
 
 namespace DaveRandom\LibLifxLan\Encoding;
 
-use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
+use DaveRandom\LibLifxLan\DataTypes as DeviceDataTypes;
+use DaveRandom\LibLifxLan\DataTypes\Light as LightDataTypes;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
+use const DaveRandom\LibLifxLan\FLOAT32_CODE;
 use DaveRandom\LibLifxLan\Header\Frame;
 use DaveRandom\LibLifxLan\Header\FrameAddress;
 use DaveRandom\LibLifxLan\Header\Header;
 use DaveRandom\LibLifxLan\Header\ProtocolHeader;
-use DaveRandom\LibLifxLan\Messages\Device\Commands\SetGroup;
-use DaveRandom\LibLifxLan\Messages\Device\Commands\SetLabel;
-use DaveRandom\LibLifxLan\Messages\Device\Commands\SetLocation;
-use DaveRandom\LibLifxLan\Messages\Device\Commands\SetPower as SetDevicePower;
-use DaveRandom\LibLifxLan\Messages\Device\Requests\EchoRequest;
-use DaveRandom\LibLifxLan\Messages\Device\Requests\GetService;
-use DaveRandom\LibLifxLan\Messages\Light\Commands\SetColor;
-use DaveRandom\LibLifxLan\Messages\Light\Commands\SetPower as SetLightPower;
+use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
+use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
+use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
+use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommmands;
+use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
 use DaveRandom\Network\MacAddress;
 
 final class MessageEncoder extends Encoder
 {
+    /**
+     * @uses encodeEchoRequest
+     * @uses encodeEchoResponse
+     * @uses encodeSetGroup
+     * @uses encodeStateGroup
+     * @uses encodeStateHostFirmware
+     * @uses encodeStateHostInfo
+     * @uses encodeStateInfo
+     * @uses encodeSetLabel
+     * @uses encodeStateLabel
+     * @uses encodeSetLocation
+     * @uses encodeStateLocation
+     * @uses encodeSetDevicePower
+     * @uses encodeStateDevicePower
+     * @uses encodeStateService
+     * @uses encodeStateVersion
+     * @uses encodeStateWifiFirmware
+     * @uses encodeStateWifiInfo
+     * @uses encodeSetColor
+     * @uses encodeSetWaveform
+     * @uses encodeSetWaveformOptional
+     * @uses encodeState
+     * @uses encodeSetInfrared
+     * @uses encodeStateInfrared
+     * @uses encodeSetLightPower
+     * @uses encodeStateLightPower
+     */
+    private const ENCODING_ROUTINES = [
+        // Device command messages
+        DeviceCommands\SetGroup::class => 'SetGroup',
+        DeviceCommands\SetLabel::class => 'SetLabel',
+        DeviceCommands\SetLocation::class => 'SetLocation',
+        DeviceCommands\SetPower::class => 'SetDevicePower',
+
+        // Device request messages
+        DeviceRequests\EchoRequest::class => 'EchoRequest',
+
+        // Device response messages
+        DeviceResponses\EchoResponse::class => 'EchoResponse',
+        DeviceResponses\StateGroup::class => 'StateGroup',
+        DeviceResponses\StateHostFirmware::class => 'StateHostFirmware',
+        DeviceResponses\StateHostInfo::class => 'StateHostInfo',
+        DeviceResponses\StateInfo::class => 'StateInfo', // todo
+        DeviceResponses\StateLabel::class => 'StateLabel', // todo
+        DeviceResponses\StateLocation::class => 'StateLocation',
+        DeviceResponses\StatePower::class => 'StateDevicePower', // todo
+        DeviceResponses\StateService::class => 'StateService', // todo
+        DeviceResponses\StateVersion::class => 'StateVersion', // todo
+        DeviceResponses\StateWifiFirmware::class => 'StateWifiFirmware',
+        DeviceResponses\StateWifiInfo::class => 'StateWifiInfo',
+
+        // Light command messages
+        LightCommmands\SetColor::class => 'SetColor', // todo
+        LightCommmands\SetInfrared::class => 'SetInfrared', // todo
+        LightCommmands\SetPower::class => 'SetLightPower', // todo
+        LightCommmands\SetWaveform::class => 'SetWaveform', // todo
+        LightCommmands\SetWaveformOptional::class => 'SetWaveformOptional', // todo
+
+        // Light response messages
+        LightResponses\State::class => 'State', // todo
+        LightResponses\StateInfrared::class => 'StateInfrared', // todo
+        LightResponses\StatePower::class => 'StateLightPower', // todo
+    ];
+
     public const DEFAULT_SOURCE_ID = 0x0da7e51d;
     public const DEFAULT_MESSAGE_ORIGIN = 0;
     public const DEFAULT_PROTOCOL_NUMBER = 1024;
@@ -32,26 +95,87 @@ final class MessageEncoder extends Encoder
 
     private $headerEncoder;
 
-    private function encodeHsbkColor(HsbkColor $color): string
+    private function encodeHsbkColor(LightDataTypes\HsbkColor $color): string
     {
         return \pack('v4', $color->getHue(), $color->getSaturation(), $color->getBrightness(), $color->getTemperature());
     }
 
-    private function createHeader(Message $message, ?MacAddress $destination, int $sequenceNo, int $payloadSize = 0): Header
+    /**
+     * @param string $label
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeLabel(string $label): string
     {
-        $frame = new Frame(
-            Header::WIRE_SIZE + $payloadSize,
-            $this->options[self::OP_MESSAGE_ORIGIN],
-            /* tagged */ $destination === null,
-            /* addressable */ true,
-            $this->options[self::OP_PROTOCOL_NUMBER],
-            $this->options[self::OP_SOURCE_ID]
+        if (\strlen($label) > 32) {
+            throw new InvalidMessageException("Label cannot be larger than 32 bytes");
+        }
+
+        return \pack('a32', $label);
+    }
+
+    /**
+     * @param DeviceDataTypes\Location $location
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeLocation(DeviceDataTypes\Location $location): string
+    {
+        $updatedAt = $this->dateTimeToNanoseconds($location->getUpdatedAt());
+
+        if ($updatedAt < 0) {
+            throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
+        }
+
+        $guid = $location->getGuid()->getBytes();
+        $label = $this->encodeLabel($location->getLabel());
+
+        return $guid . $label . \pack('P', $updatedAt);
+    }
+
+    /**
+     * @param DeviceDataTypes\Group $group
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeGroup(DeviceDataTypes\Group $group): string
+    {
+        $updatedAt = $this->dateTimeToNanoseconds($group->getUpdatedAt());
+
+        if ($updatedAt < 0) {
+            throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
+        }
+
+        $guid = $group->getGuid()->getBytes();
+        $label = $this->encodeLabel($group->getLabel());
+
+        return $guid . $label . \pack('P', $updatedAt);
+    }
+
+    private function encodeFirmware(DeviceDataTypes\Firmware $firmware)
+    {
+        return \pack(
+            'PPV',
+            $this->dateTimeToNanoseconds($firmware->getBuild()),
+            0, // reserved
+            $firmware->getVersion()
         );
+    }
 
-        $frameAddress = new FrameAddress($destination, $message->isAckRequired(), $message->isResponseRequired(), $sequenceNo);
-        $protocolHeader = new ProtocolHeader($message->getTypeId());
+    private function encodeNetworkInfo(DeviceDataTypes\NetworkInfo $info)
+    {
+        return \pack(
+            FLOAT32_CODE . 'VVv',
+            $info->getSignal(),
+            $info->getTx(),
+            $info->getRx(),
+            0 // reserved
+        );
+    }
 
-        return new Header($frame, $frameAddress, $protocolHeader);
+    private function dateTimeToNanoseconds(\DateTimeInterface $dateTime): int
+    {
+        return ($dateTime->format('U') * 1000000000) + ($dateTime->format('u') * 1000);
     }
 
     /**
@@ -62,11 +186,21 @@ final class MessageEncoder extends Encoder
      * @return string
      * @throws InvalidMessageHeaderException
      */
-    private function encodeMessage(Message $message, ?MacAddress $destination, int $sequenceNo, string $payload): string
+    private function buildPacket(Message $message, ?MacAddress $destination, int $sequenceNo, string $payload): string
     {
-        $header = $this->createHeader($message, $destination, $sequenceNo, \strlen($payload));
+        $frame = new Frame(
+            Header::WIRE_SIZE + \strlen($payload),
+            $this->options[self::OP_MESSAGE_ORIGIN],
+            /* tagged */ $destination === null,
+            /* addressable */ true,
+            $this->options[self::OP_PROTOCOL_NUMBER],
+            $this->options[self::OP_SOURCE_ID]
+        );
 
-        return $this->headerEncoder->encodeHeader($header) . $payload;
+        $frameAddress = new FrameAddress($destination, $message->isAckRequired(), $message->isResponseRequired(), $sequenceNo);
+        $protocolHeader = new ProtocolHeader($message->getTypeId());
+
+        return $this->headerEncoder->encodeHeader(new Header($frame, $frameAddress, $protocolHeader)) . $payload;
     }
 
     public function __construct(array $options = [], HeaderEncoder $headerEncoder = null)
@@ -80,124 +214,82 @@ final class MessageEncoder extends Encoder
         $this->headerEncoder = $headerEncoder ?? new HeaderEncoder;
     }
 
-    /**
-     * @param EchoRequest $message
-     * @param MacAddress|null $destination
-     * @param int $sequenceNo
-     * @return string
-     * @throws InvalidMessageException
-     */
-    public function encodeEchoRequest(EchoRequest $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeStateHostFirmware(DeviceResponses\StateHostFirmware $message): string
     {
-        $payload = $message->getPayload();
-        $length = \strlen($payload);
+        return $this->encodeFirmware($message->getHostFirmware());
+    }
 
-        if ($length > 64) {
-            throw new InvalidMessageException("Echo request payload exceeds maximum allowed size of 64 bytes");
-        }
+    private function encodeStateHostInfo(DeviceResponses\StateHostInfo $message): string
+    {
+        return $this->encodeNetworkInfo($message->getHostInfo());
+    }
 
-        return $this->encodeMessage($message, $destination, $sequenceNo, \str_pad($payload, 64, "\x00", \STR_PAD_RIGHT));
+    private function encodeStateWifiFirmware(DeviceResponses\StateWifiFirmware $message): string
+    {
+        return $this->encodeFirmware($message->getWifiFirmware());
+    }
+
+    private function encodeStateWifiInfo(DeviceResponses\StateWifiInfo $message): string
+    {
+        return $this->encodeNetworkInfo($message->getWifiInfo());
     }
 
     /**
-     * @param GetService $message
-     * @param int $sequenceNo
+     * @param DeviceCommands\SetGroup $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeGetServiceMessage(GetService $message, int $sequenceNo = 0): string
+    private function encodeSetGroup(DeviceCommands\SetGroup $message): string
     {
-        return $this->encodeMessage($message, null, $sequenceNo, '');
+        return $this->encodeGroup($message->getGroup());
     }
 
     /**
-     * @param Message $message
-     * @param MacAddress $destination
-     * @param int $sequenceNo
+     * @param DeviceResponses\StateGroup $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeMessageWithNoPayload(Message $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeStateGroup(DeviceResponses\StateGroup $message): string
     {
-        return $this->encodeMessage($message, $destination, $sequenceNo, '');
+        return $this->encodeGroup($message->getGroup());
     }
 
     /**
-     * @param SetGroup $message
-     * @param MacAddress $destination
-     * @param int $sequenceNo
+     * @param DeviceCommands\SetLabel $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeSetGroupMessage(SetGroup $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeSetLabel(DeviceCommands\SetLabel $message): string
     {
-        $group = $message->getGroup();
-        $guid = $group->getGuid();
-        $label = $group->getLabel();
-        $updatedAt = $group->getUpdatedAt();
-
-        if (\strlen($label) > 32) {
-            throw new InvalidMessageException("Label cannot be larger than 32 bytes");
-        }
-
-        if ($updatedAt < 0) { // do not validate upper end because max value is PHP_INT_MAX
-            throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
-        }
-
-        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid->getBytes(), $label, $updatedAt));
+        return $this->encodeLabel($message->getLabel());
     }
 
     /**
-     * @param SetLabel $message
-     * @param MacAddress $destination
-     * @param int $sequenceNo
+     * @param DeviceCommands\SetLocation $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeSetLabelMessage(SetLabel $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeSetLocation(DeviceCommands\SetLocation $message): string
     {
-        $label = $message->getLabel();
-
-        if (\strlen($label) > 32) {
-            throw new InvalidMessageException("Label cannot be larger than 32 bytes");
-        }
-
-        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a32', $label));
+        return $this->encodeLocation($message->getLocation());
     }
 
     /**
-     * @param SetLocation $message
-     * @param MacAddress $destination
-     * @param int $sequenceNo
+     * @param DeviceResponses\StateLocation $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeSetLocationMessage(SetLocation $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeStateLocation(DeviceResponses\StateLocation $message): string
     {
-        $location = $message->getLocation();
-        $guid = $location->getGuid();
-        $label = $location->getLabel();
-        $updatedAt = $location->getUpdatedAt();
-
-        if (\strlen($label) > 32) {
-            throw new InvalidMessageException("Label cannot be larger than 32 bytes");
-        }
-
-        if ($updatedAt < 0) { // do not validate upper end because max value is PHP_INT_MAX
-            throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
-        }
-
-        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('a16a32P', $guid->getBytes(), $label, $updatedAt));
+        return $this->encodeLocation($message->getLocation());
     }
 
     /**
-     * @param SetDevicePower $message
-     * @param MacAddress $destination
-     * @param int $sequenceNo
+     * @param DeviceCommands\SetPower $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeSetDevicePowerMessage(SetDevicePower $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeSetDevicePower(DeviceCommands\SetPower $message): string
     {
         $level = $message->getLevel();
 
@@ -205,39 +297,57 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");
         }
 
-        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('v', $level));
+        return \pack('v', $level);
     }
 
     /**
-     * @param SetColor $message
-     * @param MacAddress $destination
-     * @param int $sequenceNo
+     * @param DeviceRequests\EchoRequest $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeSetColorMessage(SetColor $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeEchoRequest(DeviceRequests\EchoRequest $message): string
+    {
+        $payload = $message->getPayload();
+
+        if (\strlen($payload) !== 64) {
+            throw new InvalidMessageException("Echo request payload should be exactly 64 bytes");
+        }
+
+        return $payload;
+    }
+
+    /**
+     * @param DeviceResponses\EchoResponse $message
+     * @return string
+     */
+    private function encodeEchoResponse(DeviceResponses\EchoResponse $message): string
+    {
+        return $message->getPayload(); // don't validate this as it should respond with client data verbatim
+    }
+
+    /**
+     * @param LightCommmands\SetColor $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeSetColor(LightCommmands\SetColor $message): string
     {
         $transition = $message->getColorTransition();
-        $color = $transition->getColor();
         $duration = $transition->getDuration();
 
         if ($duration < 0 || $duration > 4294967295) {
             throw new InvalidMessageException("Transition duration {$duration} outside allowable range of 0 - 4294967295");
         }
 
-        $payload = "\x00" . $this->encodeHsbkColor($color) . \pack('V', $duration);
-
-        return $this->encodeMessage($message, $destination, $sequenceNo, $payload);
+        return "\x00" . $this->encodeHsbkColor($transition->getColor()) . \pack('V', $duration);
     }
 
     /**
-     * @param SetLightPower $message
-     * @param MacAddress $destination
-     * @param int $sequenceNo
+     * @param LightCommmands\SetPower $message
      * @return string
      * @throws InvalidMessageException
      */
-    public function encodeSetLightPowerMessage(SetLightPower $message, ?MacAddress $destination, int $sequenceNo): string
+    private function encodeSetLightPower(LightCommmands\SetPower $message): string
     {
         $transition = $message->getPowerTransition();
         $level = $transition->getLevel();
@@ -251,6 +361,22 @@ final class MessageEncoder extends Encoder
             throw new InvalidMessageException("Transition duration {$duration} outside allowable range of 0 - 4294967295");
         }
 
-        return $this->encodeMessage($message, $destination, $sequenceNo, \pack('vV', $level, $duration));
+        return \pack('vV', $level, $duration);
+    }
+
+    /**
+     * @param Message $message
+     * @param MacAddress|null $destination
+     * @param int $sequenceNo
+     * @return string
+     * @throws InvalidMessageHeaderException
+     */
+    public function encodeMessage(Message $message, ?MacAddress $destination, int $sequenceNo): string
+    {
+        $payload = \array_key_exists($class = \get_class($message), self::ENCODING_ROUTINES)
+            ? $this->{'encode' . self::ENCODING_ROUTINES[$class]}($message)
+            : '';
+
+        return $this->buildPacket($message, $destination, $sequenceNo, $payload);
     }
 }

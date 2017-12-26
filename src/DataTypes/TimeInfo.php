@@ -2,20 +2,22 @@
 
 namespace DaveRandom\LibLifxLan\DataTypes;
 
-final class Info
+use function DaveRandom\LibLifxLan\datetimeinterface_to_datetimeimmutable;
+
+final class TimeInfo
 {
     private $time;
     private $uptime;
     private $downtime;
 
-    public function __construct(int $time, int $uptime, int $downtime)
+    public function __construct(\DateTimeInterface $time, int $uptime, int $downtime)
     {
-        $this->time = $time;
+        $this->time = datetimeinterface_to_datetimeimmutable($time);
         $this->uptime = $uptime;
         $this->downtime = $downtime;
     }
 
-    public function getTime(): int
+    public function getTime(): \DateTimeImmutable
     {
         return $this->time;
     }

@@ -2,7 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
-use DaveRandom\LibLifxLan\DataTypes\Info;
+use DaveRandom\LibLifxLan\DataTypes\TimeInfo;
 use DaveRandom\LibLifxLan\Messages\ResponseMessage;
 
 final class StateInfo extends ResponseMessage
@@ -12,13 +12,13 @@ final class StateInfo extends ResponseMessage
 
     private $info;
 
-    public function __construct(Info $info)
+    public function __construct(TimeInfo $info)
     {
         parent::__construct();
         $this->info = $info;
     }
 
-    public function getInfo(): Info
+    public function getInfo(): TimeInfo
     {
         return $this->info;
     }

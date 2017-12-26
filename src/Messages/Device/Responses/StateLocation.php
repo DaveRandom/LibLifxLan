@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\ResponseMessage;
 final class StateLocation extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 50;
-    public const PAYLOAD_SIZE = 28;
+    public const PAYLOAD_SIZE = 56;
 
     private $location;
 

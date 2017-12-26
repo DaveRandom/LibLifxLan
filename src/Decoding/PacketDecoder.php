@@ -21,25 +21,31 @@ final class PacketDecoder
     }
 
     /**
-     * @param PacketBuffer $buffer
+     * @param string $buffer
      * @return Packet
      * @throws DecodingException
      */
-    public function decode(PacketBuffer $buffer): Packet
+    public function decode(string $buffer): Packet
     {
-        $length = \unpack('v', $buffer->read(2, true))[1];
+        $dataLength = \strlen($buffer);
 
-        if ($buffer->getLength() < $length) {
+        if ($dataLength < Header::WIRE_SIZE) {
             throw new InsufficientDataException(
-                "Packet length is stated to be {$length} bytes, only {$buffer->getLength()} bytes available in buffer"
+                "Data length {$dataLength} less than minimum packet size " . Header::WIRE_SIZE
             );
         }
 
-        $packetBytes = $buffer->read($length);
+        $length = \unpack('vlength', $buffer)['length'];
 
-        $header = $this->headerDecoder->decodeHeader(\substr($packetBytes, self::HEADER_OFFSET, Header::WIRE_SIZE));
-        $payload = $this->messageDecoder->decodeMessage($header->getProtocolHeader()->getType(), \substr($packetBytes, self::MESSAGE_OFFSET));
+        if ($length !== $dataLength) {
+            throw new InsufficientDataException(
+                "Packet length is stated to be {$length} bytes, buffer is {$dataLength} bytes"
+            );
+        }
 
-        return new Packet($header, $payload, $buffer->getSource());
+        $header = $this->headerDecoder->decodeHeader(\substr($buffer, self::HEADER_OFFSET, Header::WIRE_SIZE));
+        $payload = $this->messageDecoder->decodeMessage($header->getProtocolHeader()->getType(), \substr($buffer, self::MESSAGE_OFFSET));
+
+        return new Packet($header, $payload);
     }
 }

@@ -2,8 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\Examples;
 
-use DaveRandom\LibLifxLan\Decoding\PacketBuffer;
-use DaveRandom\LibLifxLan\Network\IPEndpoint;
+use DaveRandom\Network\IPEndpoint;
 
 /**
  * @param IPEndpoint $localEndpoint
@@ -34,9 +33,9 @@ function ms_to_secs_usecs(?int $timeoutMs): array
 /**
  * @param resource $socket
  * @param int $timeoutMs
- * @return PacketBuffer|null
+ * @return array|null
  */
-function udp_await_packet($socket, int $timeoutMs = null): ?PacketBuffer
+function udp_await_packet($socket, int $timeoutMs = null): ?array
 {
     $r = [$socket];
     $w = $e = null;
@@ -53,13 +52,13 @@ function udp_await_packet($socket, int $timeoutMs = null): ?PacketBuffer
 
     $data = \stream_socket_recvfrom($socket, 1024, 0, $address);
 
-    return new PacketBuffer($data, IPEndpoint::parse($address));
+    return [$data, IPEndpoint::parse($address)];
 }
 
 /**
  * @param resource $socket
  * @param int $timeoutMs
- * @return PacketBuffer[]
+ * @return array[]
  */
 function udp_await_packets($socket, int $timeoutMs): array
 {

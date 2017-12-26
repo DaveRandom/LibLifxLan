@@ -129,6 +129,14 @@ final class MessageDecoder
         return -(($unsigned & 0x7fff) + 1);
     }
 
+    private function nanotimeToDateTimeImmutable(int $timestamp): \DateTimeImmutable
+    {
+        $usecs = (int)(($timestamp % 1000000000) / 1000);
+        $secs = (int)($timestamp / 1000000000);
+
+        return \DateTimeImmutable::createFromFormat('u U', "{$usecs} {$secs}");
+    }
+
     private function decodeAcknowledgement(): DeviceResponses\Acknowledgement
     {
         return new DeviceResponses\Acknowledgement();
@@ -155,9 +163,10 @@ final class MessageDecoder
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('aguid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data);
 
         $guid = $this->uuidFactory->fromBytes($guid);
+        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
 
         return new DeviceCommands\SetGroup(new DeviceDataTypes\Group($guid, \rtrim($label, "\x00"), $updatedAt));
     }
@@ -168,9 +177,10 @@ final class MessageDecoder
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('aguid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data);
 
         $guid = $this->uuidFactory->fromBytes($guid);
+        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
 
         return new DeviceResponses\StateGroup(new DeviceDataTypes\Group($guid, \rtrim($label, "\x00"), $updatedAt));
     }
@@ -184,11 +194,12 @@ final class MessageDecoder
     {
         [
             'build'    => $build,
-            'reserved' => $reserved,
             'version'  => $version,
         ] = \unpack('Pbuild/Preserved/Vversion', $data);
 
-        return new DeviceResponses\StateHostFirmware(new DeviceDataTypes\HostFirmware($build, $reserved, $version));
+        $build = $this->nanotimeToDateTimeImmutable($build);
+
+        return new DeviceResponses\StateHostFirmware(new DeviceDataTypes\HostFirmware($build, $version));
     }
 
     private function decodeGetHostInfo(): DeviceRequests\GetHostInfo
@@ -207,12 +218,9 @@ final class MessageDecoder
             'signal'   => $signal,
             'tx'       => $tx,
             'rx'       => $rx,
-            'reserved' => $reserved,
         ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
 
-        $reserved = $this->unsignedShortToSignedShort($reserved);
-
-        return new DeviceResponses\StateHostInfo(new DeviceDataTypes\HostInfo($signal, $tx, $rx, $reserved));
+        return new DeviceResponses\StateHostInfo(new DeviceDataTypes\HostInfo($signal, $tx, $rx));
     }
 
     private function decodeGetInfo(): DeviceRequests\GetInfo
@@ -228,7 +236,9 @@ final class MessageDecoder
             'downtime' => $downtime,
         ] = \unpack('Ptime/Puptime/Pdowntime', $data);
 
-        return new DeviceResponses\StateInfo(new DeviceDataTypes\Info($time, $uptime, $downtime));
+        $time = $this->nanotimeToDateTimeImmutable($time);
+
+        return new DeviceResponses\StateInfo(new DeviceDataTypes\TimeInfo($time, $uptime, $downtime));
     }
 
     private function decodeGetLabel(): DeviceRequests\GetLabel
@@ -257,9 +267,10 @@ final class MessageDecoder
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('aguid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data);
 
         $guid = $this->uuidFactory->fromBytes($guid);
+        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
 
         return new DeviceCommands\SetLocation(new DeviceDataTypes\Location($guid, \rtrim($label, "\x00"), $updatedAt));
     }
@@ -270,9 +281,10 @@ final class MessageDecoder
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('aguid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data);
 
         $guid = $this->uuidFactory->fromBytes($guid);
+        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
 
         return new DeviceResponses\StateLocation(new DeviceDataTypes\Location($guid, \rtrim($label, "\x00"), $updatedAt));
     }
@@ -336,11 +348,12 @@ final class MessageDecoder
     {
         [
             'build'    => $build,
-            'reserved' => $reserved,
             'version'  => $version,
         ] = \unpack('Pbuild/Preserved/Vversion', $data);
 
-        return new DeviceResponses\StateWifiFirmware(new DeviceDataTypes\WifiFirmware($build, $reserved, $version));
+        $build = $this->nanotimeToDateTimeImmutable($build);
+
+        return new DeviceResponses\StateWifiFirmware(new DeviceDataTypes\WifiFirmware($build, $version));
     }
 
     private function decodeGetWifiInfo(): DeviceRequests\GetWifiInfo
@@ -360,12 +373,9 @@ final class MessageDecoder
             'signal'   => $signal,
             'tx'       => $tx,
             'rx'       => $rx,
-            'reserved' => $reserved,
         ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
 
-        $reserved = $this->unsignedShortToSignedShort($reserved);
-
-        return new DeviceResponses\StateWifiInfo(new DeviceDataTypes\WifiInfo($signal, $tx, $rx, $reserved));
+        return new DeviceResponses\StateWifiInfo(new DeviceDataTypes\WifiInfo($signal, $tx, $rx));
     }
 
     private function decodeGet(): LightRequests\Get

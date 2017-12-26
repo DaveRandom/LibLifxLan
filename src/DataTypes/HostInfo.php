@@ -2,38 +2,10 @@
 
 namespace DaveRandom\LibLifxLan\DataTypes;
 
-final class HostInfo
+final class HostInfo extends NetworkInfo
 {
-    private $signal;
-    private $tx;
-    private $rx;
-    private $reservedBits;
-
-    public function __construct(float $signal, int $tx, int $rx, int $reservedBits)
+    public function __construct(float $signal, int $tx, int $rx)
     {
-        $this->signal = $signal;
-        $this->tx = $tx;
-        $this->rx = $rx;
-        $this->reservedBits = $reservedBits;
-    }
-
-    public function getSignal(): float
-    {
-        return $this->signal;
-    }
-
-    public function getTx(): int
-    {
-        return $this->tx;
-    }
-
-    public function getRx(): int
-    {
-        return $this->rx;
-    }
-
-    public function getReservedBits(): int
-    {
-        return $this->reservedBits;
+        parent::__construct($signal, $tx, $rx);
     }
 }

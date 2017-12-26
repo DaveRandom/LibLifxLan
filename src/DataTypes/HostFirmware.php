@@ -2,31 +2,10 @@
 
 namespace DaveRandom\LibLifxLan\DataTypes;
 
-final class HostFirmware
+final class HostFirmware extends Firmware
 {
-    private $build;
-    private $reserved;
-    private $version;
-
-    public function __construct(int $build, int $reserved, int $version)
+    public function __construct(\DateTimeInterface $build, int $version)
     {
-        $this->build = $build;
-        $this->reserved = $reserved;
-        $this->version = $version;
-    }
-
-    public function getBuild(): int
-    {
-        return $this->build;
-    }
-
-    public function getReserved(): int
-    {
-        return $this->reserved;
-    }
-
-    public function getVersion(): int
-    {
-        return $this->version;
+        parent::__construct($build, $version);
     }
 }
