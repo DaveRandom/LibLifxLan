@@ -14,7 +14,7 @@
         "files": [ "src/functions.php" ]
     },
     "require": {
-        "php": ">=7.1.1",
+        "php-64bit": ">=7.1.1",
         "ramsey/uuid": "^3",
         "daverandom/network-primitives": "dev-master"
     }
