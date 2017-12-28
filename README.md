@@ -14,7 +14,6 @@ WIP. Do not rely on any of this code as the API is currently subject to change.
 
 ## @todo
 
-- Encoding of most light-level messages
 - Implement multi-zone messages
 - Write tests
 - Write a client implementation with transport handling

@@ -21,5 +21,5 @@ function datetimeinterface_to_datetimeimmutable(\DateTimeInterface $dateTime): \
         return \DateTimeImmutable::createFromMutable($dateTime);
     }
 
-    return \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.u', $dateTime->format('Y-m-d H:i:s.u'));
+    return \DateTimeImmutable::createFromFormat('u U', $dateTime->format('u U'));
 }

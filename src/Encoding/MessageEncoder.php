@@ -6,7 +6,6 @@ use DaveRandom\LibLifxLan\DataTypes as DeviceDataTypes;
 use DaveRandom\LibLifxLan\DataTypes\Light as LightDataTypes;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
-use const DaveRandom\LibLifxLan\FLOAT32_CODE;
 use DaveRandom\LibLifxLan\Header\Frame;
 use DaveRandom\LibLifxLan\Header\FrameAddress;
 use DaveRandom\LibLifxLan\Header\Header;
@@ -14,10 +13,11 @@ use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
 use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
 use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
-use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommmands;
+use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommands;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
 use DaveRandom\Network\MacAddress;
+use const DaveRandom\LibLifxLan\FLOAT32_CODE;
 
 final class MessageEncoder extends Encoder
 {
@@ -63,26 +63,26 @@ final class MessageEncoder extends Encoder
         DeviceResponses\StateGroup::class => 'StateGroup',
         DeviceResponses\StateHostFirmware::class => 'StateHostFirmware',
         DeviceResponses\StateHostInfo::class => 'StateHostInfo',
-        DeviceResponses\StateInfo::class => 'StateInfo', // todo
-        DeviceResponses\StateLabel::class => 'StateLabel', // todo
+        DeviceResponses\StateInfo::class => 'StateInfo',
+        DeviceResponses\StateLabel::class => 'StateLabel',
         DeviceResponses\StateLocation::class => 'StateLocation',
-        DeviceResponses\StatePower::class => 'StateDevicePower', // todo
-        DeviceResponses\StateService::class => 'StateService', // todo
-        DeviceResponses\StateVersion::class => 'StateVersion', // todo
+        DeviceResponses\StatePower::class => 'StateDevicePower',
+        DeviceResponses\StateService::class => 'StateService',
+        DeviceResponses\StateVersion::class => 'StateVersion',
         DeviceResponses\StateWifiFirmware::class => 'StateWifiFirmware',
         DeviceResponses\StateWifiInfo::class => 'StateWifiInfo',
 
         // Light command messages
-        LightCommmands\SetColor::class => 'SetColor', // todo
-        LightCommmands\SetInfrared::class => 'SetInfrared', // todo
-        LightCommmands\SetPower::class => 'SetLightPower', // todo
-        LightCommmands\SetWaveform::class => 'SetWaveform', // todo
-        LightCommmands\SetWaveformOptional::class => 'SetWaveformOptional', // todo
+        LightCommands\SetColor::class => 'SetColor',
+        LightCommands\SetInfrared::class => 'SetInfrared',
+        LightCommands\SetPower::class => 'SetLightPower',
+        LightCommands\SetWaveform::class => 'SetWaveform',
+        LightCommands\SetWaveformOptional::class => 'SetWaveformOptional',
 
         // Light response messages
-        LightResponses\State::class => 'State', // todo
-        LightResponses\StateInfrared::class => 'StateInfrared', // todo
-        LightResponses\StatePower::class => 'StateLightPower', // todo
+        LightResponses\State::class => 'State',
+        LightResponses\StateInfrared::class => 'StateInfrared',
+        LightResponses\StatePower::class => 'StateLightPower',
     ];
 
     public const DEFAULT_SOURCE_ID = 0x0da7e51d;
@@ -94,6 +94,15 @@ final class MessageEncoder extends Encoder
     public const OP_PROTOCOL_NUMBER = 3;
 
     private $headerEncoder;
+
+    private function signedShortToUnsignedShort(int $signed): int
+    {
+        if ($signed >= 0) {
+            return $signed & 0x7fff;
+        }
+
+        return 0x8000 | (($signed & 0x7fff) + 1);
+    }
 
     private function encodeHsbkColor(LightDataTypes\HsbkColor $color): string
     {
@@ -214,6 +223,27 @@ final class MessageEncoder extends Encoder
         $this->headerEncoder = $headerEncoder ?? new HeaderEncoder;
     }
 
+    private function encodeStateVersion(DeviceResponses\StateVersion $message): string
+    {
+        $version = $message->getVersion();
+
+        return \pack('VVV', $version->getVendor(), $version->getProduct(), $version->getVersion());
+    }
+
+    private function encodeStateService(DeviceResponses\StateService $message): string
+    {
+        $service = $message->getService();
+
+        return \pack('CV', $service->getTypeId(), $service->getPort());
+    }
+
+    private function encodeStateInfo(DeviceResponses\StateInfo $message): string
+    {
+        $info = $message->getInfo();
+
+        return \pack('PPP', $this->dateTimeToNanoseconds($info->getTime()), $info->getUptime(), $info->getDowntime());
+    }
+
     private function encodeStateHostFirmware(DeviceResponses\StateHostFirmware $message): string
     {
         return $this->encodeFirmware($message->getHostFirmware());
@@ -265,6 +295,16 @@ final class MessageEncoder extends Encoder
     }
 
     /**
+     * @param DeviceResponses\StateLabel $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeStateLabel(DeviceResponses\StateLabel $message): string
+    {
+        return $this->encodeLabel($message->getLabel());
+    }
+
+    /**
      * @param DeviceCommands\SetLocation $message
      * @return string
      * @throws InvalidMessageException
@@ -301,6 +341,22 @@ final class MessageEncoder extends Encoder
     }
 
     /**
+     * @param DeviceResponses\StatePower $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeStateDevicePower(DeviceResponses\StatePower $message): string
+    {
+        $level = $message->getLevel();
+
+        if ($level < 0 || $level > 65535) {
+            throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");
+        }
+
+        return \pack('v', $level);
+    }
+
+    /**
      * @param DeviceRequests\EchoRequest $message
      * @return string
      * @throws InvalidMessageException
@@ -326,11 +382,11 @@ final class MessageEncoder extends Encoder
     }
 
     /**
-     * @param LightCommmands\SetColor $message
+     * @param LightCommands\SetColor $message
      * @return string
      * @throws InvalidMessageException
      */
-    private function encodeSetColor(LightCommmands\SetColor $message): string
+    private function encodeSetColor(LightCommands\SetColor $message): string
     {
         $transition = $message->getColorTransition();
         $duration = $transition->getDuration();
@@ -343,11 +399,43 @@ final class MessageEncoder extends Encoder
     }
 
     /**
-     * @param LightCommmands\SetPower $message
+     * @param LightCommands\SetInfrared $message
      * @return string
      * @throws InvalidMessageException
      */
-    private function encodeSetLightPower(LightCommmands\SetPower $message): string
+    private function encodeSetInfrared(LightCommands\SetInfrared $message): string
+    {
+        $brightness = $message->getBrightness();
+
+        if ($brightness < 0 || $brightness > 65535) {
+            throw new InvalidMessageException("Brightness {$brightness} outside allowable range of 0 - 65535");
+        }
+
+        return \pack('v', $brightness);
+    }
+
+    /**
+     * @param LightResponses\StateInfrared $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeStateInfrared(LightResponses\StateInfrared $message): string
+    {
+        $brightness = $message->getBrightness();
+
+        if ($brightness < 0 || $brightness > 65535) {
+            throw new InvalidMessageException("Brightness {$brightness} outside allowable range of 0 - 65535");
+        }
+
+        return \pack('v', $brightness);
+    }
+
+    /**
+     * @param LightCommands\SetPower $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeSetLightPower(LightCommands\SetPower $message): string
     {
         $transition = $message->getPowerTransition();
         $level = $transition->getLevel();
@@ -362,6 +450,99 @@ final class MessageEncoder extends Encoder
         }
 
         return \pack('vV', $level, $duration);
+    }
+
+    /**
+     * @param LightResponses\StatePower $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeStateLightPower(LightResponses\StatePower $message): string
+    {
+        $level = $message->getLevel();
+
+        if ($level < 0 || $level > 65535) {
+            throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");
+        }
+
+        return \pack('v', $level);
+    }
+
+    /**
+     * @param LightResponses\State $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeState(LightResponses\State $message): string
+    {
+        $state = $message->getState();
+        $power = $state->getPower();
+
+        if ($power < 0 || $power > 65535) {
+            throw new InvalidMessageException("Power level {$power} outside allowable range of 0 - 65535");
+        }
+
+        return $this->encodeHsbkColor($state->getColor()) . \pack(
+            'v2a32P',
+            0, // reserved
+            $state->getPower(),
+            $this->encodeLabel($state->getLabel()),
+            0  // reserved
+        );
+    }
+
+    /**
+     * @param LightCommands\SetWaveform $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeSetWaveform(LightCommands\SetWaveform $message): string
+    {
+        $effect = $message->getEffect();
+        $skew = $effect->getSkewRatio();
+
+        if ($skew < -32768 || $skew > 32767) {
+            throw new InvalidMessageException("Skew ratio {$skew} outside allowable range of -32768 - 32767");
+        }
+
+        $skew = $this->signedShortToUnsignedShort($skew);
+
+        return "\x00" . \chr((int)$effect->isTransient())
+            . $this->encodeHsbkColor($effect->getColor())
+            . \pack('V' . FLOAT32_CODE . 'vC', $effect->getPeriod(), $effect->getCycles(), $skew, $effect->getWaveform())
+        ;
+    }
+
+    /**
+     * @param LightCommands\SetWaveformOptional $message
+     * @return string
+     * @throws InvalidMessageException
+     */
+    private function encodeSetWaveformOptional(LightCommands\SetWaveformOptional $message): string
+    {
+        $effect = $message->getEffect();
+        $skew = $effect->getSkewRatio();
+
+        if ($skew < -32768 || $skew > 32767) {
+            throw new InvalidMessageException("Skew ratio {$skew} outside allowable range of -32768 - 32767");
+        }
+
+        $skew = $this->signedShortToUnsignedShort($skew);
+
+        $options = $effect->getOptions();
+        $optionData = \pack(
+            'C4',
+            (int)(bool)($options & LightDataTypes\Effect::SET_HUE),
+            (int)(bool)($options & LightDataTypes\Effect::SET_SATURATION),
+            (int)(bool)($options & LightDataTypes\Effect::SET_BRIGHTNESS),
+            (int)(bool)($options & LightDataTypes\Effect::SET_TEMPERATURE)
+        );
+
+        return "\x00" . \chr((int)$effect->isTransient())
+            . $this->encodeHsbkColor($effect->getColor())
+            . \pack('V' . FLOAT32_CODE . 'vC', $effect->getPeriod(), $effect->getCycles(), $skew, $effect->getWaveform())
+            . $optionData
+        ;
     }
 
     /**
