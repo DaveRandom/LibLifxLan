@@ -134,7 +134,7 @@ final class MessageDecoder
         $usecs = (int)(($timestamp % 1000000000) / 1000);
         $secs = (int)($timestamp / 1000000000);
 
-        return \DateTimeImmutable::createFromFormat('u U', "{$usecs} {$secs}");
+        return \DateTimeImmutable::createFromFormat('u U', \sprintf("%06d %d", $usecs, $secs));
     }
 
     private function decodeAcknowledgement(): DeviceResponses\Acknowledgement
