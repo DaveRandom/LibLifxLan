@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\WifiFirmware;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateWifiFirmware extends ResponseMessage
+final class StateWifiFirmware implements Message
 {
     public const MESSAGE_TYPE_ID = 19;
     public const WIRE_SIZE = 20;
@@ -14,8 +14,6 @@ final class StateWifiFirmware extends ResponseMessage
 
     public function __construct(WifiFirmware $wifiFirmware)
     {
-        parent::__construct();
-
         $this->wifiFirmware = $wifiFirmware;
     }
 

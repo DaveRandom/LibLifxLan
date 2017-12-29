@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Light\Commands;
 
 use DaveRandom\LibLifxLan\DataTypes\Light\ColorTransition;
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetColor extends CommandMessage
+final class SetColor implements Message
 {
     public const MESSAGE_TYPE_ID = 102;
     public const WIRE_SIZE = 13;
@@ -14,8 +14,6 @@ final class SetColor extends CommandMessage
 
     public function __construct(ColorTransition $colorTransition)
     {
-        parent::__construct();
-
         $this->colorTransition = $colorTransition;
     }
 

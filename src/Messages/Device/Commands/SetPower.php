@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Commands;
 
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetPower extends CommandMessage
+final class SetPower implements Message
 {
     public const MESSAGE_TYPE_ID = 21;
     public const WIRE_SIZE = 2;
@@ -13,8 +13,6 @@ final class SetPower extends CommandMessage
 
     public function __construct(int $level)
     {
-        parent::__construct();
-
         $this->level = $level;
     }
 

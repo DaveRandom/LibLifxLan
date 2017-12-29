@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Light\Commands;
 
 use DaveRandom\LibLifxLan\DataTypes\Light\PowerTransition;
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetPower extends CommandMessage
+final class SetPower implements Message
 {
     public const MESSAGE_TYPE_ID = 117;
     public const WIRE_SIZE = 6;
@@ -14,8 +14,6 @@ final class SetPower extends CommandMessage
 
     public function __construct(PowerTransition $powerTransition)
     {
-        parent::__construct();
-
         $this->powerTransition = $powerTransition;
     }
 

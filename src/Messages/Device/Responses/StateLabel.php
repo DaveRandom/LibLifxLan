@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateLabel extends ResponseMessage
+final class StateLabel implements Message
 {
     public const MESSAGE_TYPE_ID = 25;
     public const WIRE_SIZE = 32;
@@ -13,8 +13,6 @@ final class StateLabel extends ResponseMessage
 
     public function __construct(string $label)
     {
-        parent::__construct();
-
         $this->label = $label;
     }
 

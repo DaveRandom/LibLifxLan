@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\Version;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateVersion extends ResponseMessage
+final class StateVersion implements Message
 {
     public const MESSAGE_TYPE_ID = 33;
     public const WIRE_SIZE = 12;
@@ -14,8 +14,6 @@ final class StateVersion extends ResponseMessage
 
     public function __construct(Version $version)
     {
-        parent::__construct();
-
         $this->version = $version;
     }
 

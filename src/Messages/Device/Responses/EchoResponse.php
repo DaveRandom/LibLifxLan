@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class EchoResponse extends ResponseMessage
+final class EchoResponse implements Message
 {
     public const MESSAGE_TYPE_ID = 59;
     public const WIRE_SIZE = 64;
@@ -13,8 +13,6 @@ final class EchoResponse extends ResponseMessage
 
     public function __construct(string $payload)
     {
-        parent::__construct();
-
         $this->payload = $payload;
     }
 

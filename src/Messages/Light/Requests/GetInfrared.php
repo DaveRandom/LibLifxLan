@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Light\Requests;
 
-use DaveRandom\LibLifxLan\Messages\RequestMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class GetInfrared extends RequestMessage
+final class GetInfrared implements Message
 {
     public const MESSAGE_TYPE_ID = 120;
     public const WIRE_SIZE = 0;

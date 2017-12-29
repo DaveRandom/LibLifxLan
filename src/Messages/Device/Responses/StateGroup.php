@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\Group;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateGroup extends ResponseMessage
+final class StateGroup implements Message
 {
     public const MESSAGE_TYPE_ID = 53;
     public const WIRE_SIZE = 56;
@@ -14,7 +14,6 @@ final class StateGroup extends ResponseMessage
 
     public function __construct(Group $group)
     {
-        parent::__construct();
         $this->group = $group;
     }
 

@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Light\Commands;
 
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetInfrared extends CommandMessage
+final class SetInfrared implements Message
 {
     public const MESSAGE_TYPE_ID = 121;
     public const WIRE_SIZE = 2;
@@ -13,8 +13,6 @@ final class SetInfrared extends CommandMessage
 
     public function __construct(int $brightness)
     {
-        parent::__construct();
-
         $this->brightness = $brightness;
     }
 

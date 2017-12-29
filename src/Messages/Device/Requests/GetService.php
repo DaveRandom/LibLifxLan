@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Requests;
 
-use DaveRandom\LibLifxLan\Messages\RequestMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class GetService extends RequestMessage
+final class GetService implements Message
 {
     public const MESSAGE_TYPE_ID = 2;
     public const WIRE_SIZE = 0;

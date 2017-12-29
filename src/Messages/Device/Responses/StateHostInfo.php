@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\HostInfo;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateHostInfo extends ResponseMessage
+final class StateHostInfo implements Message
 {
     public const MESSAGE_TYPE_ID = 12;
     public const WIRE_SIZE = 14;
@@ -14,8 +14,6 @@ final class StateHostInfo extends ResponseMessage
 
     public function __construct(HostInfo $hostInfo)
     {
-        parent::__construct();
-
         $this->hostInfo = $hostInfo;
     }
 

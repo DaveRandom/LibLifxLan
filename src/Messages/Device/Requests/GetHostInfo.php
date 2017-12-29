@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Requests;
 
-use DaveRandom\LibLifxLan\Messages\RequestMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class GetHostInfo extends RequestMessage
+final class GetHostInfo implements Message
 {
     public const MESSAGE_TYPE_ID = 12;
     public const WIRE_SIZE = 0;

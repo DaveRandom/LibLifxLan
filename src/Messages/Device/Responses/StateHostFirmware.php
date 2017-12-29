@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\HostFirmware;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateHostFirmware extends ResponseMessage
+final class StateHostFirmware implements Message
 {
     public const MESSAGE_TYPE_ID = 15;
     public const WIRE_SIZE = 20;
@@ -14,8 +14,6 @@ final class StateHostFirmware extends ResponseMessage
 
     public function __construct(HostFirmware $hostFirmware)
     {
-        parent::__construct();
-
         $this->hostFirmware = $hostFirmware;
     }
 

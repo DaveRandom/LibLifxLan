@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Light\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\Light\State as LightState;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class State extends ResponseMessage
+final class State implements Message
 {
     public const MESSAGE_TYPE_ID = 107;
     public const WIRE_SIZE = 52;
@@ -14,8 +14,6 @@ final class State extends ResponseMessage
 
     public function __construct(LightState $state)
     {
-        parent::__construct();
-
         $this->state = $state;
     }
 

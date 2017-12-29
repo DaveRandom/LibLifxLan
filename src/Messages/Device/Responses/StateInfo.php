@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\TimeInfo;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateInfo extends ResponseMessage
+final class StateInfo implements Message
 {
     public const MESSAGE_TYPE_ID = 35;
     public const WIRE_SIZE = 24;
@@ -14,7 +14,6 @@ final class StateInfo extends ResponseMessage
 
     public function __construct(TimeInfo $info)
     {
-        parent::__construct();
         $this->info = $info;
     }
 

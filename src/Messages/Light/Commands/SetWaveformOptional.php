@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Light\Commands;
 
 use DaveRandom\LibLifxLan\DataTypes\Light\Effect;
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetWaveformOptional extends CommandMessage
+final class SetWaveformOptional implements Message
 {
     public const MESSAGE_TYPE_ID = 119;
     public const WIRE_SIZE = 25;
@@ -14,8 +14,6 @@ final class SetWaveformOptional extends CommandMessage
 
     public function __construct(Effect $effect)
     {
-        parent::__construct();
-
         $this->effect = $effect;
     }
 

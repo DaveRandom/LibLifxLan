@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Requests;
 
-use DaveRandom\LibLifxLan\Messages\RequestMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class GetWifiInfo extends RequestMessage
+final class GetWifiInfo implements Message
 {
     public const MESSAGE_TYPE_ID = 16;
     public const WIRE_SIZE = 0;

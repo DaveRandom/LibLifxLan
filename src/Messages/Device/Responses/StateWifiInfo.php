@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\WifiInfo;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateWifiInfo extends ResponseMessage
+final class StateWifiInfo implements Message
 {
     public const MESSAGE_TYPE_ID = 17;
     public const WIRE_SIZE = 14;
@@ -14,8 +14,6 @@ final class StateWifiInfo extends ResponseMessage
 
     public function __construct(WifiInfo $wifiInfo)
     {
-        parent::__construct();
-
         $this->wifiInfo = $wifiInfo;
     }
 

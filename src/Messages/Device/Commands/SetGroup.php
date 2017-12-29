@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Commands;
 
 use DaveRandom\LibLifxLan\DataTypes\Group;
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetGroup extends CommandMessage
+final class SetGroup implements Message
 {
     public const MESSAGE_TYPE_ID = 52;
     public const WIRE_SIZE = 28;
@@ -14,8 +14,6 @@ final class SetGroup extends CommandMessage
 
     public function __construct(Group $group)
     {
-        parent::__construct();
-
         $this->group = $group;
     }
 

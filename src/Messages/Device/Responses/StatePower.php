@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StatePower extends ResponseMessage
+final class StatePower implements Message
 {
     public const MESSAGE_TYPE_ID = 22;
     public const WIRE_SIZE = 2;
@@ -13,8 +13,6 @@ final class StatePower extends ResponseMessage
 
     public function __construct(int $level)
     {
-        parent::__construct();
-
         $this->level = $level;
     }
 

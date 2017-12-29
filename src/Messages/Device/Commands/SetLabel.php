@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Commands;
 
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetLabel extends CommandMessage
+final class SetLabel implements Message
 {
     public const MESSAGE_TYPE_ID = 24;
     public const WIRE_SIZE = 32;
@@ -13,8 +13,6 @@ final class SetLabel extends CommandMessage
 
     public function __construct(string $label)
     {
-        parent::__construct();
-
         $this->label = $label;
     }
 

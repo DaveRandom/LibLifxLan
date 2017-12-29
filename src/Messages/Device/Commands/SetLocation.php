@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Commands;
 
 use DaveRandom\LibLifxLan\DataTypes\Location;
-use DaveRandom\LibLifxLan\Messages\CommandMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class SetLocation extends CommandMessage
+final class SetLocation implements Message
 {
     public const MESSAGE_TYPE_ID = 49;
     public const WIRE_SIZE = 28;
@@ -14,8 +14,6 @@ final class SetLocation extends CommandMessage
 
     public function __construct(Location $location)
     {
-        parent::__construct();
-
         $this->location = $location;
     }
 

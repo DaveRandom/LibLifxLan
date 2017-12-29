@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Requests;
 
-use DaveRandom\LibLifxLan\Messages\RequestMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class EchoRequest extends RequestMessage
+final class EchoRequest implements Message
 {
     public const MESSAGE_TYPE_ID = 58;
     public const WIRE_SIZE = 64;
@@ -13,8 +13,6 @@ final class EchoRequest extends RequestMessage
 
     public function __construct(string $payload)
     {
-        parent::__construct();
-
         $this->payload = $payload;
     }
 

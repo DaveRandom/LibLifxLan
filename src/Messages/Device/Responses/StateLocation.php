@@ -3,9 +3,9 @@
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
 use DaveRandom\LibLifxLan\DataTypes\Location;
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateLocation extends ResponseMessage
+final class StateLocation implements Message
 {
     public const MESSAGE_TYPE_ID = 50;
     public const WIRE_SIZE = 56;
@@ -14,7 +14,6 @@ final class StateLocation extends ResponseMessage
 
     public function __construct(Location $location)
     {
-        parent::__construct();
         $this->location = $location;
     }
 

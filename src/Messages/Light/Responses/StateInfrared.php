@@ -2,9 +2,9 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Light\Responses;
 
-use DaveRandom\LibLifxLan\Messages\ResponseMessage;
+use DaveRandom\LibLifxLan\Messages\Message;
 
-final class StateInfrared extends ResponseMessage
+final class StateInfrared implements Message
 {
     public const MESSAGE_TYPE_ID = 122;
     public const WIRE_SIZE = 2;
@@ -13,8 +13,6 @@ final class StateInfrared extends ResponseMessage
 
     public function __construct(int $brightness)
     {
-        parent::__construct();
-
         $this->brightness = $brightness;
     }
 
