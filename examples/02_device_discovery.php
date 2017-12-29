@@ -2,9 +2,11 @@
 
 use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LibLifxLan\Decoding\PacketDecoder;
-use DaveRandom\LibLifxLan\Encoding\MessageEncoder;
+use DaveRandom\LibLifxLan\Encoding\PacketEncoder;
 use DaveRandom\LibLifxLan\Messages\Device\Requests\GetService;
 use DaveRandom\LibLifxLan\Messages\Device\Responses\StateService;
+use DaveRandom\LibLifxLan\Packet;
+use DaveRandom\LibLifxLan\ResponsePattern;
 use DaveRandom\Network\IPEndpoint;
 use function DaveRandom\LibLifxLan\Examples\udp_await_packets;
 use function DaveRandom\LibLifxLan\Examples\udp_create_socket;
@@ -16,12 +18,13 @@ $broadcastEndpoint = IPEndpoint::parse(BROADCAST_ENDPOINT);
 
 $socket = udp_create_socket(IPEndpoint::parse(LOCAL_ENDPOINT));
 
-$encoder = new MessageEncoder();
+$encoder = new PacketEncoder();
 $decoder = new PacketDecoder();
 
 try {
-    $packet = $encoder->encodeMessage(new GetService, null, 0);
-    \stream_socket_sendto($socket, $packet, 0, (string)$broadcastEndpoint);
+    $packet = Packet::createFromMessage(new GetService, SOURCE_ID, null, 0, ResponsePattern::REQUIRE_RESPONSE);
+    $data = $encoder->encodePacket($packet);
+    \stream_socket_sendto($socket, $data, 0, (string)$broadcastEndpoint);
 } catch (\Throwable $e) {
     \fwrite(\STDERR, "Unhandled error while sending message: {$e}\n");
     exit(1);
@@ -29,7 +32,7 @@ try {
 
 foreach (udp_await_packets($socket, 1000) as [$buffer, $source]) {
     try {
-        $packet = $decoder->decode($buffer);
+        $packet = $decoder->decodePacket($buffer);
     } catch (DecodingException $e) {
         echo "Decoding error: {$e->getMessage()}\n";
         continue;
@@ -38,7 +41,7 @@ foreach (udp_await_packets($socket, 1000) as [$buffer, $source]) {
     $header = $packet->getHeader();
     $message = $packet->getMessage();
 
-    if ($header->getFrame()->getSource() === MessageEncoder::DEFAULT_SOURCE_ID && $message instanceof StateService) {
+    if ($header->getFrame()->getSource() === SOURCE_ID && $message instanceof StateService) {
         echo "{$source} announced service: {$message->getService()->getName()} on port {$message->getService()->getPort()}\n";
     }
 }

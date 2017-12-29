@@ -7,7 +7,7 @@ use DaveRandom\LibLifxLan\Messages\CommandMessage;
 final class SetInfrared extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 121;
-    public const PAYLOAD_SIZE = 2;
+    public const WIRE_SIZE = 2;
 
     private $brightness;
 
@@ -26,5 +26,10 @@ final class SetInfrared extends CommandMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\CommandMessage;
 final class SetGroup extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 52;
-    public const PAYLOAD_SIZE = 28;
+    public const WIRE_SIZE = 28;
 
     private $group;
 
@@ -27,5 +27,10 @@ final class SetGroup extends CommandMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

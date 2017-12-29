@@ -14,15 +14,6 @@ abstract class Message
         $this->responsePattern = $responsePattern;
     }
 
-    public function isAckRequired(): bool
-    {
-        return (bool)($this->responsePattern & self::REQUIRE_ACK);
-    }
-
-    public function isResponseRequired(): bool
-    {
-        return (bool)($this->responsePattern & self::REQUIRE_RESPONSE);
-    }
-
     abstract public function getTypeId(): int;
+    abstract public function getWireSize(): int;
 }

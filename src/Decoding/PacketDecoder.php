@@ -5,6 +5,7 @@ namespace DaveRandom\LibLifxLan\Decoding;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Header\Header;
+use DaveRandom\LibLifxLan\Packet;
 
 final class PacketDecoder
 {
@@ -25,7 +26,7 @@ final class PacketDecoder
      * @return Packet
      * @throws DecodingException
      */
-    public function decode(string $buffer): Packet
+    public function decodePacket(string $buffer): Packet
     {
         $dataLength = \strlen($buffer);
 

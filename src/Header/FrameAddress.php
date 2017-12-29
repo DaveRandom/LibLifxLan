@@ -13,9 +13,9 @@ final class FrameAddress
     private $responseRequired;
     private $sequenceNo;
 
-    public function __construct(?MacAddress $target, bool $ackRequired, bool $responseRequired, int $sequenceNo)
+    public function __construct(MacAddress $target, bool $ackRequired, bool $responseRequired, int $sequenceNo)
     {
-        $this->target = $target ?? new MacAddress(0, 0, 0, 0, 0, 0);
+        $this->target = $target;
         $this->ackRequired = $ackRequired;
         $this->responseRequired = $responseRequired;
         $this->sequenceNo = $sequenceNo;

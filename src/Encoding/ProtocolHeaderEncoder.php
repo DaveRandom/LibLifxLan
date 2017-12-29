@@ -5,7 +5,7 @@ namespace DaveRandom\LibLifxLan\Encoding;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 
-final class ProtocolHeaderEncoder extends Encoder
+final class ProtocolHeaderEncoder
 {
     /**
      * @param ProtocolHeader $protocolHeader

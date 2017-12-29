@@ -7,3 +7,6 @@ const LOCAL_ENDPOINT = '0.0.0.0:56700';
 // The address to which broadcast traffic will be sent - 255.255.255.255 will work for pretty much any situation
 // The port should always be 56700
 const BROADCAST_ENDPOINT = '255.255.255.255:56700';
+
+// The source ID to use in messages
+const SOURCE_ID = 0x0da7e51d;

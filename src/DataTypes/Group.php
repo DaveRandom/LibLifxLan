@@ -11,11 +11,11 @@ final class Group
     private $label;
     private $updatedAt;
 
-    public function __construct(UuidInterface $guid, string $label, \DateTimeInterface $updatedAt = null)
+    public function __construct(UuidInterface $guid, string $label, \DateTimeInterface $updatedAt)
     {
         $this->guid = $guid;
         $this->label = $label;
-        $this->updatedAt = datetimeinterface_to_datetimeimmutable($updatedAt ?? new \DateTimeImmutable);
+        $this->updatedAt = datetimeinterface_to_datetimeimmutable($updatedAt);
     }
 
     public function getGuid(): UuidInterface

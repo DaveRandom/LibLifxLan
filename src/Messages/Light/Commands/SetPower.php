@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\CommandMessage;
 final class SetPower extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 117;
-    public const PAYLOAD_SIZE = 6;
+    public const WIRE_SIZE = 6;
 
     private $powerTransition;
 
@@ -27,5 +27,10 @@ final class SetPower extends CommandMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

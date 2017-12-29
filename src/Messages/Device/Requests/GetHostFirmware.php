@@ -7,10 +7,15 @@ use DaveRandom\LibLifxLan\Messages\RequestMessage;
 final class GetHostFirmware extends RequestMessage
 {
     public const MESSAGE_TYPE_ID = 14;
-    public const PAYLOAD_SIZE = 0;
+    public const WIRE_SIZE = 0;
 
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

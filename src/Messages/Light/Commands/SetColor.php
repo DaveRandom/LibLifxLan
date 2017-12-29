@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\CommandMessage;
 final class SetColor extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 102;
-    public const PAYLOAD_SIZE = 13;
+    public const WIRE_SIZE = 13;
 
     private $colorTransition;
 
@@ -26,5 +26,10 @@ final class SetColor extends CommandMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

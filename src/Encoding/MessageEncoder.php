@@ -5,21 +5,15 @@ namespace DaveRandom\LibLifxLan\Encoding;
 use DaveRandom\LibLifxLan\DataTypes as DeviceDataTypes;
 use DaveRandom\LibLifxLan\DataTypes\Light as LightDataTypes;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
-use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
-use DaveRandom\LibLifxLan\Header\Frame;
-use DaveRandom\LibLifxLan\Header\FrameAddress;
-use DaveRandom\LibLifxLan\Header\Header;
-use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
 use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
 use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
 use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommands;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
-use DaveRandom\Network\MacAddress;
 use const DaveRandom\LibLifxLan\FLOAT32_CODE;
 
-final class MessageEncoder extends Encoder
+final class MessageEncoder
 {
     /**
      * @uses encodeEchoRequest
@@ -84,16 +78,6 @@ final class MessageEncoder extends Encoder
         LightResponses\StateInfrared::class => 'StateInfrared',
         LightResponses\StatePower::class => 'StateLightPower',
     ];
-
-    public const DEFAULT_SOURCE_ID = 0x0da7e51d;
-    public const DEFAULT_MESSAGE_ORIGIN = 0;
-    public const DEFAULT_PROTOCOL_NUMBER = 1024;
-
-    public const OP_SOURCE_ID       = 1;
-    public const OP_MESSAGE_ORIGIN  = 2;
-    public const OP_PROTOCOL_NUMBER = 3;
-
-    private $headerEncoder;
 
     private function signedShortToUnsignedShort(int $signed): int
     {
@@ -185,42 +169,6 @@ final class MessageEncoder extends Encoder
     private function dateTimeToNanoseconds(\DateTimeInterface $dateTime): int
     {
         return ($dateTime->format('U') * 1000000000) + ($dateTime->format('u') * 1000);
-    }
-
-    /**
-     * @param Message $message
-     * @param MacAddress|null $destination
-     * @param int $sequenceNo
-     * @param string $payload
-     * @return string
-     * @throws InvalidMessageHeaderException
-     */
-    private function buildPacket(Message $message, ?MacAddress $destination, int $sequenceNo, string $payload): string
-    {
-        $frame = new Frame(
-            Header::WIRE_SIZE + \strlen($payload),
-            $this->options[self::OP_MESSAGE_ORIGIN],
-            /* tagged */ $destination === null,
-            /* addressable */ true,
-            $this->options[self::OP_PROTOCOL_NUMBER],
-            $this->options[self::OP_SOURCE_ID]
-        );
-
-        $frameAddress = new FrameAddress($destination, $message->isAckRequired(), $message->isResponseRequired(), $sequenceNo);
-        $protocolHeader = new ProtocolHeader($message->getTypeId());
-
-        return $this->headerEncoder->encodeHeader(new Header($frame, $frameAddress, $protocolHeader)) . $payload;
-    }
-
-    public function __construct(array $options = [], HeaderEncoder $headerEncoder = null)
-    {
-        parent::__construct($options + [
-            self::OP_SOURCE_ID => self::DEFAULT_SOURCE_ID,
-            self::OP_MESSAGE_ORIGIN => self::DEFAULT_MESSAGE_ORIGIN,
-            self::OP_PROTOCOL_NUMBER => self::DEFAULT_PROTOCOL_NUMBER,
-        ]);
-
-        $this->headerEncoder = $headerEncoder ?? new HeaderEncoder;
     }
 
     private function encodeStateVersion(DeviceResponses\StateVersion $message): string
@@ -545,19 +493,10 @@ final class MessageEncoder extends Encoder
         ;
     }
 
-    /**
-     * @param Message $message
-     * @param MacAddress|null $destination
-     * @param int $sequenceNo
-     * @return string
-     * @throws InvalidMessageHeaderException
-     */
-    public function encodeMessage(Message $message, ?MacAddress $destination, int $sequenceNo): string
+    public function encodeMessage(Message $message): string
     {
-        $payload = \array_key_exists($class = \get_class($message), self::ENCODING_ROUTINES)
+        return \array_key_exists($class = \get_class($message), self::ENCODING_ROUTINES)
             ? $this->{'encode' . self::ENCODING_ROUTINES[$class]}($message)
             : '';
-
-        return $this->buildPacket($message, $destination, $sequenceNo, $payload);
     }
 }

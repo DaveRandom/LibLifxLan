@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\CommandMessage;
 final class SetWaveform extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 103;
-    public const PAYLOAD_SIZE = 21;
+    public const WIRE_SIZE = 21;
 
     private $effect;
 
@@ -27,5 +27,10 @@ final class SetWaveform extends CommandMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

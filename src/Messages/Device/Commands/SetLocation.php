@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\CommandMessage;
 final class SetLocation extends CommandMessage
 {
     public const MESSAGE_TYPE_ID = 49;
-    public const PAYLOAD_SIZE = 28;
+    public const WIRE_SIZE = 28;
 
     private $location;
 
@@ -27,5 +27,10 @@ final class SetLocation extends CommandMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

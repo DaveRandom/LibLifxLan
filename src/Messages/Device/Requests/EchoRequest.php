@@ -7,7 +7,7 @@ use DaveRandom\LibLifxLan\Messages\RequestMessage;
 final class EchoRequest extends RequestMessage
 {
     public const MESSAGE_TYPE_ID = 58;
-    public const PAYLOAD_SIZE = 64;
+    public const WIRE_SIZE = 64;
 
     private $payload;
 
@@ -26,5 +26,10 @@ final class EchoRequest extends RequestMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }

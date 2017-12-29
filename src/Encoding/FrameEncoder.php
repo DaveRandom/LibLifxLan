@@ -4,9 +4,12 @@ namespace DaveRandom\LibLifxLan\Encoding;
 
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LibLifxLan\Header\Frame;
+use DaveRandom\LibLifxLan\Options;
 
-final class FrameEncoder extends Encoder
+final class FrameEncoder
 {
+    use Options;
+
     /**
      * If enabled, allow origin values other than 0
      */
@@ -122,9 +125,9 @@ final class FrameEncoder extends Encoder
 
     public function __construct(array $options = [])
     {
-        parent::__construct($options + [
+        $this->options = $options + [
             self::OP_ALLOW_ORIGIN_VARIANCE => false,
             self::OP_ALLOW_PROTOCOL_NUMBER_VARIANCE => false,
-        ]);
+        ];
     }
 }

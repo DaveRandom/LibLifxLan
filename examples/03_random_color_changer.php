@@ -5,12 +5,13 @@
 // The packet produced by this code should be identical to the example, except the "ack_required" bit will be set
 
 use DaveRandom\LibLifxLan\DataTypes\Light\ColorTransition;
-use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
-use DaveRandom\LibLifxLan\Encoding\MessageEncoder;
 use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
+use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
+use DaveRandom\LibLifxLan\Encoding\PacketEncoder;
 use DaveRandom\LibLifxLan\Messages\Device\Commands\SetPower;
 use DaveRandom\LibLifxLan\Messages\Light\Commands\SetColor;
 use DaveRandom\LibLifxLan\Messages\Message;
+use DaveRandom\LibLifxLan\Packet;
 use DaveRandom\Network\IPEndpoint;
 use function DaveRandom\LibLifxLan\Examples\udp_create_socket;
 
@@ -35,21 +36,21 @@ const BRIGHTNESS_MAX = 65535;
 const TEMPERATURE_MIN = 3500;
 const TEMPERATURE_MAX = 3500;
 
-$encoder = new MessageEncoder([MessageEncoder::OP_SOURCE_ID => 0]);
+$encoder = new PacketEncoder();
 $socket = udp_create_socket(IPEndpoint::parse(LOCAL_ENDPOINT));
 $endpoint = IPEndpoint::parse(BROADCAST_ENDPOINT);
 
-function broadcast_message(MessageEncoder $encoder, $socket, Message $message)
+function broadcast_message(PacketEncoder $encoder, $socket, Message $message)
 {
     static $endpoint;
 
     try {
-        $packet = $encoder->encodeMessage($message, null, 0);
+        $data = $encoder->encodePacket(Packet::createFromMessage($message, SOURCE_ID, null, 0, 0));
     } catch (InvalidMessageException $e) {
         exit((string)$e);
     }
 
-    \stream_socket_sendto($socket, $packet, 0, (string)($endpoint ?? $endpoint = IPEndpoint::parse(BROADCAST_ENDPOINT)));
+    \stream_socket_sendto($socket, $data, 0, (string)($endpoint ?? $endpoint = IPEndpoint::parse(BROADCAST_ENDPOINT)));
 }
 
 // Turn lights on

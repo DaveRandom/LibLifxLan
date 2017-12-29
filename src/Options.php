@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LibLifxLan\Encoding;
+namespace DaveRandom\LibLifxLan;
 
-abstract class Encoder
+trait Options
 {
-    protected $options;
+    private $options;
 
     public function __construct(array $options = [])
     {

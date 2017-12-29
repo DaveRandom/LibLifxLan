@@ -4,9 +4,12 @@ namespace DaveRandom\LibLifxLan\Encoding;
 
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LibLifxLan\Header\FrameAddress;
+use DaveRandom\LibLifxLan\Options;
 
-final class FrameAddressEncoder extends Encoder
+final class FrameAddressEncoder
 {
+    use Options;
+
     /**
      * If enabled, do not check the value of the sequence number but automatically truncate it to 8 bits instead
      */
@@ -65,8 +68,8 @@ final class FrameAddressEncoder extends Encoder
 
     public function __construct(array $options = [])
     {
-        parent::__construct([
+        $this->options = $options + [
             self::OP_SEQUENCE_AUTO_WRAP => true,
-        ]);
+        ];
     }
 }

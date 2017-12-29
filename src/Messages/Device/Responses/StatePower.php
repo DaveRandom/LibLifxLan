@@ -7,7 +7,7 @@ use DaveRandom\LibLifxLan\Messages\ResponseMessage;
 final class StatePower extends ResponseMessage
 {
     public const MESSAGE_TYPE_ID = 22;
-    public const PAYLOAD_SIZE = 2;
+    public const WIRE_SIZE = 2;
 
     private $level;
 
@@ -26,5 +26,10 @@ final class StatePower extends ResponseMessage
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
+    }
+
+    public function getWireSize(): int
+    {
+        return self::WIRE_SIZE;
     }
 }
