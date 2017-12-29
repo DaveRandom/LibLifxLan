@@ -62,5 +62,10 @@ abstract class Enum
         throw new \InvalidArgumentException('Unknown enumeration member: ' . $searchName);
     }
 
+    final public static function toArray(): array
+    {
+        return self::getClassConstants(static::class);
+    }
+
     final protected function __construct() { }
 }
