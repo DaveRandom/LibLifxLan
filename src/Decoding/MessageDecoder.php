@@ -8,6 +8,7 @@ use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\MalformedMessagePayloadException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\UnknownMessageTypeException;
+use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
 use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
 use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
@@ -167,8 +168,9 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
-        return new DeviceCommands\SetGroup(new DeviceDataTypes\Group($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceCommands\SetGroup(new DeviceDataTypes\Group($guid, $label, $updatedAt));
     }
 
     private function decodeStateGroup(string $data): DeviceResponses\StateGroup
@@ -181,8 +183,9 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
-        return new DeviceResponses\StateGroup(new DeviceDataTypes\Group($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceResponses\StateGroup(new DeviceDataTypes\Group($guid, $label, $updatedAt));
     }
 
     private function decodeGetHostFirmware(): DeviceRequests\GetHostFirmware
@@ -210,7 +213,6 @@ final class MessageDecoder
     /**
      * @param string $data
      * @return DeviceResponses\StateHostInfo
-     * @throws \Error
      */
     private function decodeStateHostInfo(string $data): DeviceResponses\StateHostInfo
     {
@@ -248,12 +250,12 @@ final class MessageDecoder
 
     private function decodeSetLabel(string $data): DeviceCommands\SetLabel
     {
-        return new DeviceCommands\SetLabel(\rtrim($data, "\x00"));
+        return new DeviceCommands\SetLabel(new DeviceDataTypes\Label(\rtrim($data, "\x00")));
     }
 
     private function decodeStateLabel(string $data): DeviceResponses\StateLabel
     {
-        return new DeviceResponses\StateLabel(\rtrim($data, "\x00"));
+        return new DeviceResponses\StateLabel(new DeviceDataTypes\Label(\rtrim($data, "\x00")));
     }
 
     private function decodeGetLocation(): DeviceRequests\GetLocation
@@ -271,8 +273,9 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
-        return new DeviceCommands\SetLocation(new DeviceDataTypes\Location($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceCommands\SetLocation(new DeviceDataTypes\Location($guid, $label, $updatedAt));
     }
 
     private function decodeStateLocation(string $data): DeviceResponses\StateLocation
@@ -285,8 +288,9 @@ final class MessageDecoder
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
-        return new DeviceResponses\StateLocation(new DeviceDataTypes\Location($guid, \rtrim($label, "\x00"), $updatedAt));
+        return new DeviceResponses\StateLocation(new DeviceDataTypes\Location($guid, $label, $updatedAt));
     }
 
     private function decodeGetDevicePower(): DeviceRequests\GetPower
@@ -361,11 +365,6 @@ final class MessageDecoder
         return new DeviceRequests\GetWifiInfo;
     }
 
-    /**
-     * @param string $data
-     * @return DeviceResponses\StateWifiInfo
-     * @throws \Error
-     */
     private function decodeStateWifiInfo(string $data): DeviceResponses\StateWifiInfo
     {
 
@@ -383,11 +382,6 @@ final class MessageDecoder
         return new LightRequests\Get;
     }
 
-    /**
-     * @param string $data
-     * @return LightCommmands\SetColor
-     * @throws MalformedMessagePayloadException
-     */
     private function decodeSetColor(string $data): LightCommmands\SetColor
     {
         [
@@ -398,21 +392,11 @@ final class MessageDecoder
             'duration'    => $duration,
         ] = \unpack('Creserved/' . self::HSBK_FORMAT . '/Vduration', $data);
 
-        try {
-            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
-        } catch (\OutOfBoundsException $e) {
-            throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
-        }
+        $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
 
         return new LightCommmands\SetColor(new LightDataTypes\ColorTransition($color, $duration));
     }
 
-    /**
-     * @param string $data
-     * @return LightCommmands\SetWaveform
-     * @throws \Error
-     * @throws MalformedMessagePayloadException
-     */
     private function decodeSetWaveform(string $data): LightCommmands\SetWaveform
     {
         $format
@@ -433,11 +417,7 @@ final class MessageDecoder
             'waveform'    => $waveform,
         ] = \unpack($format, $data);
 
-        try {
-            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
-        } catch (\OutOfBoundsException $e) {
-            throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
-        }
+        $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
 
         $skewRatio = $this->unsignedShortToSignedShort($skewRatio);
         $effect = new LightDataTypes\Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform);
@@ -445,12 +425,6 @@ final class MessageDecoder
         return new LightCommmands\SetWaveform($effect);
     }
 
-    /**
-     * @param string $data
-     * @return LightCommmands\SetWaveformOptional
-     * @throws MalformedMessagePayloadException
-     * @throws \Error
-     */
     private function decodeSetWaveformOptional(string $data): LightCommmands\SetWaveformOptional
     {
         $format
@@ -476,12 +450,7 @@ final class MessageDecoder
             'setTemperature' => $setTemperature,
         ] = \unpack($format, $data);
 
-        try {
-            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
-        } catch (\OutOfBoundsException $e) {
-            throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
-        }
-
+        $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         $skewRatio = $this->unsignedShortToSignedShort($skewRatio);
 
         $options = ($setHue ? LightDataTypes\Effect::SET_HUE : 0)
@@ -494,11 +463,6 @@ final class MessageDecoder
         return new LightCommmands\SetWaveformOptional($effect);
     }
 
-    /**
-     * @param string $data
-     * @return LightResponses\State
-     * @throws MalformedMessagePayloadException
-     */
     private function decodeState(string $data): LightResponses\State
     {
         [
@@ -510,13 +474,10 @@ final class MessageDecoder
             'label'       => $label,
         ] = \unpack(self::HSBK_FORMAT . '/vreserved/vpower/a32label/Preserved', $data);
 
-        try {
-            $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
-        } catch (\OutOfBoundsException $e) {
-            throw new MalformedMessagePayloadException("Malformed HSBK color: {$e->getMessage()}", 0, $e);
-        }
+        $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
+        $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
-        return new LightResponses\State(new LightDataTypes\State($color, $power, \rtrim($label, "\x00")));
+        return new LightResponses\State(new LightDataTypes\State($color, $power, $label));
     }
 
     private function decodeGetInfrared(): LightRequests\GetInfrared
@@ -585,6 +546,10 @@ final class MessageDecoder
             );
         }
 
-        return ([$this, 'decode' . $messageName])($data);
+        try {
+            return ([$this, 'decode' . $messageName])($data);
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (InvalidValueException $e) {
+            throw new MalformedMessagePayloadException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 }

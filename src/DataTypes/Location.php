@@ -11,7 +11,7 @@ final class Location
     private $label;
     private $updatedAt;
 
-    public function __construct(UuidInterface $guid, string $label, \DateTimeInterface $updatedAt)
+    public function __construct(UuidInterface $guid, Label $label, \DateTimeInterface $updatedAt)
     {
         $this->guid = $guid;
         $this->label = $label;
@@ -23,7 +23,7 @@ final class Location
         return $this->guid;
     }
 
-    public function getLabel(): string
+    public function getLabel(): Label
     {
         return $this->label;
     }

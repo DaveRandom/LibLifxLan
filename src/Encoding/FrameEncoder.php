@@ -23,17 +23,10 @@ final class FrameEncoder
     /**
      * @param Frame $frame
      * @return string
-     * @throws InvalidMessageHeaderException
      */
     private function encodeMessageSize(Frame $frame): string
     {
-        $size = $frame->getSize();
-
-        if ($size < 0 || $size > 65535) {
-            throw new InvalidMessageHeaderException("Message size value {$size} outside allowable range 0 - 65535");
-        }
-
-        return \pack('v', $size);
+        return \pack('v', $frame->getSize());
     }
 
     /**
@@ -47,10 +40,6 @@ final class FrameEncoder
 
         if ($origin !== 0 && !$this->options[self::OP_ALLOW_ORIGIN_VARIANCE]) {
             throw new InvalidMessageHeaderException("Message origin value expected to be 0, got {$origin}");
-        }
-
-        if ($origin < 0 || $origin > 3) {
-            throw new InvalidMessageHeaderException("Message origin value {$origin} outside allowable range 0 - 3");
         }
 
         return $origin << 14;
@@ -74,10 +63,6 @@ final class FrameEncoder
             throw new InvalidMessageHeaderException("Protocol number value expected to be 1024, got {$protocolNo}");
         }
 
-        if ($protocolNo < 0 || $protocolNo > 4095) {
-            throw new InvalidMessageHeaderException("Message origin value {$protocolNo} outside allowable range 0 - 4095");
-        }
-
         return $protocolNo;
     }
 
@@ -98,17 +83,10 @@ final class FrameEncoder
     /**
      * @param Frame $frame
      * @return string
-     * @throws InvalidMessageHeaderException
      */
     private function encodeSource(Frame $frame): string
     {
-        $source = $frame->getSource();
-
-        if ($source < 0 || $source > 4294967295) {
-            throw new InvalidMessageHeaderException("Message source value {$source} outside allowable range 0 - 4294967295");
-        }
-
-        return \pack('V', $source);
+        return \pack('V', $frame->getSource());
     }
 
     /**

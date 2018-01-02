@@ -2,19 +2,10 @@
 
 namespace DaveRandom\LibLifxLan\Encoding;
 
-use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LibLifxLan\Header\FrameAddress;
-use DaveRandom\LibLifxLan\Options;
 
 final class FrameAddressEncoder
 {
-    use Options;
-
-    /**
-     * If enabled, do not check the value of the sequence number but automatically truncate it to 8 bits instead
-     */
-    public const OP_SEQUENCE_AUTO_WRAP = 0b1;
-
     private function encodeTarget(FrameAddress $frameAddress): string
     {
         $target = $frameAddress->getTarget();
@@ -41,35 +32,20 @@ final class FrameAddressEncoder
     /**
      * @param FrameAddress $frameAddress
      * @return string
-     * @throws InvalidMessageHeaderException
      */
     private function encodeSequenceNo(FrameAddress $frameAddress): string
     {
-        $sequenceNo = $frameAddress->getSequenceNo();
-
-        if (!$this->options[self::OP_SEQUENCE_AUTO_WRAP] && ($sequenceNo < 0 || $sequenceNo > 255)) {
-            throw new InvalidMessageHeaderException("Sequence number value {$sequenceNo} outside allowable range 0 - 255");
-        }
-
-        return \chr($sequenceNo & 0xff);
+        return \chr($frameAddress->getSequenceNo());
     }
 
     /**
      * @param FrameAddress $frameAddress
      * @return string
-     * @throws InvalidMessageHeaderException
      */
     public function encodeFrameAddress(FrameAddress $frameAddress): string
     {
         return $this->encodeTarget($frameAddress)
             . $this->encodeFlags($frameAddress)
             . $this->encodeSequenceNo($frameAddress);
-    }
-
-    public function __construct(array $options = [])
-    {
-        $this->options = $options + [
-            self::OP_SEQUENCE_AUTO_WRAP => true,
-        ];
     }
 }

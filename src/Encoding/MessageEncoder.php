@@ -94,20 +94,6 @@ final class MessageEncoder
     }
 
     /**
-     * @param string $label
-     * @return string
-     * @throws InvalidMessageException
-     */
-    private function encodeLabel(string $label): string
-    {
-        if (\strlen($label) > 32) {
-            throw new InvalidMessageException("Label cannot be larger than 32 bytes");
-        }
-
-        return \pack('a32', $label);
-    }
-
-    /**
      * @param DeviceDataTypes\Location $location
      * @return string
      * @throws InvalidMessageException
@@ -120,10 +106,7 @@ final class MessageEncoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        $guid = $location->getGuid()->getBytes();
-        $label = $this->encodeLabel($location->getLabel());
-
-        return $guid . $label . \pack('P', $updatedAt);
+        return \pack('a16a32P', $location->getGuid()->getBytes(), $location->getLabel()->getValue(), $updatedAt);
     }
 
     /**
@@ -139,10 +122,7 @@ final class MessageEncoder
             throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
         }
 
-        $guid = $group->getGuid()->getBytes();
-        $label = $this->encodeLabel($group->getLabel());
-
-        return $guid . $label . \pack('P', $updatedAt);
+        return \pack('a16a32P', $group->getGuid()->getBytes(), $group->getLabel()->getValue(), $updatedAt);
     }
 
     private function encodeFirmware(DeviceDataTypes\Firmware $firmware)
@@ -235,21 +215,19 @@ final class MessageEncoder
     /**
      * @param DeviceCommands\SetLabel $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeSetLabel(DeviceCommands\SetLabel $message): string
     {
-        return $this->encodeLabel($message->getLabel());
+        return \pack('a32', $message->getLabel()->getValue());
     }
 
     /**
      * @param DeviceResponses\StateLabel $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeStateLabel(DeviceResponses\StateLabel $message): string
     {
-        return $this->encodeLabel($message->getLabel());
+        return \pack('a32', $message->getLabel()->getValue());
     }
 
     /**
@@ -275,33 +253,19 @@ final class MessageEncoder
     /**
      * @param DeviceCommands\SetPower $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeSetDevicePower(DeviceCommands\SetPower $message): string
     {
-        $level = $message->getLevel();
-
-        if ($level < 0 || $level > 65535) {
-            throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");
-        }
-
-        return \pack('v', $level);
+        return \pack('v', $message->getLevel());
     }
 
     /**
      * @param DeviceResponses\StatePower $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeStateDevicePower(DeviceResponses\StatePower $message): string
     {
-        $level = $message->getLevel();
-
-        if ($level < 0 || $level > 65535) {
-            throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");
-        }
-
-        return \pack('v', $level);
+        return \pack('v', $message->getLevel());
     }
 
     /**
@@ -332,109 +296,65 @@ final class MessageEncoder
     /**
      * @param LightCommands\SetColor $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeSetColor(LightCommands\SetColor $message): string
     {
         $transition = $message->getColorTransition();
-        $duration = $transition->getDuration();
 
-        if ($duration < 0 || $duration > 4294967295) {
-            throw new InvalidMessageException("Transition duration {$duration} outside allowable range of 0 - 4294967295");
-        }
-
-        return "\x00" . $this->encodeHsbkColor($transition->getColor()) . \pack('V', $duration);
+        return "\x00" . $this->encodeHsbkColor($transition->getColor()) . \pack('V', $transition->getDuration());
     }
 
     /**
      * @param LightCommands\SetInfrared $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeSetInfrared(LightCommands\SetInfrared $message): string
     {
-        $brightness = $message->getBrightness();
-
-        if ($brightness < 0 || $brightness > 65535) {
-            throw new InvalidMessageException("Brightness {$brightness} outside allowable range of 0 - 65535");
-        }
-
-        return \pack('v', $brightness);
+        return \pack('v', $message->getBrightness());
     }
 
     /**
      * @param LightResponses\StateInfrared $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeStateInfrared(LightResponses\StateInfrared $message): string
     {
-        $brightness = $message->getBrightness();
-
-        if ($brightness < 0 || $brightness > 65535) {
-            throw new InvalidMessageException("Brightness {$brightness} outside allowable range of 0 - 65535");
-        }
-
-        return \pack('v', $brightness);
+        return \pack('v', $message->getBrightness());
     }
 
     /**
      * @param LightCommands\SetPower $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeSetLightPower(LightCommands\SetPower $message): string
     {
         $transition = $message->getPowerTransition();
-        $level = $transition->getLevel();
-        $duration = $transition->getDuration();
 
-        if ($level < 0 || $level > 65535) {
-            throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");
-        }
-
-        if ($duration < 0 || $duration > 4294967295) {
-            throw new InvalidMessageException("Transition duration {$duration} outside allowable range of 0 - 4294967295");
-        }
-
-        return \pack('vV', $level, $duration);
+        return \pack('vV', $transition->getLevel(), $transition->getDuration());
     }
 
     /**
      * @param LightResponses\StatePower $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeStateLightPower(LightResponses\StatePower $message): string
     {
-        $level = $message->getLevel();
-
-        if ($level < 0 || $level > 65535) {
-            throw new InvalidMessageException("Power level {$level} outside allowable range of 0 - 65535");
-        }
-
-        return \pack('v', $level);
+        return \pack('v', $message->getLevel());
     }
 
     /**
      * @param LightResponses\State $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeState(LightResponses\State $message): string
     {
         $state = $message->getState();
-        $power = $state->getPower();
-
-        if ($power < 0 || $power > 65535) {
-            throw new InvalidMessageException("Power level {$power} outside allowable range of 0 - 65535");
-        }
 
         return $this->encodeHsbkColor($state->getColor()) . \pack(
             'v2a32P',
             0, // reserved
             $state->getPower(),
-            $this->encodeLabel($state->getLabel()),
+            $state->getLabel()->getValue(),
             0  // reserved
         );
     }
@@ -442,18 +362,11 @@ final class MessageEncoder
     /**
      * @param LightCommands\SetWaveform $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeSetWaveform(LightCommands\SetWaveform $message): string
     {
         $effect = $message->getEffect();
-        $skew = $effect->getSkewRatio();
-
-        if ($skew < -32768 || $skew > 32767) {
-            throw new InvalidMessageException("Skew ratio {$skew} outside allowable range of -32768 - 32767");
-        }
-
-        $skew = $this->signedShortToUnsignedShort($skew);
+        $skew = $this->signedShortToUnsignedShort($effect->getSkewRatio());
 
         return "\x00" . \chr((int)$effect->isTransient())
             . $this->encodeHsbkColor($effect->getColor())
@@ -464,18 +377,11 @@ final class MessageEncoder
     /**
      * @param LightCommands\SetWaveformOptional $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeSetWaveformOptional(LightCommands\SetWaveformOptional $message): string
     {
         $effect = $message->getEffect();
-        $skew = $effect->getSkewRatio();
-
-        if ($skew < -32768 || $skew > 32767) {
-            throw new InvalidMessageException("Skew ratio {$skew} outside allowable range of -32768 - 32767");
-        }
-
-        $skew = $this->signedShortToUnsignedShort($skew);
+        $skew = $this->signedShortToUnsignedShort($effect->getSkewRatio());
 
         $options = $effect->getOptions();
         $optionData = \pack(

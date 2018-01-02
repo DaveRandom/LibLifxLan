@@ -2,6 +2,10 @@
 
 namespace DaveRandom\LibLifxLan\DataTypes\Light;
 
+use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
+use const DaveRandom\LibLifxLan\UINT32_MAX;
+use const DaveRandom\LibLifxLan\UINT32_MIN;
+
 final class Effect
 {
     public const SET_HUE        = 0b0001;
@@ -18,8 +22,32 @@ final class Effect
     private $waveform;
     private $options;
 
+    /**
+     * @param bool $transient
+     * @param HsbkColor $color
+     * @param int $period
+     * @param float $cycles
+     * @param int $skewRatio
+     * @param int $waveform
+     * @param int $options
+     * @throws InvalidValueException
+     */
     public function __construct(bool $transient, HsbkColor $color, int $period, float $cycles, int $skewRatio, int $waveform, int $options = self::SET_ALL)
     {
+        if ($period < UINT32_MIN || $period > UINT32_MAX) {
+            throw new InvalidValueException(
+                "Period {$period} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
+            );
+        }
+
+        if ($skewRatio < -32768 || $skewRatio > 32767) {
+            throw new InvalidValueException("Skew ratio {$skewRatio} outside allowable range of -32768 - 32767");
+        }
+
+        if ($waveform < 0 || $waveform > 255) {
+            throw new InvalidValueException("Waveform {$waveform} outside allowable range of 0 - 255");
+        }
+
         $this->transient = $transient;
         $this->color = $color;
         $this->period = $period;

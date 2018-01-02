@@ -2,6 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Responses;
 
+use DaveRandom\LibLifxLan\DataTypes\Label;
 use DaveRandom\LibLifxLan\Messages\Message;
 
 final class StateLabel implements Message
@@ -11,12 +12,12 @@ final class StateLabel implements Message
 
     private $label;
 
-    public function __construct(string $label)
+    public function __construct(Label $label)
     {
         $this->label = $label;
     }
 
-    public function getLabel(): string
+    public function getLabel(): Label
     {
         return $this->label;
     }

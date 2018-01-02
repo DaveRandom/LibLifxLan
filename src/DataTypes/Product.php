@@ -2,6 +2,8 @@
 
 namespace DaveRandom\LibLifxLan\DataTypes;
 
+use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
+
 final class Product
 {
     private const PRODUCT_DATA = [
@@ -34,12 +36,17 @@ final class Product
     private $name;
     private $features;
 
+    /**
+     * @param Version $version
+     * @return Product
+     * @throws InvalidValueException
+     */
     public static function createFromVersion(Version $version): Product
     {
         $key = "{$version->getVendor()}:{$version->getProduct()}";
 
         if (!\array_key_exists($key, self::PRODUCT_DATA)) {
-            throw new \InvalidArgumentException("Unknown product: vid={$version->getVendor()};pid={$version->getProduct()}");
+            throw new InvalidValueException("Unknown product: vid={$version->getVendor()};pid={$version->getProduct()}");
         }
 
         [$name, $features] = self::PRODUCT_DATA[$key];

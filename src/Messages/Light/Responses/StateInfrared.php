@@ -2,6 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Light\Responses;
 
+use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 use DaveRandom\LibLifxLan\Messages\Message;
 
 final class StateInfrared implements Message
@@ -11,8 +12,16 @@ final class StateInfrared implements Message
 
     private $brightness;
 
+    /**
+     * @param int $brightness
+     * @throws InvalidValueException
+     */
     public function __construct(int $brightness)
     {
+        if ($brightness < 0 || $brightness > 65535) {
+            throw new InvalidValueException("Brightness {$brightness} outside allowable range of 0 - 65535");
+        }
+
         $this->brightness = $brightness;
     }
 
