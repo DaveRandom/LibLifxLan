@@ -93,8 +93,15 @@ final class Effect
      * @param int $options
      * @throws InvalidValueException
      */
-    public function __construct(bool $transient, HsbkColor $color, int $period, float $cycles, int $skewRatio, int $waveform, int $options = self::SET_ALL)
-    {
+    public function __construct(
+        bool $transient,
+        HsbkColor $color,
+        int $period,
+        float $cycles,
+        int $skewRatio,
+        int $waveform,
+        int $options = self::SET_ALL
+    ) {
         $this->setTransient($transient);
         $this->setColor($color);
         $this->setPeriod($period);

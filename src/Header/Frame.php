@@ -43,6 +43,16 @@ final class Frame
         $this->origin = $origin;
     }
 
+    private function setTagged(bool $tagged): void
+    {
+        $this->tagged = $tagged;
+    }
+
+    private function setAddressable(bool $addressable): void
+    {
+        $this->addressable = $addressable;
+    }
+
     /**
      * @param int $protocolNo
      * @throws InvalidValueException
@@ -84,8 +94,8 @@ final class Frame
     {
         $this->setSize($size);
         $this->setOrigin($origin);
-        $this->tagged = $tagged;
-        $this->addressable = $addressable;
+        $this->setTagged($tagged);
+        $this->setAddressable($addressable);
         $this->setProtocolNo($protocolNo);
         $this->setSource($source);
     }

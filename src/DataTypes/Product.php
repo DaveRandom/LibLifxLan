@@ -46,7 +46,9 @@ final class Product
         $key = "{$version->getVendor()}:{$version->getProduct()}";
 
         if (!\array_key_exists($key, self::PRODUCT_DATA)) {
-            throw new InvalidValueException("Unknown product: vid={$version->getVendor()};pid={$version->getProduct()}");
+            throw new InvalidValueException(
+                "Unknown product: vid={$version->getVendor()};pid={$version->getProduct()}"
+            );
         }
 
         [$name, $features] = self::PRODUCT_DATA[$key];
