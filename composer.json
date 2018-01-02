@@ -13,9 +13,15 @@
     "psr-4": { "DaveRandom\\LibLifxLan\\": "src/" },
     "files": [ "src/functions.php" ]
   },
+  "autoload-dev": {
+    "psr-4": { "DaveRandom\\LibLifxLan\\Test\\": "tests/src/" }
+  },
   "require": {
     "php-64bit": ">=7.1.1",
     "ramsey/uuid": "^3",
     "daverandom/network-primitives": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6"
   }
 }
