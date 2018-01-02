@@ -1,21 +1,21 @@
 {
-    "name": "daverandom/lifx-lan-protocol",
-    "description": "LIFX LAN protocol implementation",
-    "minimum-stability": "stable",
-    "license": "mit",
-    "authors": [
-        {
-            "name": "Chris Wright",
-            "email": "me@daverandom.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": { "DaveRandom\\LibLifxLan\\": "src/" },
-        "files": [ "src/functions.php" ]
-    },
-    "require": {
-        "php-64bit": ">=7.1.1",
-        "ramsey/uuid": "^3",
-        "daverandom/network-primitives": "dev-master"
+  "name": "daverandom/lifx-lan-protocol",
+  "description": "LIFX LAN protocol implementation",
+  "minimum-stability": "stable",
+  "license": "mit",
+  "authors": [
+    {
+      "name": "Chris Wright",
+      "email": "me@daverandom.com"
     }
+  ],
+  "autoload": {
+    "psr-4": { "DaveRandom\\LibLifxLan\\": "src/" },
+    "files": [ "src/functions.php" ]
+  },
+  "require": {
+    "php-64bit": ">=7.1.1",
+    "ramsey/uuid": "^3",
+    "daverandom/network-primitives": "dev-master"
+  }
 }
