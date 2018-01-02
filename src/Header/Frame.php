@@ -19,6 +19,60 @@ final class Frame
 
     /**
      * @param int $size
+     * @throws InvalidValueException
+     */
+    private function setSize(int $size): void
+    {
+        if ($size < 0 || $size > 65535) {
+            throw new InvalidValueException("Message size {$size} outside allowable range of 0 - 65535");
+        }
+
+        $this->size = $size;
+    }
+
+    /**
+     * @param int $origin
+     * @throws InvalidValueException
+     */
+    private function setOrigin(int $origin): void
+    {
+        if ($origin < 0 || $origin > 3) {
+            throw new InvalidValueException("Message origin value {$origin} outside allowable range 0 - 3");
+        }
+
+        $this->origin = $origin;
+    }
+
+    /**
+     * @param int $protocolNo
+     * @throws InvalidValueException
+     */
+    private function setProtocolNo(int $protocolNo): void
+    {
+        if ($protocolNo < 0 || $protocolNo > 4095) {
+            throw new InvalidValueException("Message protocol number {$protocolNo} outside allowable range 0 - 4095");
+        }
+
+        $this->protocolNo = $protocolNo;
+    }
+
+    /**
+     * @param int $source
+     * @throws InvalidValueException
+     */
+    private function setSource(int $source): void
+    {
+        if ($source < UINT32_MIN || $source > UINT32_MAX) {
+            throw new InvalidValueException(
+                "Message source value {$source} outside allowable range " . UINT32_MIN . " - " . UINT32_MAX
+            );
+        }
+
+        $this->source = $source;
+    }
+
+    /**
+     * @param int $size
      * @param int $origin
      * @param bool $tagged
      * @param bool $addressable
@@ -28,28 +82,12 @@ final class Frame
      */
     public function __construct(int $size, int $origin, bool $tagged, bool $addressable, int $protocolNo, int $source)
     {
-        if ($size < 0 || $size > 65535) {
-            throw new InvalidValueException("Message size {$size} outside allowable range of 0 - 65535");
-        }
-
-        if ($origin < 0 || $origin > 3) {
-            throw new InvalidValueException("Message origin value {$origin} outside allowable range 0 - 3");
-        }
-
-        if ($protocolNo < 0 || $protocolNo > 4095) {
-            throw new InvalidValueException("Message protocol number {$protocolNo} outside allowable range 0 - 4095");
-        }
-
-        if ($source < UINT32_MIN || $source > UINT32_MAX) {
-            throw new InvalidValueException("Message source value {$source} outside allowable range " . UINT32_MIN . " - " . UINT32_MAX);
-        }
-
-        $this->size = $size;
-        $this->origin = $origin;
+        $this->setSize($size);
+        $this->setOrigin($origin);
         $this->tagged = $tagged;
         $this->addressable = $addressable;
-        $this->protocolNo = $protocolNo;
-        $this->source = $source;
+        $this->setProtocolNo($protocolNo);
+        $this->setSource($source);
     }
 
     public function getSize(): int

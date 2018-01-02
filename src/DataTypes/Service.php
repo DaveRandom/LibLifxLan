@@ -13,15 +13,23 @@ final class Service
 
     /**
      * @param int $typeId
-     * @param int $port
      * @throws InvalidValueException
      */
-    public function __construct(int $typeId, int $port)
+    private function setTypeId(int $typeId): void
     {
         if ($typeId < 0 || $typeId > 255) {
             throw new InvalidValueException("Service type ID {$typeId} outside allowable range of 0 - 255");
         }
 
+        $this->typeId = $typeId;
+    }
+
+    /**
+     * @param int $port
+     * @throws InvalidValueException
+     */
+    private function setPort(int $port): void
+    {
         // Protocol spec states this is a uint32 rather than a uint16, so allow any uint32 value at the protocol level
         if ($port < UINT32_MIN || $port > UINT32_MAX) {
             throw new InvalidValueException(
@@ -29,8 +37,18 @@ final class Service
             );
         }
 
-        $this->typeId = $typeId;
         $this->port = $port;
+    }
+
+    /**
+     * @param int $typeId
+     * @param int $port
+     * @throws InvalidValueException
+     */
+    public function __construct(int $typeId, int $port)
+    {
+        $this->setTypeId($typeId);
+        $this->setPort($port);
     }
 
     public function getTypeId(): int

@@ -13,23 +13,41 @@ final class PowerTransition
 
     /**
      * @param int $level
-     * @param int $duration
      * @throws InvalidValueException
      */
-    public function __construct(int $level, int $duration)
+    private function setLevel(int $level): void
     {
         if ($level < 0 || $level > 65535) {
             throw new InvalidValueException("Power level {$level} outside allowable range of 0 - 65535");
         }
 
+        $this->level = $level;
+    }
+
+    /**
+     * @param int $duration
+     * @throws InvalidValueException
+     */
+    private function setDuration(int $duration): void
+    {
         if ($duration < UINT32_MIN || $duration > UINT32_MAX) {
             throw new InvalidValueException(
                 "Transition duration {$duration} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
             );
         }
 
-        $this->level = $level;
         $this->duration = $duration;
+    }
+
+    /**
+     * @param int $level
+     * @param int $duration
+     * @throws InvalidValueException
+     */
+    public function __construct(int $level, int $duration)
+    {
+        $this->setLevel($level);
+        $this->setDuration($duration);
     }
 
     public function getLevel(): int

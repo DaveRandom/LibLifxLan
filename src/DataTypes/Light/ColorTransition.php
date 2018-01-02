@@ -11,12 +11,16 @@ final class ColorTransition
     private $color;
     private $duration;
 
+    private function setColor(HsbkColor $color): void
+    {
+        $this->color = $color;
+    }
+
     /**
-     * @param HsbkColor $color
      * @param int $duration
      * @throws InvalidValueException
      */
-    public function __construct(HsbkColor $color, int $duration)
+    private function setDuration(int $duration): void
     {
         if ($duration < UINT32_MIN || $duration > UINT32_MAX) {
             throw new InvalidValueException(
@@ -24,8 +28,18 @@ final class ColorTransition
             );
         }
 
-        $this->color = $color;
         $this->duration = $duration;
+    }
+
+    /**
+     * @param HsbkColor $color
+     * @param int $duration
+     * @throws InvalidValueException
+     */
+    public function __construct(HsbkColor $color, int $duration)
+    {
+        $this->setColor($color);
+        $this->setDuration($duration);
     }
 
     public function getColor(): HsbkColor

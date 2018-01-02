@@ -12,12 +12,16 @@ abstract class Firmware
     private $build;
     private $version;
 
+    private function setBuild(\DateTimeImmutable $build): void
+    {
+        $this->build = $build;
+    }
+
     /**
-     * @param \DateTimeInterface $build
      * @param int $version
      * @throws InvalidValueException
      */
-    protected function __construct(\DateTimeInterface $build, int $version)
+    private function setVersion(int $version): void
     {
         if ($version < UINT32_MIN || $version > UINT32_MAX) {
             throw new InvalidValueException(
@@ -25,8 +29,18 @@ abstract class Firmware
             );
         }
 
-        $this->build = datetimeinterface_to_datetimeimmutable($build);
         $this->version = $version;
+    }
+
+    /**
+     * @param \DateTimeInterface $build
+     * @param int $version
+     * @throws InvalidValueException
+     */
+    protected function __construct(\DateTimeInterface $build, int $version)
+    {
+        $this->setBuild(datetimeinterface_to_datetimeimmutable($build));
+        $this->setVersion($version);
     }
 
     public function getBuild(): \DateTimeImmutable

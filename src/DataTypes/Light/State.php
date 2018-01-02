@@ -11,6 +11,29 @@ final class State
     private $power;
     private $label;
 
+    private function setColor(HsbkColor $color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @param int $power
+     * @throws InvalidValueException
+     */
+    private function setPower(int $power): void
+    {
+        if ($power < 0 || $power > 65535) {
+            throw new InvalidValueException("Power level {$power} outside allowable range of 0 - 65535");
+        }
+
+        $this->power = $power;
+    }
+
+    private function setLabel(Label $label): void
+    {
+        $this->label = $label;
+    }
+
     /**
      * @param HsbkColor $color
      * @param int $power
@@ -19,13 +42,9 @@ final class State
      */
     public function __construct(HsbkColor $color, int $power, Label $label)
     {
-        if ($power < 0 || $power > 65535) {
-            throw new InvalidValueException("Power level {$power} outside allowable range of 0 - 65535");
-        }
-
-        $this->color = $color;
-        $this->power = $power;
-        $this->label = $label;
+        $this->setColor($color);
+        $this->setPower($power);
+        $this->setLabel($label);
     }
 
     public function getColor(): HsbkColor

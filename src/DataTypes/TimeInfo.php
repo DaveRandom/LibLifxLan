@@ -10,11 +10,26 @@ final class TimeInfo
     private $uptime;
     private $downtime;
 
+    private function setTime(\DateTimeImmutable $time): void
+    {
+        $this->time = $time;
+    }
+
+    private function setUptime(int $uptime): void
+    {
+        $this->uptime = $uptime;
+    }
+
+    private function setDowntime(int $downtime): void
+    {
+        $this->downtime = $downtime;
+    }
+
     public function __construct(\DateTimeInterface $time, int $uptime, int $downtime)
     {
-        $this->time = datetimeinterface_to_datetimeimmutable($time);
-        $this->uptime = $uptime;
-        $this->downtime = $downtime;
+        $this->setTime(datetimeinterface_to_datetimeimmutable($time));
+        $this->setUptime($uptime);
+        $this->setDowntime($downtime);
     }
 
     public function getTime(): \DateTimeImmutable

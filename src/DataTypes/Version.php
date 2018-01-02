@@ -14,11 +14,9 @@ final class Version
 
     /**
      * @param int $vendor
-     * @param int $product
-     * @param int $version
      * @throws InvalidValueException
      */
-    public function __construct(int $vendor, int $product, int $version)
+    private function setVendor(int $vendor): void
     {
         if ($vendor < UINT32_MIN || $vendor > UINT32_MAX) {
             throw new InvalidValueException(
@@ -26,21 +24,50 @@ final class Version
             );
         }
 
+        $this->vendor = $vendor;
+    }
+
+    /**
+     * @param int $product
+     * @throws InvalidValueException
+     */
+    private function setProduct(int $product): void
+    {
         if ($product < UINT32_MIN || $product > UINT32_MAX) {
             throw new InvalidValueException(
                 "Product ID {$product} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
             );
         }
 
+        $this->product = $product;
+    }
+
+    /**
+     * @param int $version
+     * @throws InvalidValueException
+     */
+    private function setVersion(int $version): void
+    {
         if ($version < UINT32_MIN || $version > UINT32_MAX) {
             throw new InvalidValueException(
                 "Product version {$version} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
             );
         }
 
-        $this->vendor = $vendor;
-        $this->product = $product;
         $this->version = $version;
+    }
+
+    /**
+     * @param int $vendor
+     * @param int $product
+     * @param int $version
+     * @throws InvalidValueException
+     */
+    public function __construct(int $vendor, int $product, int $version)
+    {
+        $this->setVendor($vendor);
+        $this->setProduct($product);
+        $this->setVersion($version);
     }
 
     public function getVendor(): int

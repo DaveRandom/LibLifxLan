@@ -54,11 +54,26 @@ final class Product
         return new Product($version, $name, $features);
     }
 
-    private function __construct(Version $version, string $name, int $features)
+    private function setVersion(Version $version): void
     {
         $this->version = $version;
+    }
+
+    private function setName(string $name): void
+    {
         $this->name = $name;
+    }
+
+    private function setFeatures(int $features): void
+    {
         $this->features = $features;
+    }
+
+    private function __construct(Version $version, string $name, int $features)
+    {
+        $this->setVersion($version);
+        $this->setName($name);
+        $this->setFeatures($features);
     }
 
     public function getVersion(): Version

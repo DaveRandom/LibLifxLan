@@ -22,6 +22,67 @@ final class Effect
     private $waveform;
     private $options;
 
+    private function setTransient(bool $transient): void
+    {
+        $this->transient = $transient;
+    }
+
+    private function setColor(HsbkColor $color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @param int $period
+     * @throws InvalidValueException
+     */
+    private function setPeriod(int $period): void
+    {
+        if ($period < UINT32_MIN || $period > UINT32_MAX) {
+            throw new InvalidValueException(
+                "Period {$period} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
+            );
+        }
+
+        $this->period = $period;
+    }
+
+    private function setCycles(float $cycles): void
+    {
+        $this->cycles = $cycles;
+    }
+
+    /**
+     * @param int $skewRatio
+     * @throws InvalidValueException
+     */
+    private function setSkewRatio(int $skewRatio): void
+    {
+        if ($skewRatio < -32768 || $skewRatio > 32767) {
+            throw new InvalidValueException("Skew ratio {$skewRatio} outside allowable range of -32768 - 32767");
+        }
+
+        $this->skewRatio = $skewRatio;
+    }
+
+    /**
+     * @param int $waveform
+     * @throws InvalidValueException
+     */
+    private function setWaveform(int $waveform): void
+    {
+        if ($waveform < 0 || $waveform > 255) {
+            throw new InvalidValueException("Waveform {$waveform} outside allowable range of 0 - 255");
+        }
+
+        $this->waveform = $waveform;
+    }
+
+    private function setOptions(int $options): void
+    {
+        $this->options = $options;
+    }
+
     /**
      * @param bool $transient
      * @param HsbkColor $color
@@ -34,27 +95,13 @@ final class Effect
      */
     public function __construct(bool $transient, HsbkColor $color, int $period, float $cycles, int $skewRatio, int $waveform, int $options = self::SET_ALL)
     {
-        if ($period < UINT32_MIN || $period > UINT32_MAX) {
-            throw new InvalidValueException(
-                "Period {$period} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
-            );
-        }
-
-        if ($skewRatio < -32768 || $skewRatio > 32767) {
-            throw new InvalidValueException("Skew ratio {$skewRatio} outside allowable range of -32768 - 32767");
-        }
-
-        if ($waveform < 0 || $waveform > 255) {
-            throw new InvalidValueException("Waveform {$waveform} outside allowable range of 0 - 255");
-        }
-
-        $this->transient = $transient;
-        $this->color = $color;
-        $this->period = $period;
-        $this->cycles = $cycles;
-        $this->skewRatio = $skewRatio;
-        $this->waveform = $waveform;
-        $this->options = $options;
+        $this->setTransient($transient);
+        $this->setColor($color);
+        $this->setPeriod($period);
+        $this->setCycles($cycles);
+        $this->setSkewRatio($skewRatio);
+        $this->setWaveform($waveform);
+        $this->setOptions($options);
     }
 
     public function isTransient(): bool

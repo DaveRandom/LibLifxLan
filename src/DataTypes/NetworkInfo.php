@@ -13,12 +13,10 @@ abstract class NetworkInfo
     private $rx;
 
     /**
-     * @param float $signal
      * @param int $tx
-     * @param int $rx
      * @throws InvalidValueException
      */
-    protected function __construct(float $signal, int $tx, int $rx)
+    private function setTx(int $tx): void
     {
         if ($tx < UINT32_MIN || $tx > UINT32_MAX) {
             throw new InvalidValueException(
@@ -26,15 +24,35 @@ abstract class NetworkInfo
             );
         }
 
+        $this->tx = $tx;
+    }
+
+    /**
+     * @param int $rx
+     * @throws InvalidValueException
+     */
+    private function setRx(int $rx): void
+    {
         if ($rx < UINT32_MIN || $rx > UINT32_MAX) {
             throw new InvalidValueException(
                 "Recieved bytes {$rx} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
             );
         }
 
-        $this->signal = $signal;
-        $this->tx = $tx;
         $this->rx = $rx;
+    }
+
+    /**
+     * @param float $signal
+     * @param int $tx
+     * @param int $rx
+     * @throws InvalidValueException
+     */
+    protected function __construct(float $signal, int $tx, int $rx)
+    {
+        $this->signal = $signal;
+        $this->setTx($tx);
+        $this->setRx($rx);
     }
 
     public function getSignal(): float
