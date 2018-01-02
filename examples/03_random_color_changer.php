@@ -1,9 +1,5 @@
 <?php declare(strict_types=1);
 
-// This example does exactly what is described on the example packet page
-// https://lan.developer.lifx.com/docs/building-a-lifx-packet
-// The packet produced by this code should be identical to the example, except the "ack_required" bit will be set
-
 use DaveRandom\LibLifxLan\DataTypes\Light\ColorTransition;
 use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
