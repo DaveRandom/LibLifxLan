@@ -10,7 +10,7 @@ final class PacketEncoder
     private $headerEncoder;
     private $messageEncoder;
 
-    public function __construct(array $options = [], HeaderEncoder $headerEncoder = null, MessageEncoder $messageEncoder = null)
+    public function __construct(HeaderEncoder $headerEncoder = null, MessageEncoder $messageEncoder = null)
     {
         $this->headerEncoder = $headerEncoder ?? new HeaderEncoder;
         $this->messageEncoder = $messageEncoder ?? new MessageEncoder();
