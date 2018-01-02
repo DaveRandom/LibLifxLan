@@ -4,6 +4,12 @@ PHP implementation of the [LIFX LAN protocol](https://lan.developer.lifx.com/doc
 
 WIP. Do not rely on any of this code as the API is currently subject to change.
 
+## Status
+
+[![Build Status](https://travis-ci.org/DaveRandom/LibLifxLan.svg?branch=master)](https://travis-ci.org/DaveRandom/LibLifxLan)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/DaveRandom/LibLifxLan/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/DaveRandom/LibLifxLan/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/DaveRandom/LibLifxLan/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/DaveRandom/LibLifxLan/?branch=master)
+
 ## Requirements
 
 - PHP 7.1.1, because floating point endianness [specifiers](https://secure.php.net/pack#refsect1-function.pack-changelog)
