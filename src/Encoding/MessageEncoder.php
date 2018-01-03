@@ -11,8 +11,8 @@ use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
 use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommands;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
-use const DaveRandom\LibLifxLan\FLOAT32_CODE;
 use DaveRandom\LibLifxLan\Messages\UnknownMessage;
+use const DaveRandom\LibLifxLan\FLOAT32_CODE;
 
 final class MessageEncoder
 {
