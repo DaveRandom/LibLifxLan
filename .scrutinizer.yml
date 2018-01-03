@@ -1,17 +1,24 @@
-filter:
-    excluded_paths:
-        - 'tests/*'
-        - 'examples/*'
-        - 'resources/*'
+# language: php
+# tests: true
 
-tools:
-    external_code_coverage: true
+coding_style:
+  php:
+    indentation:
+      general:
+        use_tabs: false
+        size: 4
 
 build:
-    environment:
-        php:
-            version: "7.1"
+  nodes:
+    tests: true
+    analysis:
+      tests:
+        override:
+          -
+            command: phpcs-run
+            use_website_config: true
+          - php-scrutinizer-run
 
 checks:
-    php:
-        code_rating: true
+  php:
+    duplication: false
