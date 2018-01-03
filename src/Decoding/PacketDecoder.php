@@ -39,7 +39,7 @@ final class PacketDecoder
             );
         }
 
-        $statedLength = \unpack('vlength', $buffer)['length'];
+        $statedLength = \unpack('vlength', $buffer, $offset)['length'];
 
         if ($statedLength !== $dataLength) {
             throw new InsufficientDataException(
