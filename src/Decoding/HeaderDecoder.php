@@ -35,13 +35,13 @@ final class HeaderDecoder
     {
         if ((\strlen($data) - $offset) < Header::WIRE_SIZE) {
             throw new InsufficientDataException(
-                "Header requires " . Header::WIRE_SIZE . " bytes, got " . \strlen($data) . " bytes"
+                "Header requires " . Header::WIRE_SIZE . " bytes, got " . (\strlen($data) - $offset) . " bytes"
             );
         }
 
-        $frame = $this->frameDecoder->decodeFrame($data, self::FRAME_OFFSET);
-        $frameAddress = $this->frameAddressDecoder->decodeFrameAddress($data, self::FRAME_ADDRESS_OFFSET);
-        $protocolHeader = $this->protocolHeaderDecoder->decodeProtocolHeader($data, self::PROTOCOL_HEADER_OFFSET);
+        $frame = $this->frameDecoder->decodeFrame($data, $offset + self::FRAME_OFFSET);
+        $frameAddress = $this->frameAddressDecoder->decodeFrameAddress($data, $offset + self::FRAME_ADDRESS_OFFSET);
+        $protocolHeader = $this->protocolHeaderDecoder->decodeProtocolHeader($data, $offset + self::PROTOCOL_HEADER_OFFSET);
 
         return new Header($frame, $frameAddress, $protocolHeader);
     }

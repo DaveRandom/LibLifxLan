@@ -590,21 +590,24 @@ final class MessageDecoder
      * @param int $type
      * @param string $data
      * @param int $offset
+     * @param int|null $dataLength
      * @return Message
      * @throws DecodingException
      */
-    public function decodeMessage(int $type, string $data, int $offset = 0): Message
+    public function decodeMessage(int $type, string $data, int $offset = 0, int $dataLength = null): Message
     {
+        $dataLength = $dataLength ?? (\strlen($data) - $offset);
+
         if (!\array_key_exists($type, self::MESSAGE_INFO)) {
-            return new UnknownMessage($type, $data);
+            return new UnknownMessage($type, \substr($data, $offset, $dataLength));
         }
 
-        [$payloadLength, $messageName] = self::MESSAGE_INFO[$type];
+        [$expectedLength, $messageName] = self::MESSAGE_INFO[$type];
 
-        if ((\strlen($data) - $offset) !== $payloadLength) {
+        if ($dataLength !== $expectedLength) {
             throw new InvalidMessagePayloadLengthException(
                 "Invalid payload length for {$messageName} message,"
-                . " expecting {$payloadLength} bytes, got " . (\strlen($data) - $offset)
+                . " expecting {$expectedLength} bytes, got {$dataLength} bytes"
             );
         }
 
