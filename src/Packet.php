@@ -17,7 +17,13 @@ final class Packet
     private $header;
     private $message;
 
-    public static function createFromMessage(Message $message, int $sourceId, ?MacAddress $destination, int $sequenceNo, int $responsePattern): Packet
+    public static function createFromMessage(
+        Message $message,
+        int $sourceId,
+        ?MacAddress $destination,
+        int $sequenceNo,
+        int $responsePattern
+    ): Packet
     {
         $frame = new Frame(
             Header::WIRE_SIZE + $message->getWireSize(),
