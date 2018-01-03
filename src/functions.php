@@ -13,8 +13,8 @@ if (\strlen(\pack('e', 0.1)) === 4) {
     throw new \Error('Cannot pack()/unpack() floating point numbers to a 32-bit little-endian representation');
 }
 
-\define(__NAMESPACE__ . '\\UINT32_MIN', \PHP_INT_SIZE === 4 ? \PHP_INT_MIN : 0);
-\define(__NAMESPACE__ . '\\UINT32_MAX', \PHP_INT_SIZE === 4 ? \PHP_INT_MIN : 0xffffffff);
+const UINT32_MIN = \PHP_INT_SIZE === 4 ? \PHP_INT_MIN : 0;
+const UINT32_MAX = \PHP_INT_SIZE === 4 ? \PHP_INT_MIN : 0xffffffff;
 
 /**
  * @param \DateTimeInterface $dateTime
