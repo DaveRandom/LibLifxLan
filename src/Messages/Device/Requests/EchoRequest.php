@@ -2,6 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\Messages\Device\Requests;
 
+use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 use DaveRandom\LibLifxLan\Messages\Message;
 
 final class EchoRequest implements Message
@@ -11,8 +12,16 @@ final class EchoRequest implements Message
 
     private $payload;
 
+    /**
+     * @param string $payload
+     * @throws InvalidValueException
+     */
     public function __construct(string $payload)
     {
+        if (\strlen($payload) !== 64) {
+            throw new InvalidValueException("Echo request payload should be exactly 64 bytes");
+        }
+
         $this->payload = $payload;
     }
 

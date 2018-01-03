@@ -271,17 +271,10 @@ final class MessageEncoder
     /**
      * @param DeviceRequests\EchoRequest $message
      * @return string
-     * @throws InvalidMessageException
      */
     private function encodeEchoRequest(DeviceRequests\EchoRequest $message): string
     {
-        $payload = $message->getPayload();
-
-        if (\strlen($payload) !== 64) {
-            throw new InvalidMessageException("Echo request payload should be exactly 64 bytes");
-        }
-
-        return $payload;
+        return $message->getPayload();
     }
 
     /**
@@ -290,7 +283,7 @@ final class MessageEncoder
      */
     private function encodeEchoResponse(DeviceResponses\EchoResponse $message): string
     {
-        return $message->getPayload(); // don't validate this as it should respond with client data verbatim
+        return $message->getPayload();
     }
 
     /**
