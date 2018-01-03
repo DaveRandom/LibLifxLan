@@ -12,10 +12,12 @@ use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommands;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
 use const DaveRandom\LibLifxLan\FLOAT32_CODE;
+use DaveRandom\LibLifxLan\Messages\UnknownMessage;
 
 final class MessageEncoder
 {
     /**
+     * @uses encodeUnknownMessage
      * @uses encodeEchoRequest
      * @uses encodeEchoResponse
      * @uses encodeSetGroup
@@ -43,6 +45,8 @@ final class MessageEncoder
      * @uses encodeStateLightPower
      */
     private const ENCODING_ROUTINES = [
+        UnknownMessage::class => 'UnknownMessage',
+
         // Device command messages
         DeviceCommands\SetGroup::class => 'SetGroup',
         DeviceCommands\SetLabel::class => 'SetLabel',
@@ -149,6 +153,11 @@ final class MessageEncoder
     private function dateTimeToNanoseconds(\DateTimeInterface $dateTime): int
     {
         return ($dateTime->format('U') * 1000000000) + ($dateTime->format('u') * 1000);
+    }
+
+    private function encodeUnknownMessage(UnknownMessage $message): string
+    {
+        return $message->getData();
     }
 
     private function encodeStateVersion(DeviceResponses\StateVersion $message): string

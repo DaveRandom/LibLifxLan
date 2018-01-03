@@ -7,7 +7,6 @@ use DaveRandom\LibLifxLan\DataTypes\Light as LightDataTypes;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\MalformedMessagePayloadException;
-use DaveRandom\LibLifxLan\Decoding\Exceptions\UnknownMessageTypeException;
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
 use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
@@ -16,6 +15,7 @@ use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommmands;
 use DaveRandom\LibLifxLan\Messages\Light\Requests as LightRequests;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
+use DaveRandom\LibLifxLan\Messages\UnknownMessage;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 
@@ -535,14 +535,15 @@ final class MessageDecoder
     public function decodeMessage(int $type, string $data): Message
     {
         if (!\array_key_exists($type, self::MESSAGE_INFO)) {
-            throw new UnknownMessageTypeException("Unknown message type: {$type}");
+            return new UnknownMessage($type, $data);
         }
 
         [$payloadLength, $messageName] = self::MESSAGE_INFO[$type];
 
-        if (isset($payloadLength) && \strlen($data) !== $payloadLength) {
+        if (\strlen($data) !== $payloadLength) {
             throw new InvalidMessagePayloadLengthException(
-                "Invalid payload length for {$messageName} message, expecting {$payloadLength} bytes, got " . \strlen($data)
+                "Invalid payload length for {$messageName} message,"
+                . " expecting {$payloadLength} bytes, got " . \strlen($data)
             );
         }
 
