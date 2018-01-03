@@ -25,6 +25,12 @@ final class TimeInfo
         $this->downtime = $downtime;
     }
 
+    /**
+     * @param \DateTimeInterface $time
+     * @param int $uptime
+     * @param int $downtime
+     * @throws \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
     public function __construct(\DateTimeInterface $time, int $uptime, int $downtime)
     {
         $this->setTime(datetimeinterface_to_datetimeimmutable($time));

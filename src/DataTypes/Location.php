@@ -26,6 +26,12 @@ final class Location
         $this->updatedAt = $updatedAt;
     }
 
+    /**
+     * @param UuidInterface $guid
+     * @param Label $label
+     * @param \DateTimeInterface $updatedAt
+     * @throws \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
     public function __construct(UuidInterface $guid, Label $label, \DateTimeInterface $updatedAt)
     {
         $this->setGuid($guid);
