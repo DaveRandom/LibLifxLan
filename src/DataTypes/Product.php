@@ -71,7 +71,7 @@ final class Product
         $this->features = $features;
     }
 
-    private function __construct(Version $version, string $name, int $features)
+    public function __construct(Version $version, string $name, int $features)
     {
         $this->setVersion($version);
         $this->setName($name);

@@ -8,10 +8,10 @@ use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 final class Effect
 {
-    public const SET_HUE        = 0b0001;
-    public const SET_SATURATION = 0b0010;
-    public const SET_BRIGHTNESS = 0b0100;
-    public const SET_TEMPERATURE     = 0b1000;
+    public const SET_HUE         = 0b0001;
+    public const SET_SATURATION  = 0b0010;
+    public const SET_BRIGHTNESS  = 0b0100;
+    public const SET_TEMPERATURE = 0b1000;
     public const SET_ALL = self::SET_HUE | self::SET_SATURATION | self::SET_BRIGHTNESS | self::SET_TEMPERATURE;
 
     private $transient;
