@@ -1,6 +1,12 @@
 # language: php
 # tests: true
 
+filter:
+  excluded_paths:
+    - "examples/"
+    - "resources/"
+    - "tests/"
+
 coding_style:
   php:
     indentation:
