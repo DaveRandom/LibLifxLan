@@ -7,6 +7,9 @@ filter:
     - "resources/"
     - "tests/"
 
+tools:
+  external_code_coverage: true
+
 coding_style:
   php:
     indentation:
@@ -27,4 +30,5 @@ build:
 
 checks:
   php:
+    code_rating: true
     duplication: false
