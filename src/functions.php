@@ -23,6 +23,8 @@ if (\strlen(\pack('e', 0.1)) === 4) {
  */
 function datetimeinterface_to_datetimeimmutable(\DateTimeInterface $dateTime): \DateTimeImmutable
 {
+    static $utcTimeZone;
+
     if ($dateTime instanceof \DateTimeImmutable) {
         return $dateTime;
     }
@@ -31,7 +33,11 @@ function datetimeinterface_to_datetimeimmutable(\DateTimeInterface $dateTime): \
         return \DateTimeImmutable::createFromMutable($dateTime);
     }
 
-    $result = \DateTimeImmutable::createFromFormat('u U', $dateTime->format('u U'));
+    $result = \DateTimeImmutable::createFromFormat(
+        'u U',
+        $dateTime->format('u U'),
+        $utcTimeZone ?? ($utcTimeZone = new \DateTimeZone('UTC'))
+    );
 
     if ($result === false) {
         throw new InvalidValueException('Could not create DateTimeImmutable instance from DateTimeInterface instance');

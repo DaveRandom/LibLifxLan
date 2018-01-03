@@ -137,10 +137,16 @@ final class MessageDecoder
      */
     private function nanotimeToDateTimeImmutable(int $timestamp): \DateTimeImmutable
     {
+        static $utcTimeZone;
+        
         $usecs = (int)(($timestamp % 1000000000) / 1000);
         $secs = (int)($timestamp / 1000000000);
 
-        $result = \DateTimeImmutable::createFromFormat('u U', \sprintf("%06d %d", $usecs, $secs));
+        $result = \DateTimeImmutable::createFromFormat(
+            'u U',
+            \sprintf("%06d %d", $usecs, $secs),
+            $utcTimeZone ?? ($utcTimeZone = new \DateTimeZone('UTC'))
+        );
 
         if ($result === false) {
             throw new InvalidValueException("Could not convert nanotime to DateTimeImmutable instance");
