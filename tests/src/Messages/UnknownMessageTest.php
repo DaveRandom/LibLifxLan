@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DaveRandom\LibLifxLan\Test\Messages;
+namespace DaveRandom\LibLifxLan\Tests\Messages;
 
 use DaveRandom\LibLifxLan\Messages\UnknownMessage;
 use PHPUnit\Framework\TestCase;
