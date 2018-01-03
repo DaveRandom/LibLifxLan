@@ -104,13 +104,12 @@ final class MessageEncoder
      */
     private function encodeLocation(DeviceDataTypes\Location $location): string
     {
-        $updatedAt = $this->dateTimeToNanoseconds($location->getUpdatedAt());
-
-        if ($updatedAt < 0) {
-            throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
-        }
-
-        return \pack('a16a32P', $location->getGuid()->getBytes(), $location->getLabel()->getValue(), $updatedAt);
+        return \pack(
+            'a16a32P',
+            $location->getGuid()->getBytes(),
+            $location->getLabel()->getValue(),
+            $this->dateTimeToNanoseconds($location->getUpdatedAt())
+        );
     }
 
     /**
@@ -120,15 +119,19 @@ final class MessageEncoder
      */
     private function encodeGroup(DeviceDataTypes\Group $group): string
     {
-        $updatedAt = $this->dateTimeToNanoseconds($group->getUpdatedAt());
-
-        if ($updatedAt < 0) {
-            throw new InvalidMessageException("Updated at timestamp {$updatedAt} is negative");
-        }
-
-        return \pack('a16a32P', $group->getGuid()->getBytes(), $group->getLabel()->getValue(), $updatedAt);
+        return \pack(
+            'a16a32P',
+            $group->getGuid()->getBytes(),
+            $group->getLabel()->getValue(),
+            $this->dateTimeToNanoseconds($group->getUpdatedAt())
+        );
     }
 
+    /**
+     * @param DeviceDataTypes\Firmware $firmware
+     * @return string
+     * @throws InvalidMessageException
+     */
     private function encodeFirmware(DeviceDataTypes\Firmware $firmware)
     {
         return \pack(
@@ -139,7 +142,7 @@ final class MessageEncoder
         );
     }
 
-    private function encodeNetworkInfo(DeviceDataTypes\NetworkInfo $info)
+    private function encodeNetworkInfo(DeviceDataTypes\NetworkInfo $info): string
     {
         return \pack(
             FLOAT32_CODE . 'VVv',
@@ -150,9 +153,20 @@ final class MessageEncoder
         );
     }
 
+    /**
+     * @param \DateTimeInterface $dateTime
+     * @return int
+     * @throws InvalidMessageException
+     */
     private function dateTimeToNanoseconds(\DateTimeInterface $dateTime): int
     {
-        return ($dateTime->format('U') * 1000000000) + ($dateTime->format('u') * 1000);
+        $result = ($dateTime->format('U') * 1000000000) + ($dateTime->format('u') * 1000);
+
+        if ($result < 0) {
+            throw new InvalidMessageException("Timestamp {$dateTime->format('Y-m-d H:i:s.u')} is negative");
+        }
+
+        return $result;
     }
 
     private function encodeUnknownMessage(UnknownMessage $message): string
@@ -174,6 +188,11 @@ final class MessageEncoder
         return \pack('CV', $service->getTypeId(), $service->getPort());
     }
 
+    /**
+     * @param DeviceResponses\StateInfo $message
+     * @return string
+     * @throws InvalidMessageException
+     */
     private function encodeStateInfo(DeviceResponses\StateInfo $message): string
     {
         $info = $message->getInfo();
@@ -181,6 +200,11 @@ final class MessageEncoder
         return \pack('PPP', $this->dateTimeToNanoseconds($info->getTime()), $info->getUptime(), $info->getDowntime());
     }
 
+    /**
+     * @param DeviceResponses\StateHostFirmware $message
+     * @return string
+     * @throws InvalidMessageException
+     */
     private function encodeStateHostFirmware(DeviceResponses\StateHostFirmware $message): string
     {
         return $this->encodeFirmware($message->getHostFirmware());
@@ -191,6 +215,11 @@ final class MessageEncoder
         return $this->encodeNetworkInfo($message->getHostInfo());
     }
 
+    /**
+     * @param DeviceResponses\StateWifiFirmware $message
+     * @return string
+     * @throws InvalidMessageException
+     */
     private function encodeStateWifiFirmware(DeviceResponses\StateWifiFirmware $message): string
     {
         return $this->encodeFirmware($message->getWifiFirmware());
