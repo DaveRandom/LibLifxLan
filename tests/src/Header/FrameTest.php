@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: chris.wright
- * Date: 02/01/2018
- * Time: 16:19
- */
 
 namespace DaveRandom\LibLifxLan\Tests\Header;
 
@@ -15,7 +9,6 @@ use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class FrameTest extends TestCase
 {
-
     public function testSizePropertyValidValues(): void
     {
         foreach ([0, 42, 65535] as $size) {

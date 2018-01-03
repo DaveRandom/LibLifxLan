@@ -8,7 +8,7 @@ use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 final class FrameTest extends \DaveRandom\LibLifxLan\Tests\Header\FrameTest
 {
-    public function setUp()
+    protected function setUp(): void
     {
         if (\PHP_INT_SIZE === 4) {
             $this->markTestSkipped('64-bit platforms only');

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: chris.wright
- * Date: 02/01/2018
- * Time: 16:01
- */
 
 namespace DaveRandom\LibLifxLan\Tests\Header;
 
@@ -14,34 +8,34 @@ use PHPUnit\Framework\TestCase;
 
 final class FrameAddressTest extends TestCase
 {
-    private function createTarget(): MacAddress
+    private $target;
+
+    protected function setUp(): void
     {
-        return new MacAddress(0, 1, 2, 3, 4, 5);
+        $this->target = new MacAddress(0, 1, 2, 3, 4, 5);
     }
 
     public function testTargetProperty(): void
     {
-        $target = $this->createTarget();
-
-        $this->assertSame((new FrameAddress($target, false, false, 0))->getTarget(), $target);
+        $this->assertSame((new FrameAddress($this->target, false, false, 0))->getTarget(), $this->target);
     }
 
     public function testAckRequiredProperty(): void
     {
-        $this->assertFalse((new FrameAddress($this->createTarget(), false, false, 0))->isAckRequired());
-        $this->assertTrue((new FrameAddress($this->createTarget(), true, false, 0))->isAckRequired());
+        $this->assertFalse((new FrameAddress($this->target, false, false, 0))->isAckRequired());
+        $this->assertTrue((new FrameAddress($this->target, true, false, 0))->isAckRequired());
     }
 
     public function testResponseRequiredProperty(): void
     {
-        $this->assertFalse((new FrameAddress($this->createTarget(), false, false, 0))->isResponseRequired());
-        $this->assertTrue((new FrameAddress($this->createTarget(), false, true, 0))->isResponseRequired());
+        $this->assertFalse((new FrameAddress($this->target, false, false, 0))->isResponseRequired());
+        $this->assertTrue((new FrameAddress($this->target, false, true, 0))->isResponseRequired());
     }
 
     public function testSequenceNoPropertyValidValues(): void
     {
         foreach ([0, 42, 255] as $value) {
-            $this->assertSame((new FrameAddress($this->createTarget(), false, false, $value))->getSequenceNo(), $value);
+            $this->assertSame((new FrameAddress($this->target, false, false, $value))->getSequenceNo(), $value);
         }
     }
 
@@ -50,7 +44,7 @@ final class FrameAddressTest extends TestCase
      */
     public function testSequenceNoPropertyValueTooLow(): void
     {
-        new FrameAddress($this->createTarget(), false, false, -1);
+        new FrameAddress($this->target, false, false, -1);
     }
 
     /**
@@ -58,6 +52,6 @@ final class FrameAddressTest extends TestCase
      */
     public function testSequenceNoPropertyValueTooHigh(): void
     {
-        new FrameAddress($this->createTarget(), false, false, 256);
+        new FrameAddress($this->target, false, false, 256);
     }
 }
