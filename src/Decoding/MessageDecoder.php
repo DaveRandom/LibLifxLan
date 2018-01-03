@@ -130,12 +130,23 @@ final class MessageDecoder
         return -(($unsigned & 0x7fff) + 1);
     }
 
+    /**
+     * @param int $timestamp
+     * @return \DateTimeImmutable
+     * @throws InvalidValueException
+     */
     private function nanotimeToDateTimeImmutable(int $timestamp): \DateTimeImmutable
     {
         $usecs = (int)(($timestamp % 1000000000) / 1000);
         $secs = (int)($timestamp / 1000000000);
 
-        return \DateTimeImmutable::createFromFormat('u U', \sprintf("%06d %d", $usecs, $secs));
+        $result = \DateTimeImmutable::createFromFormat('u U', \sprintf("%06d %d", $usecs, $secs));
+
+        if ($result === false) {
+            throw new InvalidValueException("Could not convert nanotime to DateTimeImmutable instance");
+        }
+
+        return $result;
     }
 
     private function decodeAcknowledgement(): DeviceResponses\Acknowledgement
@@ -158,6 +169,11 @@ final class MessageDecoder
         return new DeviceRequests\GetGroup;
     }
 
+    /**
+     * @param string $data
+     * @return DeviceCommands\SetGroup
+     * @throws InvalidValueException
+     */
     private function decodeSetGroup(string $data): DeviceCommands\SetGroup
     {
         [
@@ -173,6 +189,11 @@ final class MessageDecoder
         return new DeviceCommands\SetGroup(new DeviceDataTypes\Group($guid, $label, $updatedAt));
     }
 
+    /**
+     * @param string $data
+     * @return DeviceResponses\StateGroup
+     * @throws InvalidValueException
+     */
     private function decodeStateGroup(string $data): DeviceResponses\StateGroup
     {
         [
@@ -193,6 +214,11 @@ final class MessageDecoder
         return new DeviceRequests\GetHostFirmware;
     }
 
+    /**
+     * @param string $data
+     * @return DeviceResponses\StateHostFirmware
+     * @throws InvalidValueException
+     */
     private function decodeStateHostFirmware(string $data): DeviceResponses\StateHostFirmware
     {
         [
@@ -230,6 +256,11 @@ final class MessageDecoder
         return new DeviceRequests\GetInfo;
     }
 
+    /**
+     * @param string $data
+     * @return DeviceResponses\StateInfo
+     * @throws InvalidValueException
+     */
     private function decodeStateInfo(string $data): DeviceResponses\StateInfo
     {
         [
@@ -263,6 +294,11 @@ final class MessageDecoder
         return new DeviceRequests\GetLocation;
     }
 
+    /**
+     * @param string $data
+     * @return DeviceCommands\SetLocation
+     * @throws InvalidValueException
+     */
     private function decodeSetLocation(string $data): DeviceCommands\SetLocation
     {
         [
@@ -278,6 +314,11 @@ final class MessageDecoder
         return new DeviceCommands\SetLocation(new DeviceDataTypes\Location($guid, $label, $updatedAt));
     }
 
+    /**
+     * @param string $data
+     * @return DeviceResponses\StateLocation
+     * @throws InvalidValueException
+     */
     private function decodeStateLocation(string $data): DeviceResponses\StateLocation
     {
         [
@@ -348,6 +389,11 @@ final class MessageDecoder
         return new DeviceRequests\GetWifiFirmware;
     }
 
+    /**
+     * @param string $data
+     * @return DeviceResponses\StateWifiFirmware
+     * @throws InvalidValueException
+     */
     private function decodeStateWifiFirmware(string $data): DeviceResponses\StateWifiFirmware
     {
         [
