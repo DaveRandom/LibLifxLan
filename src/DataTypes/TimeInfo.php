@@ -29,7 +29,6 @@ final class TimeInfo
      * @param \DateTimeInterface $time
      * @param int $uptime
      * @param int $downtime
-     * @throws \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
      */
     public function __construct(\DateTimeInterface $time, int $uptime, int $downtime)
     {

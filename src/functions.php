@@ -2,8 +2,7 @@
 
 namespace DaveRandom\LibLifxLan;
 
-use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
-
+// @codeCoverageIgnoreStart
 if (\strlen(\pack('e', 0.1)) === 4) {
     \define(__NAMESPACE__ . '\\FLOAT32_CODE', 'e');
 } else if (\strlen(\pack('g', 0.1)) === 4) {
@@ -15,33 +14,19 @@ if (\strlen(\pack('e', 0.1)) === 4) {
 
 const UINT32_MIN = \PHP_INT_SIZE === 4 ? \PHP_INT_MIN : 0;
 const UINT32_MAX = \PHP_INT_SIZE === 4 ? \PHP_INT_MIN : 0xffffffff;
+// @codeCoverageIgnoreEnd
 
 /**
  * @param \DateTimeInterface $dateTime
  * @return \DateTimeImmutable
- * @throws InvalidValueException
  */
 function datetimeinterface_to_datetimeimmutable(\DateTimeInterface $dateTime): \DateTimeImmutable
 {
-    static $utcTimeZone;
-
     if ($dateTime instanceof \DateTimeImmutable) {
         return $dateTime;
     }
 
-    if ($dateTime instanceof \DateTime) {
-        return \DateTimeImmutable::createFromMutable($dateTime);
-    }
+    \assert($dateTime instanceof \DateTime, new \Error('DateTimeInterface is not DateTimeImmutable or DateTime???'));
 
-    $result = \DateTimeImmutable::createFromFormat(
-        'u U',
-        $dateTime->format('u U'),
-        $utcTimeZone ?? ($utcTimeZone = new \DateTimeZone('UTC'))
-    );
-
-    if ($result === false) {
-        throw new InvalidValueException('Could not create DateTimeImmutable instance from DateTimeInterface instance');
-    }
-
-    return $result;
+    return \DateTimeImmutable::createFromMutable($dateTime);
 }
