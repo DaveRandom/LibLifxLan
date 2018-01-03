@@ -2,17 +2,26 @@
 
 namespace DaveRandom\LibLifxLan\Decoding;
 
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 
 final class ProtocolHeaderDecoder
 {
-    public function decodeProtocolHeader(string $data): ProtocolHeader
+    /**
+     * @param string $data
+     * @param int $offset
+     * @return ProtocolHeader
+     * @throws InsufficientDataException
+     */
+    public function decodeProtocolHeader(string $data, int $offset = 0): ProtocolHeader
     {
-        \assert(
-            \strlen($data) === ProtocolHeader::WIRE_SIZE,
-            new \Error("Protocol header data length expected to be " . ProtocolHeader::WIRE_SIZE . " bytes, got " . \strlen($data) . " bytes")
-        );
+        if ((\strlen($data) - $offset) < ProtocolHeader::WIRE_SIZE) {
+            throw new InsufficientDataException(
+                "Protocol header requires " . ProtocolHeader::WIRE_SIZE
+                . " bytes, got " . (\strlen($data) - $offset) . " bytes"
+            );
+        }
 
-        return new ProtocolHeader(\unpack('Preserved/vtype/vreserved', $data)['type']);
+        return new ProtocolHeader(\unpack('Preserved/vtype/vreserved', $data, $offset)['type']);
     }
 }

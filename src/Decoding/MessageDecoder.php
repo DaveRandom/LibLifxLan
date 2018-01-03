@@ -138,7 +138,7 @@ final class MessageDecoder
     private function nanotimeToDateTimeImmutable(int $timestamp): \DateTimeImmutable
     {
         static $utcTimeZone;
-        
+
         $usecs = (int)(($timestamp % 1000000000) / 1000);
         $secs = (int)($timestamp / 1000000000);
 
@@ -160,14 +160,14 @@ final class MessageDecoder
         return new DeviceResponses\Acknowledgement();
     }
 
-    private function decodeEchoRequest(string $data): DeviceRequests\EchoRequest
+    private function decodeEchoRequest(string $data, int $offset): DeviceRequests\EchoRequest
     {
-        return new DeviceRequests\EchoRequest($data);
+        return new DeviceRequests\EchoRequest(\substr($data, $offset));
     }
 
-    private function decodeEchoResponse(string $data): DeviceResponses\EchoResponse
+    private function decodeEchoResponse(string $data, int $offset): DeviceResponses\EchoResponse
     {
-        return new DeviceResponses\EchoResponse($data);
+        return new DeviceResponses\EchoResponse(\substr($data, $offset));
     }
 
     private function decodeGetGroup(): DeviceRequests\GetGroup
@@ -177,16 +177,17 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceCommands\SetGroup
      * @throws InvalidValueException
      */
-    private function decodeSetGroup(string $data): DeviceCommands\SetGroup
+    private function decodeSetGroup(string $data, int $offset): DeviceCommands\SetGroup
     {
         [
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('a16guid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
@@ -197,16 +198,17 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceResponses\StateGroup
      * @throws InvalidValueException
      */
-    private function decodeStateGroup(string $data): DeviceResponses\StateGroup
+    private function decodeStateGroup(string $data, int $offset): DeviceResponses\StateGroup
     {
         [
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('a16guid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
@@ -222,15 +224,16 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceResponses\StateHostFirmware
      * @throws InvalidValueException
      */
-    private function decodeStateHostFirmware(string $data): DeviceResponses\StateHostFirmware
+    private function decodeStateHostFirmware(string $data, int $offset): DeviceResponses\StateHostFirmware
     {
         [
             'build'    => $build,
             'version'  => $version,
-        ] = \unpack('Pbuild/Preserved/Vversion', $data);
+        ] = \unpack('Pbuild/Preserved/Vversion', $data, $offset);
 
         $build = $this->nanotimeToDateTimeImmutable($build);
 
@@ -244,15 +247,16 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceResponses\StateHostInfo
      */
-    private function decodeStateHostInfo(string $data): DeviceResponses\StateHostInfo
+    private function decodeStateHostInfo(string $data, int $offset): DeviceResponses\StateHostInfo
     {
         [
             'signal'   => $signal,
             'tx'       => $tx,
             'rx'       => $rx,
-        ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
+        ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data, $offset);
 
         return new DeviceResponses\StateHostInfo(new DeviceDataTypes\HostInfo($signal, $tx, $rx));
     }
@@ -264,16 +268,17 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceResponses\StateInfo
      * @throws InvalidValueException
      */
-    private function decodeStateInfo(string $data): DeviceResponses\StateInfo
+    private function decodeStateInfo(string $data, int $offset): DeviceResponses\StateInfo
     {
         [
             'time'     => $time,
             'uptime'   => $uptime,
             'downtime' => $downtime,
-        ] = \unpack('Ptime/Puptime/Pdowntime', $data);
+        ] = \unpack('Ptime/Puptime/Pdowntime', $data, $offset);
 
         $time = $this->nanotimeToDateTimeImmutable($time);
 
@@ -285,14 +290,14 @@ final class MessageDecoder
         return new DeviceRequests\GetLabel;
     }
 
-    private function decodeSetLabel(string $data): DeviceCommands\SetLabel
+    private function decodeSetLabel(string $data, int $offset): DeviceCommands\SetLabel
     {
-        return new DeviceCommands\SetLabel(new DeviceDataTypes\Label(\rtrim($data, "\x00")));
+        return new DeviceCommands\SetLabel(new DeviceDataTypes\Label(\rtrim(\substr($data, $offset), "\x00")));
     }
 
-    private function decodeStateLabel(string $data): DeviceResponses\StateLabel
+    private function decodeStateLabel(string $data, int $offset): DeviceResponses\StateLabel
     {
-        return new DeviceResponses\StateLabel(new DeviceDataTypes\Label(\rtrim($data, "\x00")));
+        return new DeviceResponses\StateLabel(new DeviceDataTypes\Label(\rtrim(\substr($data, $offset), "\x00")));
     }
 
     private function decodeGetLocation(): DeviceRequests\GetLocation
@@ -302,16 +307,17 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceCommands\SetLocation
      * @throws InvalidValueException
      */
-    private function decodeSetLocation(string $data): DeviceCommands\SetLocation
+    private function decodeSetLocation(string $data, int $offset): DeviceCommands\SetLocation
     {
         [
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('a16guid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
@@ -322,16 +328,17 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceResponses\StateLocation
      * @throws InvalidValueException
      */
-    private function decodeStateLocation(string $data): DeviceResponses\StateLocation
+    private function decodeStateLocation(string $data, int $offset): DeviceResponses\StateLocation
     {
         [
             'guid'    => $guid,
             'label'   => $label,
             'updated' => $updatedAt,
-        ] = \unpack('a16guid/a32label/Pupdated', $data);
+        ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
         $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
@@ -345,16 +352,16 @@ final class MessageDecoder
         return new DeviceRequests\GetPower;
     }
 
-    private function decodeSetDevicePower(string $data): DeviceCommands\SetPower
+    private function decodeSetDevicePower(string $data, int $offset): DeviceCommands\SetPower
     {
-        $level = \unpack('vlevel', $data)['level'];
+        $level = \unpack('vlevel', $data, $offset)['level'];
 
         return new DeviceCommands\SetPower($level);
     }
 
-    private function decodeStateDevicePower(string $data): DeviceResponses\StatePower
+    private function decodeStateDevicePower(string $data, int $offset): DeviceResponses\StatePower
     {
-        $level = \unpack('vlevel', $data)['level'];
+        $level = \unpack('vlevel', $data, $offset)['level'];
 
         return new DeviceResponses\StatePower($level);
     }
@@ -364,12 +371,12 @@ final class MessageDecoder
         return new DeviceRequests\GetService;
     }
 
-    private function decodeStateService(string $data): DeviceResponses\StateService
+    private function decodeStateService(string $data, int $offset): DeviceResponses\StateService
     {
         [
             'serviceType' => $serviceType,
             'port' => $port,
-        ] = \unpack('CserviceType/Vport', $data);
+        ] = \unpack('CserviceType/Vport', $data, $offset);
 
         return new DeviceResponses\StateService(new DeviceDataTypes\Service($serviceType, $port));
     }
@@ -379,13 +386,13 @@ final class MessageDecoder
         return new DeviceRequests\GetVersion;
     }
 
-    private function decodeStateVersion(string $data): DeviceResponses\StateVersion
+    private function decodeStateVersion(string $data, int $offset): DeviceResponses\StateVersion
     {
         [
             'vendor'  => $vendor,
             'product' => $product,
             'version' => $version,
-        ] = \unpack('Vvendor/Vproduct/Vversion', $data);
+        ] = \unpack('Vvendor/Vproduct/Vversion', $data, $offset);
 
         return new DeviceResponses\StateVersion(new DeviceDataTypes\Version($vendor, $product, $version));
     }
@@ -397,15 +404,16 @@ final class MessageDecoder
 
     /**
      * @param string $data
+     * @param int $offset
      * @return DeviceResponses\StateWifiFirmware
      * @throws InvalidValueException
      */
-    private function decodeStateWifiFirmware(string $data): DeviceResponses\StateWifiFirmware
+    private function decodeStateWifiFirmware(string $data, int $offset): DeviceResponses\StateWifiFirmware
     {
         [
             'build'    => $build,
             'version'  => $version,
-        ] = \unpack('Pbuild/Preserved/Vversion', $data);
+        ] = \unpack('Pbuild/Preserved/Vversion', $data, $offset);
 
         $build = $this->nanotimeToDateTimeImmutable($build);
 
@@ -417,14 +425,14 @@ final class MessageDecoder
         return new DeviceRequests\GetWifiInfo;
     }
 
-    private function decodeStateWifiInfo(string $data): DeviceResponses\StateWifiInfo
+    private function decodeStateWifiInfo(string $data, int $offset): DeviceResponses\StateWifiInfo
     {
 
         [
             'signal'   => $signal,
             'tx'       => $tx,
             'rx'       => $rx,
-        ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data);
+        ] = \unpack(\DaveRandom\LibLifxLan\FLOAT32_CODE . 'signal/Vtx/Vrx/vreserved', $data, $offset);
 
         return new DeviceResponses\StateWifiInfo(new DeviceDataTypes\WifiInfo($signal, $tx, $rx));
     }
@@ -434,7 +442,7 @@ final class MessageDecoder
         return new LightRequests\Get;
     }
 
-    private function decodeSetColor(string $data): LightCommmands\SetColor
+    private function decodeSetColor(string $data, int $offset): LightCommmands\SetColor
     {
         [
             'hue'         => $hue,
@@ -442,14 +450,14 @@ final class MessageDecoder
             'brightness'  => $brightness,
             'temperature' => $temperature,
             'duration'    => $duration,
-        ] = \unpack('Creserved/' . self::HSBK_FORMAT . '/Vduration', $data);
+        ] = \unpack('Creserved/' . self::HSBK_FORMAT . '/Vduration', $data, $offset);
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
 
         return new LightCommmands\SetColor(new LightDataTypes\ColorTransition($color, $duration));
     }
 
-    private function decodeSetWaveform(string $data): LightCommmands\SetWaveform
+    private function decodeSetWaveform(string $data, int $offset): LightCommmands\SetWaveform
     {
         $format
             = 'Creserved/Ctransient/'
@@ -467,7 +475,7 @@ final class MessageDecoder
             'cycles'      => $cycles,
             'skewRatio'   => $skewRatio,
             'waveform'    => $waveform,
-        ] = \unpack($format, $data);
+        ] = \unpack($format, $data, $offset);
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
 
@@ -477,7 +485,7 @@ final class MessageDecoder
         return new LightCommmands\SetWaveform($effect);
     }
 
-    private function decodeSetWaveformOptional(string $data): LightCommmands\SetWaveformOptional
+    private function decodeSetWaveformOptional(string $data, int $offset): LightCommmands\SetWaveformOptional
     {
         $format
             = 'Creserved/Ctransient/'
@@ -500,7 +508,7 @@ final class MessageDecoder
             'setSaturation'  => $setSaturation,
             'setBrightness'  => $setBrightness,
             'setTemperature' => $setTemperature,
-        ] = \unpack($format, $data);
+        ] = \unpack($format, $data, $offset);
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         $skewRatio = $this->unsignedShortToSignedShort($skewRatio);
@@ -515,7 +523,7 @@ final class MessageDecoder
         return new LightCommmands\SetWaveformOptional($effect);
     }
 
-    private function decodeState(string $data): LightResponses\State
+    private function decodeState(string $data, int $offset): LightResponses\State
     {
         [
             'hue'         => $hue,
@@ -524,7 +532,7 @@ final class MessageDecoder
             'temperature' => $temperature,
             'power'       => $power,
             'label'       => $label,
-        ] = \unpack(self::HSBK_FORMAT . '/vreserved/vpower/a32label/Preserved', $data);
+        ] = \unpack(self::HSBK_FORMAT . '/vreserved/vpower/a32label/Preserved', $data, $offset);
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
@@ -537,16 +545,16 @@ final class MessageDecoder
         return new LightRequests\GetInfrared;
     }
 
-    private function decodeSetInfrared(string $data): LightCommmands\SetInfrared
+    private function decodeSetInfrared(string $data, int $offset): LightCommmands\SetInfrared
     {
-        $level = \unpack('vlevel', $data)['level'];
+        $level = \unpack('vlevel', $data, $offset)['level'];
 
         return new LightCommmands\SetInfrared($level);
     }
 
-    private function decodeStateInfrared(string $data): LightResponses\StateInfrared
+    private function decodeStateInfrared(string $data, int $offset): LightResponses\StateInfrared
     {
-        $level = \unpack('vlevel', $data)['level'];
+        $level = \unpack('vlevel', $data, $offset)['level'];
 
         return new LightResponses\StateInfrared($level);
     }
@@ -556,19 +564,19 @@ final class MessageDecoder
         return new LightRequests\GetPower;
     }
 
-    private function decodeSetLightPower(string $data): LightCommmands\SetPower
+    private function decodeSetLightPower(string $data, int $offset): LightCommmands\SetPower
     {
         [
             'level'    => $level,
             'duration' => $duration,
-        ] = \unpack('vlevel/Vduration', $data);
+        ] = \unpack('vlevel/Vduration', $data, $offset);
 
         return new LightCommmands\SetPower(new LightDataTypes\PowerTransition($level, $duration));
     }
 
-    private function decodeStateLightPower(string $data): LightResponses\StatePower
+    private function decodeStateLightPower(string $data, int $offset): LightResponses\StatePower
     {
-        $level = \unpack('vlevel', $data)['level'];
+        $level = \unpack('vlevel', $data, $offset)['level'];
 
         return new LightResponses\StatePower($level);
     }
@@ -581,10 +589,11 @@ final class MessageDecoder
     /**
      * @param int $type
      * @param string $data
+     * @param int $offset
      * @return Message
      * @throws DecodingException
      */
-    public function decodeMessage(int $type, string $data): Message
+    public function decodeMessage(int $type, string $data, int $offset = 0): Message
     {
         if (!\array_key_exists($type, self::MESSAGE_INFO)) {
             return new UnknownMessage($type, $data);
@@ -592,15 +601,15 @@ final class MessageDecoder
 
         [$payloadLength, $messageName] = self::MESSAGE_INFO[$type];
 
-        if (\strlen($data) !== $payloadLength) {
+        if ((\strlen($data) - $offset) !== $payloadLength) {
             throw new InvalidMessagePayloadLengthException(
                 "Invalid payload length for {$messageName} message,"
-                . " expecting {$payloadLength} bytes, got " . \strlen($data)
+                . " expecting {$payloadLength} bytes, got " . (\strlen($data) - $offset)
             );
         }
 
         try {
-            return ([$this, 'decode' . $messageName])($data);
+            return ([$this, 'decode' . $messageName])($data, $offset);
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (InvalidValueException $e) {
             throw new MalformedMessagePayloadException($e->getMessage(), $e->getCode(), $e);
         }

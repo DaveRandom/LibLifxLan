@@ -44,8 +44,12 @@ final class PacketDecoder
             );
         }
 
-        $header = $this->headerDecoder->decodeHeader(\substr($buffer, self::HEADER_OFFSET, Header::WIRE_SIZE));
-        $payload = $this->messageDecoder->decodeMessage($header->getProtocolHeader()->getType(), \substr($buffer, self::MESSAGE_OFFSET));
+        $header = $this->headerDecoder->decodeHeader($buffer, self::HEADER_OFFSET);
+        $payload = $this->messageDecoder->decodeMessage(
+            $header->getProtocolHeader()->getType(),
+            $buffer,
+            self::MESSAGE_OFFSET
+        );
 
         return new Packet($header, $payload);
     }

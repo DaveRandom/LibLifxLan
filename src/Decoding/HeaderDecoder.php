@@ -2,10 +2,11 @@
 
 namespace DaveRandom\LibLifxLan\Decoding;
 
+use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Header\Frame;
 use DaveRandom\LibLifxLan\Header\FrameAddress;
 use DaveRandom\LibLifxLan\Header\Header;
-use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 
 final class HeaderDecoder
 {
@@ -24,16 +25,23 @@ final class HeaderDecoder
         $this->protocolHeaderDecoder = $protocolHeaderDecoder ?? new ProtocolHeaderDecoder;
     }
 
-    public function decodeHeader(string $data): Header
+    /**
+     * @param string $data
+     * @param int $offset
+     * @return Header
+     * @throws DecodingException
+     */
+    public function decodeHeader(string $data, int $offset = 0): Header
     {
-        \assert(
-            \strlen($data) === Header::WIRE_SIZE,
-            new \Error("Header data length expected to be " . Header::WIRE_SIZE . " bytes, got " . \strlen($data) . " bytes")
-        );
+        if ((\strlen($data) - $offset) < Header::WIRE_SIZE) {
+            throw new InsufficientDataException(
+                "Header requires " . Header::WIRE_SIZE . " bytes, got " . \strlen($data) . " bytes"
+            );
+        }
 
-        $frame = $this->frameDecoder->decodeFrame(\substr($data, self::FRAME_OFFSET, Frame::WIRE_SIZE));
-        $frameAddress = $this->frameAddressDecoder->decodeFrameAddress(\substr($data, self::FRAME_ADDRESS_OFFSET, FrameAddress::WIRE_SIZE));
-        $protocolHeader = $this->protocolHeaderDecoder->decodeProtocolHeader(\substr($data, self::PROTOCOL_HEADER_OFFSET, ProtocolHeader::WIRE_SIZE));
+        $frame = $this->frameDecoder->decodeFrame($data, self::FRAME_OFFSET);
+        $frameAddress = $this->frameAddressDecoder->decodeFrameAddress($data, self::FRAME_ADDRESS_OFFSET);
+        $protocolHeader = $this->protocolHeaderDecoder->decodeProtocolHeader($data, self::PROTOCOL_HEADER_OFFSET);
 
         return new Header($frame, $frameAddress, $protocolHeader);
     }

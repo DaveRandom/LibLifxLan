@@ -2,26 +2,35 @@
 
 namespace DaveRandom\LibLifxLan\Decoding;
 
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Header\Frame;
 
 final class FrameDecoder
 {
-    public function decodeFrame(string $data): Frame
+    /**
+     * @param string $data
+     * @param int $offset
+     * @return Frame
+     * @throws InsufficientDataException
+     */
+    public function decodeFrame(string $data, int $offset = 0): Frame
     {
-        \assert(
-            \strlen($data) === Frame::WIRE_SIZE,
-            new \Error("Frame data length expected to be " . Frame::WIRE_SIZE . " bytes, got " . \strlen($data) . " bytes")
-        );
+        if ((\strlen($data) - $offset) < Frame::WIRE_SIZE) {
+            throw new InsufficientDataException(
+                "Frame requires " . Frame::WIRE_SIZE . " bytes, got " . (\strlen($data) - $offset) . " bytes"
+            );
+        }
 
-        $parts = \unpack('vsize/vprotocol/Vsource', $data);
+        [
+            'size' => $size,
+            'protocol' => $protocol,
+            'source' => $source,
+        ] = \unpack('vsize/vprotocol/Vsource', $data, $offset);
 
-        $size = $parts['size'];
-        $source = $parts['source'];
-
-        $origin        =       ($parts['protocol'] & 0xC000) >> 14;
-        $isTagged      = (bool)($parts['protocol'] & 0x2000);
-        $isAddressable = (bool)($parts['protocol'] & 0x1000);
-        $protocol      =       ($parts['protocol'] & 0x0FFF);
+        $origin        =       ($protocol & 0xC000) >> 14;
+        $isTagged      = (bool)($protocol & 0x2000);
+        $isAddressable = (bool)($protocol & 0x1000);
+        $protocol      =       ($protocol & 0x0FFF);
 
         return new Frame($size, $origin, $isTagged, $isAddressable, $protocol, $source);
     }
