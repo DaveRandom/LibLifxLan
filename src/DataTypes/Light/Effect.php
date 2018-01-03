@@ -145,4 +145,9 @@ final class Effect
     {
         return $this->options;
     }
+
+    public function hasOption(int $option): bool
+    {
+        return (bool)($this->options & $option);
+    }
 }
