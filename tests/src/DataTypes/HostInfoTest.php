@@ -22,10 +22,42 @@ class HostInfoTest extends TestCase
         }
     }
 
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testTxPropertyValueTooLow(): void
+    {
+        new HostInfo(0.0, UINT32_MIN - 1, 0);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testTxPropertyValueTooHigh(): void
+    {
+        new HostInfo(0.0, UINT32_MAX + 1, 0);
+    }
+
     public function testRxPropertyValidValues(): void
     {
         foreach ([UINT32_MIN, 42, UINT32_MAX] as $rx) {
             $this->assertSame((new HostInfo(0.0, 0, $rx))->getRx(), $rx);
         }
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testRxPropertyValueTooLow(): void
+    {
+        new HostInfo(0.0, 0, UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testRxPropertyValueTooHigh(): void
+    {
+        new HostInfo(0.0, 0, UINT32_MAX + 1);
     }
 }

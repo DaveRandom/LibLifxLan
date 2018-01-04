@@ -21,4 +21,20 @@ class WifiFirmwareTest extends TestCase
             $this->assertSame((new WifiFirmware(new \DateTimeImmutable, $version))->getVersion(), $version);
         }
     }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testVersionPropertyValueTooLow(): void
+    {
+        new WifiFirmware(new \DateTimeImmutable, UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testVersionPropertyValueTooHigh(): void
+    {
+        new WifiFirmware(new \DateTimeImmutable, UINT32_MAX + 1);
+    }
 }

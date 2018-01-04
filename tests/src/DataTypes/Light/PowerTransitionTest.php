@@ -38,4 +38,20 @@ class PowerTransitionTest extends TestCase
             $this->assertSame((new PowerTransition(0, $duration))->getDuration(), $duration);
         }
     }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testDurationPropertyValueTooLow(): void
+    {
+        new PowerTransition(0, UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testDurationPropertyValueTooHigh(): void
+    {
+        new PowerTransition(0, UINT32_MAX + 1);
+    }
 }

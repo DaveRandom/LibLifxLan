@@ -22,4 +22,20 @@ class ColorTransitionTest extends TestCase
             $this->assertSame((new ColorTransition(new HsbkColor(0, 0, 0, 2500), $duration))->getDuration(), $duration);
         }
     }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testDurationPropertyValueTooLow(): void
+    {
+        new ColorTransition(new HsbkColor(0, 0, 0, 2500), UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testDurationPropertyValueTooHigh(): void
+    {
+        new ColorTransition(new HsbkColor(0, 0, 0, 2500), UINT32_MAX + 1);
+    }
 }

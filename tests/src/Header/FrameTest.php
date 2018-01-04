@@ -96,4 +96,20 @@ class FrameTest extends TestCase
             $this->assertSame((new Frame(0, 0, false, false, 0, $source))->getSource(), $source);
         }
     }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testSourcePropertyValueTooLow(): void
+    {
+        new Frame(0, 0, false, false, 0, UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testSourcePropertyValueTooHigh(): void
+    {
+        new Frame(0, 0, false, false, 0, UINT32_MAX + 1);
+    }
 }

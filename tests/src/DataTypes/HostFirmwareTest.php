@@ -21,4 +21,20 @@ class HostFirmwareTest extends TestCase
             $this->assertSame((new HostFirmware(new \DateTimeImmutable, $version))->getVersion(), $version);
         }
     }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testVersionPropertyValueTooLow(): void
+    {
+        new HostFirmware(new \DateTimeImmutable, UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testVersionPropertyValueTooHigh(): void
+    {
+        new HostFirmware(new \DateTimeImmutable, UINT32_MAX + 1);
+    }
 }

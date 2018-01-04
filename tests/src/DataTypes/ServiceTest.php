@@ -40,6 +40,22 @@ class ServiceTest extends TestCase
         }
     }
 
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testPortPropertyValueTooLow(): void
+    {
+        new Service(0, UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testPortPropertyValueTooHigh(): void
+    {
+        new Service(0, UINT32_MAX + 1);
+    }
+
     public function testNamePropertyKnownService(): void
     {
         $this->assertSame((new Service(ServiceTypes::UDP, 0))->getName(), 'UDP');

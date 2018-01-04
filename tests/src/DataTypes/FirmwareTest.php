@@ -36,4 +36,20 @@ class FirmwareTest extends TestCase
             $this->assertSame($this->createFirmware(new \DateTimeImmutable, $version)->getVersion(), $version);
         }
     }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testVersionPropertyValueTooLow(): void
+    {
+        $this->createFirmware(new \DateTimeImmutable, UINT32_MIN - 1);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testVersionPropertyValueTooHigh(): void
+    {
+        $this->createFirmware(new \DateTimeImmutable, UINT32_MAX + 1);
+    }
 }

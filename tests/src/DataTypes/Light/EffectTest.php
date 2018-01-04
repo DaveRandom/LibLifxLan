@@ -35,6 +35,22 @@ class EffectTest extends TestCase
         }
     }
 
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testPeriodPropertyValueTooLow(): void
+    {
+        new Effect(false, $this->color, UINT32_MIN - 1, 0.0, 0, 0, 0);
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
+    public function testPeriodPropertyValueTooHigh(): void
+    {
+        new Effect(false, $this->color, UINT32_MAX + 1, 0.0, 0, 0, 0);
+    }
+
     public function testCyclesProperty(): void
     {
         $this->assertSame((new Effect(false, $this->color, 0, 0.1, 0, 0, 0))->getCycles(), 0.1);
