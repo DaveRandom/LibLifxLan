@@ -4,6 +4,7 @@ namespace DaveRandom\LibLifxLan\Tests\Encoding;
 
 use DaveRandom\LibLifxLan\Encoding\FrameAddressEncoder;
 use DaveRandom\LibLifxLan\Header\FrameAddress;
+use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;
 use DaveRandom\LibLifxLan\Tests\WireData\FrameAddressWireData;
 use DaveRandom\Network\MacAddress;
 use PHPUnit\Framework\TestCase;
@@ -49,5 +50,17 @@ final class FrameAddressEncoderTest extends TestCase
             $frameAddress = new FrameAddress($macAddress, $ackFlag, $resFlag, $sequenceNo);
             $this->assertSame($encoder->encodeFrameAddress($frameAddress), $expectedData);
         }
+    }
+
+    public function testEncodeFrameAddressWithExampleData(): void
+    {
+        $frameAddress = new FrameAddress(
+            new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS),
+            ExampleWireData::FRAME_ADDRESS_ACK_FLAG,
+            ExampleWireData::FRAME_ADDRESS_RES_FLAG,
+            ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO
+        );
+
+        $this->assertSame((new FrameAddressEncoder)->encodeFrameAddress($frameAddress), ExampleWireData::FRAME_ADDRESS_DATA);
     }
 }

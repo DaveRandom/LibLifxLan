@@ -4,6 +4,7 @@ namespace DaveRandom\LibLifxLan\Tests\Decoding;
 
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Decoding\FrameDecoder;
+use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;
 use DaveRandom\LibLifxLan\Tests\WireData\FrameWireData;
 use PHPUnit\Framework\TestCase;
 
@@ -261,5 +262,17 @@ class FrameDecoderTest extends TestCase
         }
 
         $this->assertSame($failures, \count(OffsetTestValues::OFFSETS));
+    }
+
+    public function testDecodeFrameWithExampleData(): void
+    {
+        $frame = (new FrameDecoder)->decodeFrame(ExampleWireData::FRAME_DATA);
+
+        $this->assertSame($frame->getSize(), ExampleWireData::FRAME_SIZE);
+        $this->assertSame($frame->getOrigin(), ExampleWireData::FRAME_ORIGIN);
+        $this->assertSame($frame->isTagged(), ExampleWireData::FRAME_TAGGED_FLAG);
+        $this->assertSame($frame->isAddressable(), ExampleWireData::FRAME_ADDRESSABLE_FLAG);
+        $this->assertSame($frame->getProtocolNo(), ExampleWireData::FRAME_PROTOCOL_NUMBER);
+        $this->assertSame($frame->getSource(), ExampleWireData::FRAME_SOURCE);
     }
 }

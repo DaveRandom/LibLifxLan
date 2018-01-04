@@ -5,6 +5,7 @@ namespace DaveRandom\LibLifxLan\Tests\Encoding;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LibLifxLan\Encoding\FrameEncoder;
 use DaveRandom\LibLifxLan\Header\Frame;
+use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;
 use DaveRandom\LibLifxLan\Tests\WireData\FrameWireData;
 use PHPUnit\Framework\TestCase;
 
@@ -258,5 +259,19 @@ final class FrameEncoderTest extends TestCase
         $source = FrameWireData::DEFAULT_SOURCE;
 
         $encoder->encodeFrame(new Frame($size, $origin, $taggedFlag, $addressableFlag, $protocolNo, $source));
+    }
+
+    public function testEncodeFrameWithExampleData(): void
+    {
+        $frame = new Frame(
+            ExampleWireData::FRAME_SIZE,
+            ExampleWireData::FRAME_ORIGIN,
+            ExampleWireData::FRAME_TAGGED_FLAG,
+            ExampleWireData::FRAME_ADDRESSABLE_FLAG,
+            ExampleWireData::FRAME_PROTOCOL_NUMBER,
+            ExampleWireData::FRAME_SOURCE
+        );
+
+        $this->assertSame((new FrameEncoder)->encodeFrame($frame), ExampleWireData::FRAME_DATA);
     }
 }

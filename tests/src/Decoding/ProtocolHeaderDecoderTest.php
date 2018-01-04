@@ -4,6 +4,7 @@ namespace DaveRandom\LibLifxLan\Tests\Decoding;
 
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Decoding\ProtocolHeaderDecoder;
+use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;
 use DaveRandom\LibLifxLan\Tests\WireData\ProtocolHeaderWireData;
 use PHPUnit\Framework\TestCase;
 
@@ -55,5 +56,12 @@ class ProtocolHeaderDecoderTest extends TestCase
         }
 
         $this->assertSame($failures, \count(OffsetTestValues::OFFSETS));
+    }
+
+    public function testDecodeProtocolHeaderWithExampleData(): void
+    {
+        $protocolHeader = (new ProtocolHeaderDecoder)->decodeProtocolHeader(ExampleWireData::PROTOCOL_HEADER_DATA);
+
+        $this->assertSame($protocolHeader->getType(), ExampleWireData::PROTOCOL_HEADER_MESSAGE_TYPE_ID);
     }
 }
