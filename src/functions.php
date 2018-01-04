@@ -76,18 +76,14 @@ function datetimeinterface_to_nanotime(\DateTimeInterface $dateTime): int
 
 function int16_to_uint16(int $signed): int
 {
-    if ($signed >= 0) {
-        return $signed & 0x7fff;
-    }
-
-    return 0x8000 | (($signed & 0x7fff) + 1);
+    return $signed < 0
+        ? ($signed & 0x7fff) + 0x8000
+        : $signed & 0x7fff;
 }
 
 function uint16_to_int16(int $unsigned): int
 {
-    if (!($unsigned & 0x8000)) {
-        return $unsigned;
-    }
-
-    return -(($unsigned & 0x7fff) + 1);
+    return $unsigned & 0x8000
+        ? ($unsigned & 0x7fff) - 0x8000
+        : $unsigned & 0x7fff;
 }
