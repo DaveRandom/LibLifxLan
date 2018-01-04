@@ -21,6 +21,16 @@ final class PacketDecoder
         $this->messageDecoder = $messageDecoder ?? new MessageDecoder;
     }
 
+    public function getHeaderDecoder(): HeaderDecoder
+    {
+        return $this->headerDecoder;
+    }
+
+    public function getMessageDecoder(): MessageDecoder
+    {
+        return $this->messageDecoder;
+    }
+
     /**
      * @param string $buffer
      * @param int $offset

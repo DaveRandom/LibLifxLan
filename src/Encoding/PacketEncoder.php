@@ -16,6 +16,16 @@ final class PacketEncoder
         $this->messageEncoder = $messageEncoder ?? new MessageEncoder();
     }
 
+    public function getHeaderEncoder(): HeaderEncoder
+    {
+        return $this->headerEncoder;
+    }
+
+    public function getMessageEncoder(): MessageEncoder
+    {
+        return $this->messageEncoder;
+    }
+
     /**
      * @param Packet $packet
      * @return string
