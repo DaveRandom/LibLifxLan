@@ -65,7 +65,7 @@ function nanotime_to_datetimeimmutable(int $timestamp): \DateTimeImmutable
  */
 function datetimeinterface_to_nanotime(\DateTimeInterface $dateTime): int
 {
-    $result = ($dateTime->format('U') * 1000000000) + ($dateTime->format('u') * 1000);
+    $result = (int)$dateTime->format('Uu000');
 
     if ($result < 0) {
         throw new InvalidValueException("Timestamp {$dateTime->format('Y-m-d H:i:s.u')} is negative");
