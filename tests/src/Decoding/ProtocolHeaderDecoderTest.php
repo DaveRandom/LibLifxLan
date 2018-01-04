@@ -1,44 +1,35 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: chris.wright
- * Date: 04/01/2018
- * Time: 00:17
- */
 
 namespace DaveRandom\LibLifxLan\Tests\Decoding;
 
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Decoding\ProtocolHeaderDecoder;
+use DaveRandom\LibLifxLan\Tests\WireData\ProtocolHeaderWireData;
 use PHPUnit\Framework\TestCase;
 
 class ProtocolHeaderDecoderTest extends TestCase
 {
-    public function testDecodeProtocolHeader(): void
+    public function testDecodeProtocolHeaderDecodesMessageTypeIdCorrectly(): void
     {
         $decoder = new ProtocolHeaderDecoder;
 
-        $protocolHeader = $decoder->decodeProtocolHeader("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00");
-        $this->assertSame($protocolHeader->getType(), 0);
-
-        $protocolHeader = $decoder->decodeProtocolHeader("\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00\x00");
-        $this->assertSame($protocolHeader->getType(), 0x00ff);
-
-        $protocolHeader = $decoder->decodeProtocolHeader("\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00");
-        $this->assertSame($protocolHeader->getType(), 0xff00);
+        foreach (ProtocolHeaderWireData::VALID_MESSAGE_TYPE_ID_DATA as $data => $expectedTypeId) {
+            $this->assertSame($decoder->decodeProtocolHeader($data)->getType(), $expectedTypeId);
+        }
     }
 
-    public function testDecodeProtocolHeaderWithOffset(): void
+    public function testDecodeProtocolHeaderDecodesMessageTypeIdCorrectlyWithOffset(): void
     {
         $decoder = new ProtocolHeaderDecoder;
 
-        $protocolHeader = $decoder->decodeProtocolHeader("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 2);
-        $this->assertSame($protocolHeader->getType(), 0);
+        foreach (OffsetTestValues::OFFSETS as $offset) {
+            $padding = \str_repeat("\x00", $offset);
 
-        $protocolHeader = $decoder->decodeProtocolHeader("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00\x00", 2);
-        $this->assertSame($protocolHeader->getType(), 0x00ff);
-
-        $protocolHeader = $decoder->decodeProtocolHeader("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00", 2);
-        $this->assertSame($protocolHeader->getType(), 0xff00);
+            foreach (ProtocolHeaderWireData::VALID_MESSAGE_TYPE_ID_DATA as $data => $expectedTypeId) {
+                $protocolHeader = $decoder->decodeProtocolHeader($padding . $data, $offset);
+                $this->assertSame($protocolHeader->getType(), $expectedTypeId);
+            }
+        }
     }
 
     /**
@@ -46,6 +37,23 @@ class ProtocolHeaderDecoderTest extends TestCase
      */
     public function testDecodeProtocolHeaderDataTooShort(): void
     {
-        (new ProtocolHeaderDecoder)->decodeProtocolHeader("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00");
+        (new ProtocolHeaderDecoder)->decodeProtocolHeader(ProtocolHeaderWireData::INVALID_SHORT_DATA);
+    }
+
+    public function testDecodeProtocolHeaderDataTooShortWithOffset(): void
+    {
+        $failures = 0;
+
+        foreach (OffsetTestValues::OFFSETS as $offset) {
+            $padding = \str_repeat("\x00", $offset);
+
+            try {
+                (new ProtocolHeaderDecoder)->decodeProtocolHeader($padding . ProtocolHeaderWireData::INVALID_SHORT_DATA, $offset);
+            } catch (InsufficientDataException $e) {
+                $failures++;
+            }
+        }
+
+        $this->assertSame($failures, \count(OffsetTestValues::OFFSETS));
     }
 }

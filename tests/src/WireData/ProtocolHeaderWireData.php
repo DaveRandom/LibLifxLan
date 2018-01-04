@@ -1,0 +1,14 @@
+<?php declare(strict_types=1);
+
+namespace DaveRandom\LibLifxLan\Tests\WireData;
+
+final class ProtocolHeaderWireData
+{
+    public const VALID_MESSAGE_TYPE_ID_DATA = [
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" => 0,
+        "\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00\x00" => 0x00ff,
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00" => 0xff00,
+    ];
+
+    public const INVALID_SHORT_DATA = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
+}

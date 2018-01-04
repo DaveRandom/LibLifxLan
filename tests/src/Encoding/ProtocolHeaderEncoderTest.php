@@ -4,27 +4,17 @@ namespace DaveRandom\LibLifxLan\Tests\Encoding;
 
 use DaveRandom\LibLifxLan\Encoding\ProtocolHeaderEncoder;
 use DaveRandom\LibLifxLan\Header\ProtocolHeader;
+use DaveRandom\LibLifxLan\Tests\WireData\ProtocolHeaderWireData;
 use PHPUnit\Framework\TestCase;
 
 final class ProtocolHeaderEncoderTest extends TestCase
 {
-    public function testEncodeProtocolHeader(): void
+    public function testEncodeProtocolHeaderEncodesMessageTypeIdCorrectly(): void
     {
         $encoder = new ProtocolHeaderEncoder;
 
-        $this->assertSame(
-            $encoder->encodeProtocolHeader(new ProtocolHeader(0)),
-            "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-        );
-
-        $this->assertSame(
-            $encoder->encodeProtocolHeader(new ProtocolHeader(0x00ff)),
-            "\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00\x00"
-        );
-
-        $this->assertSame(
-            $encoder->encodeProtocolHeader(new ProtocolHeader(0xff00)),
-            "\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\x00\x00"
-        );
+        foreach (ProtocolHeaderWireData::VALID_MESSAGE_TYPE_ID_DATA as $expectedData => $messageTypeId) {
+            $this->assertSame($encoder->encodeProtocolHeader(new ProtocolHeader($messageTypeId)), $expectedData);
+        }
     }
 }
