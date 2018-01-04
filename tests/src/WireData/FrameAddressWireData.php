@@ -6,8 +6,8 @@ final class FrameAddressWireData
 {
     public const DEFAULT_MAC_ADDRESS_OCTETS = [0, 0, 0, 0, 0, 0];
 
-    public const DEFAULT_ACK_FLAG_VALUE = false;
-    public const DEFAULT_RES_FLAG_VALUE = false;
+    public const DEFAULT_ACK_FLAG = false;
+    public const DEFAULT_RES_FLAG = false;
 
     public const DEFAULT_SEQUENCE_NUMBER = 0;
 

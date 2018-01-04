@@ -14,8 +14,8 @@ final class FrameAddressEncoderTest extends TestCase
     {
         $encoder = new FrameAddressEncoder();
 
-        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG_VALUE;
-        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG_VALUE;
+        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
+        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (FrameAddressWireData::VALID_MAC_ADDRESS_DATA as $expectedData => $macAddressOctets) {
@@ -42,8 +42,8 @@ final class FrameAddressEncoderTest extends TestCase
         $encoder = new FrameAddressEncoder();
 
         $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
-        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG_VALUE;
-        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG_VALUE;
+        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
+        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
 
         foreach (FrameAddressWireData::VALID_SEQUENCE_NUMBER_DATA as $expectedData => $sequenceNo) {
             $frameAddress = new FrameAddress($macAddress, $ackFlag, $resFlag, $sequenceNo);

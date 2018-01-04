@@ -14,8 +14,8 @@ final class FrameAddressDecoderTest extends TestCase
     {
         $decoder = new FrameAddressDecoder();
 
-        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG_VALUE;
-        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG_VALUE;
+        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
+        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (FrameAddressWireData::VALID_MAC_ADDRESS_DATA as $data => $macAddressOctets) {
@@ -32,8 +32,8 @@ final class FrameAddressDecoderTest extends TestCase
     {
         $decoder = new FrameAddressDecoder();
 
-        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG_VALUE;
-        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG_VALUE;
+        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
+        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (OffsetTestValues::OFFSETS as $offset) {
@@ -91,8 +91,8 @@ final class FrameAddressDecoderTest extends TestCase
         $decoder = new FrameAddressDecoder();
 
         $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
-        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG_VALUE;
-        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG_VALUE;
+        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
+        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
 
         foreach (FrameAddressWireData::VALID_SEQUENCE_NUMBER_DATA as $data => $sequenceNo) {
             $frameAddress = $decoder->decodeFrameAddress($data);
@@ -108,8 +108,8 @@ final class FrameAddressDecoderTest extends TestCase
         $decoder = new FrameAddressDecoder();
 
         $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
-        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG_VALUE;
-        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG_VALUE;
+        $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
+        $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
 
         foreach (OffsetTestValues::OFFSETS as $offset) {
             $padding = \str_repeat("\x00", $offset);
