@@ -4,7 +4,10 @@ namespace DaveRandom\LibLifxLan\Encoding;
 
 use DaveRandom\LibLifxLan\DataTypes as DeviceDataTypes;
 use DaveRandom\LibLifxLan\DataTypes\Light as LightDataTypes;
+use function DaveRandom\LibLifxLan\datetimeinterface_to_nanotime;
 use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageException;
+use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
+use function DaveRandom\LibLifxLan\int16_to_uint16;
 use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
 use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
 use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
@@ -83,15 +86,6 @@ final class MessageEncoder
         LightResponses\StatePower::class => 'StateLightPower',
     ];
 
-    private function signedShortToUnsignedShort(int $signed): int
-    {
-        if ($signed >= 0) {
-            return $signed & 0x7fff;
-        }
-
-        return 0x8000 | (($signed & 0x7fff) + 1);
-    }
-
     private function encodeHsbkColor(LightDataTypes\HsbkColor $color): string
     {
         return \pack('v4', $color->getHue(), $color->getSaturation(), $color->getBrightness(), $color->getTemperature());
@@ -104,12 +98,16 @@ final class MessageEncoder
      */
     private function encodeLocation(DeviceDataTypes\Location $location): string
     {
-        return \pack(
-            'a16a32P',
-            $location->getGuid()->getBytes(),
-            $location->getLabel()->getValue(),
-            $this->dateTimeToNanoseconds($location->getUpdatedAt())
-        );
+        try {
+            return \pack(
+                'a16a32P',
+                $location->getGuid()->getBytes(),
+                $location->getLabel()->getValue(),
+                datetimeinterface_to_nanotime($location->getUpdatedAt())
+            );
+        } catch (InvalidValueException $e) {
+            throw new InvalidMessageException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -119,12 +117,16 @@ final class MessageEncoder
      */
     private function encodeGroup(DeviceDataTypes\Group $group): string
     {
-        return \pack(
-            'a16a32P',
-            $group->getGuid()->getBytes(),
-            $group->getLabel()->getValue(),
-            $this->dateTimeToNanoseconds($group->getUpdatedAt())
-        );
+        try {
+            return \pack(
+                'a16a32P',
+                $group->getGuid()->getBytes(),
+                $group->getLabel()->getValue(),
+                datetimeinterface_to_nanotime($group->getUpdatedAt())
+            );
+        } catch (InvalidValueException $e) {
+            throw new InvalidMessageException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -134,12 +136,16 @@ final class MessageEncoder
      */
     private function encodeFirmware(DeviceDataTypes\Firmware $firmware)
     {
-        return \pack(
-            'PPV',
-            $this->dateTimeToNanoseconds($firmware->getBuild()),
-            0, // reserved
-            $firmware->getVersion()
-        );
+        try {
+            return \pack(
+                'PPV',
+                datetimeinterface_to_nanotime($firmware->getBuild()),
+                0, // reserved
+                $firmware->getVersion()
+            );
+        } catch (InvalidValueException $e) {
+            throw new InvalidMessageException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     private function encodeNetworkInfo(DeviceDataTypes\NetworkInfo $info): string
@@ -151,22 +157,6 @@ final class MessageEncoder
             $info->getRx(),
             0 // reserved
         );
-    }
-
-    /**
-     * @param \DateTimeInterface $dateTime
-     * @return int
-     * @throws InvalidMessageException
-     */
-    private function dateTimeToNanoseconds(\DateTimeInterface $dateTime): int
-    {
-        $result = ($dateTime->format('U') * 1000000000) + ($dateTime->format('u') * 1000);
-
-        if ($result < 0) {
-            throw new InvalidMessageException("Timestamp {$dateTime->format('Y-m-d H:i:s.u')} is negative");
-        }
-
-        return $result;
     }
 
     private function encodeUnknownMessage(UnknownMessage $message): string
@@ -197,7 +187,11 @@ final class MessageEncoder
     {
         $info = $message->getInfo();
 
-        return \pack('PPP', $this->dateTimeToNanoseconds($info->getTime()), $info->getUptime(), $info->getDowntime());
+        try {
+            return \pack('PPP', datetimeinterface_to_nanotime($info->getTime()), $info->getUptime(), $info->getDowntime());
+        } catch (InvalidValueException $e) {
+            throw new InvalidMessageException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -397,7 +391,7 @@ final class MessageEncoder
     private function encodeSetWaveform(LightCommands\SetWaveform $message): string
     {
         $effect = $message->getEffect();
-        $skew = $this->signedShortToUnsignedShort($effect->getSkewRatio());
+        $skew = int16_to_uint16($effect->getSkewRatio());
 
         return "\x00" . \chr((int)$effect->isTransient())
             . $this->encodeHsbkColor($effect->getColor())
@@ -412,7 +406,7 @@ final class MessageEncoder
     private function encodeSetWaveformOptional(LightCommands\SetWaveformOptional $message): string
     {
         $effect = $message->getEffect();
-        $skew = $this->signedShortToUnsignedShort($effect->getSkewRatio());
+        $skew = int16_to_uint16($effect->getSkewRatio());
 
         $options = $effect->getOptions();
         $optionData = \pack(

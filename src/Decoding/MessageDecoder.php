@@ -16,6 +16,8 @@ use DaveRandom\LibLifxLan\Messages\Light\Requests as LightRequests;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
 use DaveRandom\LibLifxLan\Messages\UnknownMessage;
+use function DaveRandom\LibLifxLan\nanotime_to_datetimeimmutable;
+use function DaveRandom\LibLifxLan\uint16_to_int16;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
 
@@ -121,40 +123,6 @@ final class MessageDecoder
 
     private $uuidFactory;
 
-    private function unsignedShortToSignedShort(int $unsigned): int
-    {
-        if (!($unsigned & 0x8000)) {
-            return $unsigned;
-        }
-
-        return -(($unsigned & 0x7fff) + 1);
-    }
-
-    /**
-     * @param int $timestamp
-     * @return \DateTimeImmutable
-     * @throws InvalidValueException
-     */
-    private function nanotimeToDateTimeImmutable(int $timestamp): \DateTimeImmutable
-    {
-        static $utcTimeZone;
-
-        $usecs = (int)(($timestamp % 1000000000) / 1000);
-        $secs = (int)($timestamp / 1000000000);
-
-        $result = \DateTimeImmutable::createFromFormat(
-            'u U',
-            \sprintf("%06d %d", $usecs, $secs),
-            $utcTimeZone ?? ($utcTimeZone = new \DateTimeZone('UTC'))
-        );
-
-        if ($result === false) {
-            throw new InvalidValueException("Could not convert nanotime to DateTimeImmutable instance");
-        }
-
-        return $result;
-    }
-
     private function decodeAcknowledgement(): DeviceResponses\Acknowledgement
     {
         return new DeviceResponses\Acknowledgement();
@@ -190,7 +158,7 @@ final class MessageDecoder
         ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
-        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $updatedAt = nanotime_to_datetimeimmutable($updatedAt);
         $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
         return new DeviceCommands\SetGroup(new DeviceDataTypes\Group($guid, $label, $updatedAt));
@@ -211,7 +179,7 @@ final class MessageDecoder
         ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
-        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $updatedAt = nanotime_to_datetimeimmutable($updatedAt);
         $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
         return new DeviceResponses\StateGroup(new DeviceDataTypes\Group($guid, $label, $updatedAt));
@@ -235,7 +203,7 @@ final class MessageDecoder
             'version'  => $version,
         ] = \unpack('Pbuild/Preserved/Vversion', $data, $offset);
 
-        $build = $this->nanotimeToDateTimeImmutable($build);
+        $build = nanotime_to_datetimeimmutable($build);
 
         return new DeviceResponses\StateHostFirmware(new DeviceDataTypes\HostFirmware($build, $version));
     }
@@ -280,7 +248,7 @@ final class MessageDecoder
             'downtime' => $downtime,
         ] = \unpack('Ptime/Puptime/Pdowntime', $data, $offset);
 
-        $time = $this->nanotimeToDateTimeImmutable($time);
+        $time = nanotime_to_datetimeimmutable($time);
 
         return new DeviceResponses\StateInfo(new DeviceDataTypes\TimeInfo($time, $uptime, $downtime));
     }
@@ -320,7 +288,7 @@ final class MessageDecoder
         ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
-        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $updatedAt = nanotime_to_datetimeimmutable($updatedAt);
         $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
         return new DeviceCommands\SetLocation(new DeviceDataTypes\Location($guid, $label, $updatedAt));
@@ -341,7 +309,7 @@ final class MessageDecoder
         ] = \unpack('a16guid/a32label/Pupdated', $data, $offset);
 
         $guid = $this->uuidFactory->fromBytes($guid);
-        $updatedAt = $this->nanotimeToDateTimeImmutable($updatedAt);
+        $updatedAt = nanotime_to_datetimeimmutable($updatedAt);
         $label = new DeviceDataTypes\Label(\rtrim($label, "\x00"));
 
         return new DeviceResponses\StateLocation(new DeviceDataTypes\Location($guid, $label, $updatedAt));
@@ -415,7 +383,7 @@ final class MessageDecoder
             'version'  => $version,
         ] = \unpack('Pbuild/Preserved/Vversion', $data, $offset);
 
-        $build = $this->nanotimeToDateTimeImmutable($build);
+        $build = nanotime_to_datetimeimmutable($build);
 
         return new DeviceResponses\StateWifiFirmware(new DeviceDataTypes\WifiFirmware($build, $version));
     }
@@ -479,7 +447,7 @@ final class MessageDecoder
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
 
-        $skewRatio = $this->unsignedShortToSignedShort($skewRatio);
+        $skewRatio = uint16_to_int16($skewRatio);
         $effect = new LightDataTypes\Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform);
 
         return new LightCommmands\SetWaveform($effect);
@@ -511,7 +479,7 @@ final class MessageDecoder
         ] = \unpack($format, $data, $offset);
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
-        $skewRatio = $this->unsignedShortToSignedShort($skewRatio);
+        $skewRatio = uint16_to_int16($skewRatio);
 
         $options = ($setHue ? LightDataTypes\Effect::SET_HUE : 0)
             | ($setSaturation ? LightDataTypes\Effect::SET_SATURATION : 0)
