@@ -2,6 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\Tests\Decoding;
 
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Decoding\FrameAddressDecoder;
 use DaveRandom\LibLifxLan\Decoding\FrameDecoder;
 use DaveRandom\LibLifxLan\Decoding\HeaderDecoder;
@@ -99,5 +100,31 @@ final class HeaderDecoderTest extends TestCase
 
             $this->assertSame($header->getProtocolHeader()->getType(), ExampleWireData::PROTOCOL_HEADER_MESSAGE_TYPE_ID);
         }
+    }
+
+    /**
+     * @expectedException \DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException
+     */
+    public function testDecodeHeaderDataTooShort(): void
+    {
+        (new HeaderDecoder)->decodeHeader(\substr(ExampleWireData::HEADER_DATA, 0, -1));
+    }
+
+    public function testDecodeHeaderDataTooShortWithOffset(): void
+    {
+        $failures = 0;
+        $decoder = new HeaderDecoder();
+
+        foreach (OffsetTestValues::OFFSETS as $offset) {
+            $padding = \str_repeat("\x00", $offset);
+
+            try {
+                $decoder->decodeHeader($padding . \substr(ExampleWireData::HEADER_DATA, 0, -1), $offset);
+            } catch (InsufficientDataException $e) {
+                $failures++;
+            }
+        }
+
+        $this->assertSame($failures, \count(OffsetTestValues::OFFSETS));
     }
 }
