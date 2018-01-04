@@ -25,6 +25,21 @@ final class HeaderDecoder
         $this->protocolHeaderDecoder = $protocolHeaderDecoder ?? new ProtocolHeaderDecoder;
     }
 
+    public function getFrameDecoder(): FrameDecoder
+    {
+        return $this->frameDecoder;
+    }
+
+    public function getFrameAddressDecoder(): FrameAddressDecoder
+    {
+        return $this->frameAddressDecoder;
+    }
+
+    public function getProtocolHeaderDecoder(): ProtocolHeaderDecoder
+    {
+        return $this->protocolHeaderDecoder;
+    }
+
     /**
      * @param string $data
      * @param int $offset
