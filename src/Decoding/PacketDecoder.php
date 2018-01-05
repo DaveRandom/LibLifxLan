@@ -4,6 +4,7 @@ namespace DaveRandom\LibLifxLan\Decoding;
 
 use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
+use DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException;
 use DaveRandom\LibLifxLan\Header\Header;
 use DaveRandom\LibLifxLan\Packet;
 
@@ -38,6 +39,7 @@ final class PacketDecoder
      * @return Packet
      * @throws DecodingException
      * @throws InsufficientDataException
+     * @throws InvalidMessagePayloadLengthException
      */
     public function decodePacket(string $buffer, int $offset = 0, int $length = null): Packet
     {
@@ -52,7 +54,7 @@ final class PacketDecoder
         $statedLength = \unpack('vlength', $buffer, $offset)['length'];
 
         if ($statedLength !== $dataLength) {
-            throw new InsufficientDataException(
+            throw new InvalidMessagePayloadLengthException(
                 "Packet length is stated to be {$statedLength} bytes, buffer is {$dataLength} bytes"
             );
         }
