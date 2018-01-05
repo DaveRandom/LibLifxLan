@@ -17,6 +17,28 @@ final class Packet
     private $header;
     private $message;
 
+    private static function createFrameFromMessage(Message $message, int $sourceId, ?MacAddress $destination): Frame
+    {
+        return new Frame(
+            Header::WIRE_SIZE + $message->getWireSize(),
+            self::MESSAGE_ORIGIN,
+            /* tagged */ $destination === null,
+            /* addressable */ true,
+            self::PROTOCOL_NUMBER,
+            $sourceId
+        );
+    }
+
+    private static function createFrameAddress(?MacAddress $destination, int $responsePattern, int $sequenceNo): FrameAddress
+    {
+        return new FrameAddress(
+            $destination ?? new MacAddress(0, 0, 0, 0, 0, 0),
+            (bool)($responsePattern & ResponsePattern::REQUIRE_ACK),
+            (bool)($responsePattern & ResponsePattern::REQUIRE_RESPONSE),
+            $sequenceNo
+        );
+    }
+
     public static function createFromMessage(
         Message $message,
         int $sourceId,
@@ -25,26 +47,13 @@ final class Packet
         int $responsePattern
     ): Packet
     {
-        return new Packet(
-            new Header(
-                new Frame(
-                    Header::WIRE_SIZE + $message->getWireSize(),
-                    self::MESSAGE_ORIGIN,
-                    /* tagged */ $destination === null,
-                    /* addressable */ true,
-                    self::PROTOCOL_NUMBER,
-                    $sourceId
-                ),
-                new FrameAddress(
-                    $destination ?? new MacAddress(0, 0, 0, 0, 0, 0),
-                    (bool)($responsePattern & ResponsePattern::REQUIRE_ACK),
-                    (bool)($responsePattern & ResponsePattern::REQUIRE_RESPONSE),
-                    $sequenceNo
-                ),
-                new ProtocolHeader($message->getTypeId())
-            ),
-            $message
+        $header = new Header(
+            self::createFrameFromMessage($message, $sourceId, $destination),
+            self::createFrameAddress($destination, $responsePattern, $sequenceNo),
+            new ProtocolHeader($message->getTypeId())
         );
+
+        return new Packet($header, $message);
     }
 
     public function __construct(Header $header, Message $message)
