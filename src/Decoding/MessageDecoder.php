@@ -23,6 +23,12 @@ final class MessageDecoder
 {
     private const HSBK_FORMAT = 'vhue/vsaturation/vbrightness/vtemperature';
 
+    private const SET_WAVEFORM_FORMAT
+        = 'Creserved/Ctransient'
+        . '/' . self::HSBK_FORMAT
+        . '/Vperiod/' . \DaveRandom\LibLifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
+    ;
+
     /**
      * @uses decodeAcknowledgement
      * @uses decodeEchoRequest
@@ -378,23 +384,11 @@ final class MessageDecoder
 
     private function decodeSetWaveform(string $data, int $offset): LightCommmands\SetWaveform
     {
-        $format
-            = 'Creserved/Ctransient/'
-            . self::HSBK_FORMAT
-            . '/Vperiod/' . \DaveRandom\LibLifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
-        ;
-
         [
-            'transient'   => $transient,
-            'hue'         => $hue,
-            'saturation'  => $saturation,
-            'brightness'  => $brightness,
-            'temperature' => $temperature,
-            'period'      => $period,
-            'cycles'      => $cycles,
-            'skewRatio'   => $skewRatio,
-            'waveform'    => $waveform,
-        ] = \unpack($format, $data, $offset);
+            'transient' => $transient,
+            'hue' => $hue, 'saturation' => $saturation, 'brightness' => $brightness, 'temperature' => $temperature,
+            'period' => $period, 'cycles' => $cycles, 'skewRatio' => $skewRatio, 'waveform' => $waveform,
+        ] = \unpack(self::SET_WAVEFORM_FORMAT, $data, $offset);
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
 
@@ -406,28 +400,12 @@ final class MessageDecoder
 
     private function decodeSetWaveformOptional(string $data, int $offset): LightCommmands\SetWaveformOptional
     {
-        $format
-            = 'Creserved/Ctransient/'
-            . self::HSBK_FORMAT
-            . '/Vperiod/' . \DaveRandom\LibLifxLan\FLOAT32_CODE . 'cycles/vskewRatio/Cwaveform'
-            . '/CsetHue/CsetSaturation/CsetBrightness/CsetTemperature'
-        ;
-
         [
-            'transient'      => $transient,
-            'hue'            => $hue,
-            'saturation'     => $saturation,
-            'brightness'     => $brightness,
-            'temperature'    => $temperature,
-            'period'         => $period,
-            'cycles'         => $cycles,
-            'skewRatio'      => $skewRatio,
-            'waveform'       => $waveform,
-            'setHue'         => $setHue,
-            'setSaturation'  => $setSaturation,
-            'setBrightness'  => $setBrightness,
-            'setTemperature' => $setTemperature,
-        ] = \unpack($format, $data, $offset);
+            'transient' => $transient,
+            'hue' => $hue, 'saturation' => $saturation, 'brightness' => $brightness, 'temperature' => $temperature,
+            'period' => $period, 'cycles' => $cycles, 'skewRatio' => $skewRatio, 'waveform' => $waveform,
+            'setH' => $setHue, 'setS' => $setSaturation, 'setB' => $setBrightness, 'setK' => $setTemperature,
+        ] = \unpack(self::SET_WAVEFORM_FORMAT . '/CsetH/CsetS/CsetB/CsetK', $data, $offset);
 
         $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
         $skewRatio = uint16_to_int16($skewRatio);

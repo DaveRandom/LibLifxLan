@@ -24,7 +24,7 @@ final class PacketDecoder
      * @throws InsufficientDataException
      * @throws InvalidMessagePayloadLengthException
      */
-    private function getValidDataLength(string $buffer, int $offset, int $length): int
+    private function getValidDataLength(string $buffer, int $offset, ?int $length): int
     {
         $dataLength = $length ?? (\strlen($buffer) - $offset);
 
