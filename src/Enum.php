@@ -18,6 +18,22 @@ abstract class Enum
             ?? self::$constantCache[$className] = (new \ReflectionClass($className))->getConstants();
     }
 
+    private static function compareValues($v1, $v2, bool $loose): bool
+    {
+        return $v1 === $v2 || ($loose && $v1 == $v2);
+    }
+
+    private static function searchArrayCaseInsensitive(array $array, string $string): ?string
+    {
+        foreach ($array as $key => $value) {
+            if (\strcasecmp($string, $key) === 0) {
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Get the name of the first member with the specified value
      *
@@ -28,7 +44,7 @@ abstract class Enum
     final public static function parseValue($searchValue, bool $looseComparison = false): string
     {
         foreach (self::getClassConstants(static::class) as $name => $memberValue) {
-            if ($searchValue === $memberValue || ($looseComparison && $searchValue == $memberValue)) {
+            if (self::compareValues($memberValue, $searchValue, $looseComparison)) {
                 return $name;
             }
         }
@@ -51,12 +67,8 @@ abstract class Enum
             return $constants[$searchName];
         }
 
-        if ($caseInsensitive) {
-            foreach ($constants as $memberName => $value) {
-                if (\strcasecmp($searchName, $memberName) === 0) {
-                    return $value;
-                }
-            }
+        if ($caseInsensitive && null !== $key = self::searchArrayCaseInsensitive($constants, $searchName)) {
+            return $constants[$key];
         }
 
         throw new \InvalidArgumentException('Unknown enumeration member: ' . $searchName);
