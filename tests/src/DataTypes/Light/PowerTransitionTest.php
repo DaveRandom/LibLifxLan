@@ -4,8 +4,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes\Light;
 
 use DaveRandom\LibLifxLan\DataTypes\Light\PowerTransition;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class PowerTransitionTest extends TestCase
 {
@@ -34,7 +32,7 @@ class PowerTransitionTest extends TestCase
 
     public function testDurationPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $duration) {
+        foreach ([0, 42, 0xffffffff] as $duration) {
             $this->assertSame((new PowerTransition(0, $duration))->getDuration(), $duration);
         }
     }
@@ -44,7 +42,7 @@ class PowerTransitionTest extends TestCase
      */
     public function testDurationPropertyValueTooLow(): void
     {
-        new PowerTransition(0, UINT32_MIN - 1);
+        new PowerTransition(0, 0 - 1);
     }
 
     /**
@@ -52,6 +50,6 @@ class PowerTransitionTest extends TestCase
      */
     public function testDurationPropertyValueTooHigh(): void
     {
-        new PowerTransition(0, UINT32_MAX + 1);
+        new PowerTransition(0, 0xffffffff + 1);
     }
 }

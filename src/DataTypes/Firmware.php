@@ -3,34 +3,13 @@
 namespace DaveRandom\LibLifxLan\DataTypes;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 use function DaveRandom\LibLifxLan\datetimeinterface_to_datetimeimmutable;
+use function DaveRandom\LibLifxLan\validate_uint32;
 
 abstract class Firmware
 {
     private $build;
     private $version;
-
-    private function setBuild(\DateTimeImmutable $build): void
-    {
-        $this->build = $build;
-    }
-
-    /**
-     * @param int $version
-     * @throws InvalidValueException
-     */
-    private function setVersion(int $version): void
-    {
-        if ($version < UINT32_MIN || $version > UINT32_MAX) {
-            throw new InvalidValueException(
-                "Firmware version {$version} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
-            );
-        }
-
-        $this->version = $version;
-    }
 
     /**
      * @param \DateTimeInterface $build
@@ -39,8 +18,8 @@ abstract class Firmware
      */
     protected function __construct(\DateTimeInterface $build, int $version)
     {
-        $this->setBuild(datetimeinterface_to_datetimeimmutable($build));
-        $this->setVersion($version);
+        $this->build = datetimeinterface_to_datetimeimmutable($build);
+        $this->version = validate_uint32('Firmware version', $version);
     }
 
     public function getBuild(): \DateTimeImmutable

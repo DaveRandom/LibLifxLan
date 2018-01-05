@@ -2,8 +2,7 @@
 
 namespace DaveRandom\LibLifxLan;
 
-const UINT32_MIN = 0;
-const UINT32_MAX = 0xffffffff;
+use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 
 // @codeCoverageIgnoreStart
 foreach (['g', 'f', 'e'] as $format) {
@@ -73,4 +72,91 @@ function uint16_to_int16(int $unsigned): int
     return $unsigned >= 0x8000
         ? ($unsigned & 0x7fff) - ($unsigned & 0x8000)
         : $unsigned & 0x7fff;
+}
+
+/**
+ * @param string $description
+ * @param int $int
+ * @param int $min
+ * @param int $max
+ * @return int
+ * @throws InvalidValueException
+ */
+function validate_int_range(string $description, int $int, int $min, int $max): int
+{
+    if ($int < $min || $int > $max) {
+        throw new InvalidValueException(
+            "{$description} '{$int}' outside allowable range of {$min} - {$max}"
+        );
+    }
+
+    return $int;
+}
+
+/**
+ * @param string $description
+ * @param int $int
+ * @return int
+ * @throws InvalidValueException
+ */
+function validate_uint8(string $description, int $int): int
+{
+    if ($int < 0 || $int > 0xff) {
+        throw new InvalidValueException(
+            "{$description} '{$int}' outside allowable range of " . -0x8000 . " - " . 0xff
+        );
+    }
+
+    return $int;
+}
+
+/**
+ * @param string $description
+ * @param int $int
+ * @return int
+ * @throws InvalidValueException
+ */
+function validate_int16(string $description, int $int): int
+{
+    if ($int < -0x8000 || $int > 0x7fff) {
+        throw new InvalidValueException(
+            "{$description} '{$int}' outside allowable range of " . -0x8000 . " - " . 0x7fff
+        );
+    }
+
+    return $int;
+}
+
+/**
+ * @param string $description
+ * @param int $int
+ * @return int
+ * @throws InvalidValueException
+ */
+function validate_uint16(string $description, int $int): int
+{
+    if ($int < 0 || $int > 0xffff) {
+        throw new InvalidValueException(
+            "{$description} '{$int}' outside allowable range of " . 0 . " - " . 0xffff
+        );
+    }
+
+    return $int;
+}
+
+/**
+ * @param string $description
+ * @param int $int
+ * @return int
+ * @throws InvalidValueException
+ */
+function validate_uint32(string $description, int $int): int
+{
+    if ($int < 0 || $int > 0xffffffff) {
+        throw new InvalidValueException(
+            "{$description} '{$int}' outside allowable range of " . 0 . " - " . 0xffffffff
+        );
+    }
+
+    return $int;
 }

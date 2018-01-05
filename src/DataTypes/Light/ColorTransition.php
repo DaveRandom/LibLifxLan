@@ -3,33 +3,12 @@
 namespace DaveRandom\LibLifxLan\DataTypes\Light;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
+use function DaveRandom\LibLifxLan\validate_uint32;
 
 final class ColorTransition
 {
     private $color;
     private $duration;
-
-    private function setColor(HsbkColor $color): void
-    {
-        $this->color = $color;
-    }
-
-    /**
-     * @param int $duration
-     * @throws InvalidValueException
-     */
-    private function setDuration(int $duration): void
-    {
-        if ($duration < UINT32_MIN || $duration > UINT32_MAX) {
-            throw new InvalidValueException(
-                "Transition duration {$duration} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
-            );
-        }
-
-        $this->duration = $duration;
-    }
 
     /**
      * @param HsbkColor $color
@@ -38,8 +17,8 @@ final class ColorTransition
      */
     public function __construct(HsbkColor $color, int $duration)
     {
-        $this->setColor($color);
-        $this->setDuration($duration);
+        $this->color = $color;
+        $this->duration = validate_uint32('Transition duration', $duration);
     }
 
     public function getColor(): HsbkColor

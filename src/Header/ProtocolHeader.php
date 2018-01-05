@@ -3,6 +3,7 @@
 namespace DaveRandom\LibLifxLan\Header;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
+use function DaveRandom\LibLifxLan\validate_uint16;
 
 final class ProtocolHeader
 {
@@ -14,22 +15,9 @@ final class ProtocolHeader
      * @param int $type
      * @throws InvalidValueException
      */
-    private function setType(int $type): void
-    {
-        if ($type < 0 || $type > 65535) {
-            throw new InvalidValueException("Message type {$type} outside allowable range of 0 - 65535");
-        }
-
-        $this->type = $type;
-    }
-
-    /**
-     * @param int $type
-     * @throws InvalidValueException
-     */
     public function __construct(int $type)
     {
-        $this->setType($type);
+        $this->type = validate_uint16('Message type', $type);
     }
 
     public function getType(): int

@@ -5,8 +5,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes\Light;
 use DaveRandom\LibLifxLan\DataTypes\Light\Effect;
 use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class EffectTest extends TestCase
 {
@@ -30,7 +28,7 @@ class EffectTest extends TestCase
 
     public function testPeriodPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $period) {
+        foreach ([0, 42, 0xffffffff] as $period) {
             $this->assertSame((new Effect(false, $this->color, $period, 0.0, 0, 0, 0))->getPeriod(), $period);
         }
     }
@@ -40,7 +38,7 @@ class EffectTest extends TestCase
      */
     public function testPeriodPropertyValueTooLow(): void
     {
-        new Effect(false, $this->color, UINT32_MIN - 1, 0.0, 0, 0, 0);
+        new Effect(false, $this->color, 0 - 1, 0.0, 0, 0, 0);
     }
 
     /**
@@ -48,7 +46,7 @@ class EffectTest extends TestCase
      */
     public function testPeriodPropertyValueTooHigh(): void
     {
-        new Effect(false, $this->color, UINT32_MAX + 1, 0.0, 0, 0, 0);
+        new Effect(false, $this->color, 0xffffffff + 1, 0.0, 0, 0, 0);
     }
 
     public function testCyclesProperty(): void

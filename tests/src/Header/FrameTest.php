@@ -4,8 +4,6 @@ namespace DaveRandom\LibLifxLan\Tests\Header;
 
 use DaveRandom\LibLifxLan\Header\Frame;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class FrameTest extends TestCase
 {
@@ -92,7 +90,7 @@ class FrameTest extends TestCase
 
     public function testSourceValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $source) {
+        foreach ([0, 42, 0xffffffff] as $source) {
             $this->assertSame((new Frame(0, 0, false, false, 0, $source))->getSource(), $source);
         }
     }
@@ -102,7 +100,7 @@ class FrameTest extends TestCase
      */
     public function testSourcePropertyValueTooLow(): void
     {
-        new Frame(0, 0, false, false, 0, UINT32_MIN - 1);
+        new Frame(0, 0, false, false, 0, 0 - 1);
     }
 
     /**
@@ -110,6 +108,6 @@ class FrameTest extends TestCase
      */
     public function testSourcePropertyValueTooHigh(): void
     {
-        new Frame(0, 0, false, false, 0, UINT32_MAX + 1);
+        new Frame(0, 0, false, false, 0, 0xffffffff + 1);
     }
 }

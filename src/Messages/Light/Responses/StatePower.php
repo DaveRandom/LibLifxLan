@@ -4,6 +4,7 @@ namespace DaveRandom\LibLifxLan\Messages\Light\Responses;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 use DaveRandom\LibLifxLan\Messages\Message;
+use function DaveRandom\LibLifxLan\validate_uint16;
 
 final class StatePower implements Message
 {
@@ -18,11 +19,7 @@ final class StatePower implements Message
      */
     public function __construct(int $level)
     {
-        if ($level < 0 || $level > 65535) {
-            throw new InvalidValueException("Power level {$level} outside allowable range of 0 - 65535");
-        }
-
-        $this->level = $level;
+        $this->level = validate_uint16('Power level', $level);
     }
 
     public function getLevel(): int

@@ -2,7 +2,6 @@
 
 namespace DaveRandom\LibLifxLan\Tests\Encoding;
 
-use DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException;
 use DaveRandom\LibLifxLan\Encoding\FrameEncoder;
 use DaveRandom\LibLifxLan\Header\Frame;
 use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;

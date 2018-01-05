@@ -5,8 +5,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 use DaveRandom\LibLifxLan\DataTypes\Service;
 use DaveRandom\LibLifxLan\DataTypes\ServiceTypes;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class ServiceTest extends TestCase
 {
@@ -35,7 +33,7 @@ class ServiceTest extends TestCase
 
     public function testPortPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $port) {
+        foreach ([0, 42, 0xffffffff] as $port) {
             $this->assertSame((new Service(0, $port))->getPort(), $port);
         }
     }
@@ -45,7 +43,7 @@ class ServiceTest extends TestCase
      */
     public function testPortPropertyValueTooLow(): void
     {
-        new Service(0, UINT32_MIN - 1);
+        new Service(0, 0 - 1);
     }
 
     /**
@@ -53,7 +51,7 @@ class ServiceTest extends TestCase
      */
     public function testPortPropertyValueTooHigh(): void
     {
-        new Service(0, UINT32_MAX + 1);
+        new Service(0, 0xffffffff + 1);
     }
 
     public function testNamePropertyKnownService(): void

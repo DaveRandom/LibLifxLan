@@ -4,35 +4,13 @@ namespace DaveRandom\LibLifxLan\DataTypes\Light;
 
 use DaveRandom\LibLifxLan\DataTypes\Label;
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
+use function DaveRandom\LibLifxLan\validate_uint16;
 
 final class State
 {
     private $color;
     private $power;
     private $label;
-
-    private function setColor(HsbkColor $color): void
-    {
-        $this->color = $color;
-    }
-
-    /**
-     * @param int $power
-     * @throws InvalidValueException
-     */
-    private function setPower(int $power): void
-    {
-        if ($power < 0 || $power > 65535) {
-            throw new InvalidValueException("Power level {$power} outside allowable range of 0 - 65535");
-        }
-
-        $this->power = $power;
-    }
-
-    private function setLabel(Label $label): void
-    {
-        $this->label = $label;
-    }
 
     /**
      * @param HsbkColor $color
@@ -42,9 +20,9 @@ final class State
      */
     public function __construct(HsbkColor $color, int $power, Label $label)
     {
-        $this->setColor($color);
-        $this->setPower($power);
-        $this->setLabel($label);
+        $this->color = $color;
+        $this->power = validate_uint16('Power level', $power);
+        $this->label = $label;
     }
 
     public function getColor(): HsbkColor

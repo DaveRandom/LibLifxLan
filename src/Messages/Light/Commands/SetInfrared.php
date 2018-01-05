@@ -4,6 +4,7 @@ namespace DaveRandom\LibLifxLan\Messages\Light\Commands;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 use DaveRandom\LibLifxLan\Messages\Message;
+use function DaveRandom\LibLifxLan\validate_uint16;
 
 final class SetInfrared implements Message
 {
@@ -18,11 +19,7 @@ final class SetInfrared implements Message
      */
     public function __construct(int $brightness)
     {
-        if ($brightness < 0 || $brightness > 65535) {
-            throw new InvalidValueException("Brightness {$brightness} outside allowable range of 0 - 65535");
-        }
-
-        $this->brightness = $brightness;
+        $this->brightness = validate_uint16('Brightness', $brightness);
     }
 
     public function getBrightness(): int

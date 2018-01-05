@@ -4,14 +4,12 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 
 use DaveRandom\LibLifxLan\DataTypes\Version;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class VersionTest extends TestCase
 {
     public function testVendorPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $vendor) {
+        foreach ([0, 42, 0xffffffff] as $vendor) {
             $this->assertSame((new Version($vendor, 0, 0))->getVendor(), $vendor);
         }
     }
@@ -21,7 +19,7 @@ class VersionTest extends TestCase
      */
     public function testVendorPropertyValueTooLow(): void
     {
-        new Version(UINT32_MIN - 1, 0, 0);
+        new Version(0 - 1, 0, 0);
     }
 
     /**
@@ -29,12 +27,12 @@ class VersionTest extends TestCase
      */
     public function testVendorPropertyValueTooHigh(): void
     {
-        new Version(UINT32_MAX + 1, 0, 0);
+        new Version(0xffffffff + 1, 0, 0);
     }
 
     public function testProductPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $product) {
+        foreach ([0, 42, 0xffffffff] as $product) {
             $this->assertSame((new Version(0, $product, 0))->getProduct(), $product);
         }
     }
@@ -44,7 +42,7 @@ class VersionTest extends TestCase
      */
     public function testProductPropertyValueTooLow(): void
     {
-        new Version(0, UINT32_MIN - 1, 0);
+        new Version(0, 0 - 1, 0);
     }
 
     /**
@@ -52,12 +50,12 @@ class VersionTest extends TestCase
      */
     public function testProductPropertyValueTooHigh(): void
     {
-        new Version(0, UINT32_MAX + 1, 0);
+        new Version(0, 0xffffffff + 1, 0);
     }
 
     public function testVersionPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $version) {
+        foreach ([0, 42, 0xffffffff] as $version) {
             $this->assertSame((new Version(0, 0, $version))->getVersion(), $version);
         }
     }
@@ -67,7 +65,7 @@ class VersionTest extends TestCase
      */
     public function testVersionPropertyValueTooLow(): void
     {
-        new Version(0, 0, UINT32_MIN - 1);
+        new Version(0, 0, 0 - 1);
     }
 
     /**
@@ -75,6 +73,6 @@ class VersionTest extends TestCase
      */
     public function testVersionPropertyValueTooHigh(): void
     {
-        new Version(0, 0, UINT32_MAX + 1);
+        new Version(0, 0, 0xffffffff + 1);
     }
 }

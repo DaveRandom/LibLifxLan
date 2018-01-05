@@ -3,8 +3,9 @@
 namespace DaveRandom\LibLifxLan\DataTypes\Light;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
+use function DaveRandom\LibLifxLan\validate_int16;
+use function DaveRandom\LibLifxLan\validate_uint32;
+use function DaveRandom\LibLifxLan\validate_uint8;
 
 final class Effect
 {
@@ -21,67 +22,6 @@ final class Effect
     private $skewRatio;
     private $waveform;
     private $options;
-
-    private function setTransient(bool $transient): void
-    {
-        $this->transient = $transient;
-    }
-
-    private function setColor(HsbkColor $color): void
-    {
-        $this->color = $color;
-    }
-
-    /**
-     * @param int $period
-     * @throws InvalidValueException
-     */
-    private function setPeriod(int $period): void
-    {
-        if ($period < UINT32_MIN || $period > UINT32_MAX) {
-            throw new InvalidValueException(
-                "Period {$period} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
-            );
-        }
-
-        $this->period = $period;
-    }
-
-    private function setCycles(float $cycles): void
-    {
-        $this->cycles = $cycles;
-    }
-
-    /**
-     * @param int $skewRatio
-     * @throws InvalidValueException
-     */
-    private function setSkewRatio(int $skewRatio): void
-    {
-        if ($skewRatio < -32768 || $skewRatio > 32767) {
-            throw new InvalidValueException("Skew ratio {$skewRatio} outside allowable range of -32768 - 32767");
-        }
-
-        $this->skewRatio = $skewRatio;
-    }
-
-    /**
-     * @param int $waveform
-     * @throws InvalidValueException
-     */
-    private function setWaveform(int $waveform): void
-    {
-        if ($waveform < 0 || $waveform > 255) {
-            throw new InvalidValueException("Waveform {$waveform} outside allowable range of 0 - 255");
-        }
-
-        $this->waveform = $waveform;
-    }
-
-    private function setOptions(int $options): void
-    {
-        $this->options = $options;
-    }
 
     /**
      * @param bool $transient
@@ -102,13 +42,13 @@ final class Effect
         int $waveform,
         int $options = self::SET_ALL
     ) {
-        $this->setTransient($transient);
-        $this->setColor($color);
-        $this->setPeriod($period);
-        $this->setCycles($cycles);
-        $this->setSkewRatio($skewRatio);
-        $this->setWaveform($waveform);
-        $this->setOptions($options);
+        $this->transient = $transient;
+        $this->color = $color;
+        $this->period = validate_uint32('Period', $period);
+        $this->cycles = $cycles;
+        $this->skewRatio = validate_int16('Skew ratio', $skewRatio);
+        $this->waveform = validate_uint8('Waveform', $waveform);
+        $this->options = $options;
     }
 
     public function isTransient(): bool

@@ -5,8 +5,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes\Light;
 use DaveRandom\LibLifxLan\DataTypes\Light\ColorTransition;
 use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class ColorTransitionTest extends TestCase
 {
@@ -18,7 +16,7 @@ class ColorTransitionTest extends TestCase
 
     public function testDurationPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $duration) {
+        foreach ([0, 42, 0xffffffff] as $duration) {
             $this->assertSame((new ColorTransition(new HsbkColor(0, 0, 0, 2500), $duration))->getDuration(), $duration);
         }
     }
@@ -28,7 +26,7 @@ class ColorTransitionTest extends TestCase
      */
     public function testDurationPropertyValueTooLow(): void
     {
-        new ColorTransition(new HsbkColor(0, 0, 0, 2500), UINT32_MIN - 1);
+        new ColorTransition(new HsbkColor(0, 0, 0, 2500), 0 - 1);
     }
 
     /**
@@ -36,6 +34,6 @@ class ColorTransitionTest extends TestCase
      */
     public function testDurationPropertyValueTooHigh(): void
     {
-        new ColorTransition(new HsbkColor(0, 0, 0, 2500), UINT32_MAX + 1);
+        new ColorTransition(new HsbkColor(0, 0, 0, 2500), 0xffffffff + 1);
     }
 }

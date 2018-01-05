@@ -3,44 +3,13 @@
 namespace DaveRandom\LibLifxLan\DataTypes;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
+use function DaveRandom\LibLifxLan\validate_uint32;
 
 abstract class NetworkInfo
 {
     private $signal;
     private $tx;
     private $rx;
-
-    /**
-     * @param int $tx
-     * @throws InvalidValueException
-     */
-    private function setTx(int $tx): void
-    {
-        if ($tx < UINT32_MIN || $tx > UINT32_MAX) {
-            throw new InvalidValueException(
-                "Transmitted bytes {$tx} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
-            );
-        }
-
-        $this->tx = $tx;
-    }
-
-    /**
-     * @param int $rx
-     * @throws InvalidValueException
-     */
-    private function setRx(int $rx): void
-    {
-        if ($rx < UINT32_MIN || $rx > UINT32_MAX) {
-            throw new InvalidValueException(
-                "Recieved bytes {$rx} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
-            );
-        }
-
-        $this->rx = $rx;
-    }
 
     /**
      * @param float $signal
@@ -51,8 +20,8 @@ abstract class NetworkInfo
     protected function __construct(float $signal, int $tx, int $rx)
     {
         $this->signal = $signal;
-        $this->setTx($tx);
-        $this->setRx($rx);
+        $this->tx = validate_uint32('Transmitted bytes', $tx);
+        $this->rx = validate_uint32('Recieved bytes', $rx);
     }
 
     public function getSignal(): float

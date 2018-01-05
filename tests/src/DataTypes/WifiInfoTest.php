@@ -4,8 +4,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 
 use DaveRandom\LibLifxLan\DataTypes\WifiInfo;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class WifiInfoTest extends TestCase
 {
@@ -17,7 +15,7 @@ class WifiInfoTest extends TestCase
 
     public function testTxPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $tx) {
+        foreach ([0, 42, 0xffffffff] as $tx) {
             $this->assertSame((new WifiInfo(0.0, $tx, 0))->getTx(), $tx);
         }
     }
@@ -27,7 +25,7 @@ class WifiInfoTest extends TestCase
      */
     public function testTxPropertyValueTooLow(): void
     {
-        new WifiInfo(0.0, UINT32_MIN - 1, 0);
+        new WifiInfo(0.0, 0 - 1, 0);
     }
 
     /**
@@ -35,12 +33,12 @@ class WifiInfoTest extends TestCase
      */
     public function testTxPropertyValueTooHigh(): void
     {
-        new WifiInfo(0.0, UINT32_MAX + 1, 0);
+        new WifiInfo(0.0, 0xffffffff + 1, 0);
     }
 
     public function testRxPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $rx) {
+        foreach ([0, 42, 0xffffffff] as $rx) {
             $this->assertSame((new WifiInfo(0.0, 0, $rx))->getRx(), $rx);
         }
     }
@@ -50,7 +48,7 @@ class WifiInfoTest extends TestCase
      */
     public function testRxPropertyValueTooLow(): void
     {
-        new WifiInfo(0.0, 0, UINT32_MIN - 1);
+        new WifiInfo(0.0, 0, 0 - 1);
     }
 
     /**
@@ -58,6 +56,6 @@ class WifiInfoTest extends TestCase
      */
     public function testRxPropertyValueTooHigh(): void
     {
-        new WifiInfo(0.0, 0, UINT32_MAX + 1);
+        new WifiInfo(0.0, 0, 0xffffffff + 1);
     }
 }

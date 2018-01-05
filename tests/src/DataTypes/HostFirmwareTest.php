@@ -4,8 +4,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 
 use DaveRandom\LibLifxLan\DataTypes\HostFirmware;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class HostFirmwareTest extends TestCase
 {
@@ -17,7 +15,7 @@ class HostFirmwareTest extends TestCase
 
     public function testVersionPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $version) {
+        foreach ([0, 42, 0xffffffff] as $version) {
             $this->assertSame((new HostFirmware(new \DateTimeImmutable, $version))->getVersion(), $version);
         }
     }
@@ -27,7 +25,7 @@ class HostFirmwareTest extends TestCase
      */
     public function testVersionPropertyValueTooLow(): void
     {
-        new HostFirmware(new \DateTimeImmutable, UINT32_MIN - 1);
+        new HostFirmware(new \DateTimeImmutable, 0 - 1);
     }
 
     /**
@@ -35,6 +33,6 @@ class HostFirmwareTest extends TestCase
      */
     public function testVersionPropertyValueTooHigh(): void
     {
-        new HostFirmware(new \DateTimeImmutable, UINT32_MAX + 1);
+        new HostFirmware(new \DateTimeImmutable, 0xffffffff + 1);
     }
 }

@@ -44,6 +44,7 @@ final class HeaderDecoder
      * @param string $data
      * @param int $offset
      * @return Header
+     * @throws InsufficientDataException
      * @throws DecodingException
      */
     public function decodeHeader(string $data, int $offset = 0): Header

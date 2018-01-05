@@ -4,8 +4,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 
 use DaveRandom\LibLifxLan\DataTypes\Firmware;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class FirmwareTest extends TestCase
 {
@@ -32,7 +30,7 @@ class FirmwareTest extends TestCase
 
     public function testVersionPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $version) {
+        foreach ([0, 42, 0xffffffff] as $version) {
             $this->assertSame($this->createFirmware(new \DateTimeImmutable, $version)->getVersion(), $version);
         }
     }
@@ -42,7 +40,7 @@ class FirmwareTest extends TestCase
      */
     public function testVersionPropertyValueTooLow(): void
     {
-        $this->createFirmware(new \DateTimeImmutable, UINT32_MIN - 1);
+        $this->createFirmware(new \DateTimeImmutable, 0 - 1);
     }
 
     /**
@@ -50,6 +48,6 @@ class FirmwareTest extends TestCase
      */
     public function testVersionPropertyValueTooHigh(): void
     {
-        $this->createFirmware(new \DateTimeImmutable, UINT32_MAX + 1);
+        $this->createFirmware(new \DateTimeImmutable, 0xffffffff + 1);
     }
 }

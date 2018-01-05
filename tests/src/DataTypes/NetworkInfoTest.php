@@ -4,8 +4,6 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 
 use DaveRandom\LibLifxLan\DataTypes\NetworkInfo;
 use PHPUnit\Framework\TestCase;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
 
 class NetworkInfoTest extends TestCase
 {
@@ -33,7 +31,7 @@ class NetworkInfoTest extends TestCase
 
     public function testTxPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $tx) {
+        foreach ([0, 42, 0xffffffff] as $tx) {
             $this->assertSame($this->createNetworkInfo(0.0, $tx, 0)->getTx(), $tx);
         }
     }
@@ -43,7 +41,7 @@ class NetworkInfoTest extends TestCase
      */
     public function testTxPropertyValueTooLow(): void
     {
-        $this->createNetworkInfo(0.0, UINT32_MIN - 1, 0);
+        $this->createNetworkInfo(0.0, 0 - 1, 0);
     }
 
     /**
@@ -51,12 +49,12 @@ class NetworkInfoTest extends TestCase
      */
     public function testTxPropertyValueTooHigh(): void
     {
-        $this->createNetworkInfo(0.0, UINT32_MAX + 1, 0);
+        $this->createNetworkInfo(0.0, 0xffffffff + 1, 0);
     }
 
     public function testRxPropertyValidValues(): void
     {
-        foreach ([UINT32_MIN, 42, UINT32_MAX] as $rx) {
+        foreach ([0, 42, 0xffffffff] as $rx) {
             $this->assertSame($this->createNetworkInfo(0.0, 0, $rx)->getRx(), $rx);
         }
     }
@@ -66,7 +64,7 @@ class NetworkInfoTest extends TestCase
      */
     public function testRxPropertyValueTooLow(): void
     {
-        $this->createNetworkInfo(0.0, 0, UINT32_MIN - 1);
+        $this->createNetworkInfo(0.0, 0, 0 - 1);
     }
 
     /**
@@ -74,6 +72,6 @@ class NetworkInfoTest extends TestCase
      */
     public function testRxPropertyValueTooHigh(): void
     {
-        $this->createNetworkInfo(0.0, 0, UINT32_MAX + 1);
+        $this->createNetworkInfo(0.0, 0, 0xffffffff + 1);
     }
 }

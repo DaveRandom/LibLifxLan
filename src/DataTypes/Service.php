@@ -3,8 +3,8 @@
 namespace DaveRandom\LibLifxLan\DataTypes;
 
 use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
-use const DaveRandom\LibLifxLan\UINT32_MAX;
-use const DaveRandom\LibLifxLan\UINT32_MIN;
+use function DaveRandom\LibLifxLan\validate_uint32;
+use function DaveRandom\LibLifxLan\validate_uint8;
 
 final class Service
 {
@@ -13,42 +13,13 @@ final class Service
 
     /**
      * @param int $typeId
-     * @throws InvalidValueException
-     */
-    private function setTypeId(int $typeId): void
-    {
-        if ($typeId < 0 || $typeId > 255) {
-            throw new InvalidValueException("Service type ID {$typeId} outside allowable range of 0 - 255");
-        }
-
-        $this->typeId = $typeId;
-    }
-
-    /**
-     * @param int $port
-     * @throws InvalidValueException
-     */
-    private function setPort(int $port): void
-    {
-        // Protocol spec states this is a uint32 rather than a uint16, so allow any uint32 value at the protocol level
-        if ($port < UINT32_MIN || $port > UINT32_MAX) {
-            throw new InvalidValueException(
-                "Port {$port} outside allowable range of " . UINT32_MIN . " - " . UINT32_MAX
-            );
-        }
-
-        $this->port = $port;
-    }
-
-    /**
-     * @param int $typeId
      * @param int $port
      * @throws InvalidValueException
      */
     public function __construct(int $typeId, int $port)
     {
-        $this->setTypeId($typeId);
-        $this->setPort($port);
+        $this->typeId = validate_uint8('Service type ID', $typeId);
+        $this->port = validate_uint32('Port', $port);
     }
 
     public function getTypeId(): int
