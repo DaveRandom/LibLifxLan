@@ -16,6 +16,35 @@ final class PacketDecoder
     private $headerDecoder;
     private $messageDecoder;
 
+    /**
+     * @param string $buffer
+     * @param int $offset
+     * @param int $length
+     * @return int
+     * @throws InsufficientDataException
+     * @throws InvalidMessagePayloadLengthException
+     */
+    private function getValidDataLength(string $buffer, int $offset, int $length): int
+    {
+        $dataLength = $length ?? (\strlen($buffer) - $offset);
+
+        if ($dataLength < Header::WIRE_SIZE) {
+            throw new InsufficientDataException(
+                "Data length {$dataLength} less than minimum packet size " . Header::WIRE_SIZE
+            );
+        }
+
+        $statedLength = \unpack('vlength', $buffer, $offset)['length'];
+
+        if ($statedLength !== $dataLength) {
+            throw new InvalidMessagePayloadLengthException(
+                "Packet length is stated to be {$statedLength} bytes, buffer is {$dataLength} bytes"
+            );
+        }
+
+        return $statedLength;
+    }
+
     public function __construct(HeaderDecoder $headerDecoder = null, MessageDecoder $messageDecoder = null)
     {
         $this->headerDecoder = $headerDecoder ?? new HeaderDecoder;
@@ -43,21 +72,7 @@ final class PacketDecoder
      */
     public function decodePacket(string $buffer, int $offset = 0, int $length = null): Packet
     {
-        $dataLength = $length ?? (\strlen($buffer) - $offset);
-
-        if ($dataLength < Header::WIRE_SIZE) {
-            throw new InsufficientDataException(
-                "Data length {$dataLength} less than minimum packet size " . Header::WIRE_SIZE
-            );
-        }
-
-        $statedLength = \unpack('vlength', $buffer, $offset)['length'];
-
-        if ($statedLength !== $dataLength) {
-            throw new InvalidMessagePayloadLengthException(
-                "Packet length is stated to be {$statedLength} bytes, buffer is {$dataLength} bytes"
-            );
-        }
+        $dataLength = $this->getValidDataLength($buffer, $offset, $length);
 
         $header = $this->headerDecoder->decodeHeader($buffer, $offset + self::HEADER_OFFSET);
         $payload = $this->messageDecoder->decodeMessage(

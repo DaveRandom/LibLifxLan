@@ -24,18 +24,13 @@ final class FrameAddressDecoder
         }
 
         [
-            'mac1' => $mac1,
-            'mac2' => $mac2,
-            'mac3' => $mac3,
-            'mac4' => $mac4,
-            'mac5' => $mac5,
-            'mac6' => $mac6,
+            'mac1' => $mac1, 'mac2' => $mac2, 'mac3' => $mac3, 'mac4' => $mac4, 'mac5' => $mac5, 'mac6' => $mac6,
             'flags' => $flags,
             'sequence' => $sequence,
         ] = \unpack('C8mac/C6reserved/Cflags/Csequence', $data, $offset);
 
         $target = new MacAddress($mac1, $mac2, $mac3, $mac4, $mac5, $mac6);
-        $isAckRequired      = (bool)($flags & 0x02);
+        $isAckRequired = (bool)($flags & 0x02);
         $isResponseRequired = (bool)($flags & 0x01);
 
         return new FrameAddress($target, $isAckRequired, $isResponseRequired, $sequence);
