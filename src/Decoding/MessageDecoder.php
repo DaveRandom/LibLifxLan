@@ -6,8 +6,6 @@ use DaveRandom\LibLifxLan\DataTypes as DeviceDataTypes;
 use DaveRandom\LibLifxLan\DataTypes\Light as LightDataTypes;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException;
-use DaveRandom\LibLifxLan\Decoding\Exceptions\MalformedMessagePayloadException;
-use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
 use DaveRandom\LibLifxLan\Messages\Device\Commands as DeviceCommands;
 use DaveRandom\LibLifxLan\Messages\Device\Requests as DeviceRequests;
 use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
@@ -16,10 +14,10 @@ use DaveRandom\LibLifxLan\Messages\Light\Requests as LightRequests;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\Message;
 use DaveRandom\LibLifxLan\Messages\UnknownMessage;
-use function DaveRandom\LibLifxLan\nanotime_to_datetimeimmutable;
-use function DaveRandom\LibLifxLan\uint16_to_int16;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidFactoryInterface;
+use function DaveRandom\LibLifxLan\nanotime_to_datetimeimmutable;
+use function DaveRandom\LibLifxLan\uint16_to_int16;
 
 final class MessageDecoder
 {
@@ -143,12 +141,6 @@ final class MessageDecoder
         return new DeviceRequests\GetGroup;
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceCommands\SetGroup
-     * @throws InvalidValueException
-     */
     private function decodeSetGroup(string $data, int $offset): DeviceCommands\SetGroup
     {
         [
@@ -164,12 +156,6 @@ final class MessageDecoder
         return new DeviceCommands\SetGroup(new DeviceDataTypes\Group($guid, $label, $updatedAt));
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceResponses\StateGroup
-     * @throws InvalidValueException
-     */
     private function decodeStateGroup(string $data, int $offset): DeviceResponses\StateGroup
     {
         [
@@ -190,12 +176,6 @@ final class MessageDecoder
         return new DeviceRequests\GetHostFirmware;
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceResponses\StateHostFirmware
-     * @throws InvalidValueException
-     */
     private function decodeStateHostFirmware(string $data, int $offset): DeviceResponses\StateHostFirmware
     {
         [
@@ -213,11 +193,6 @@ final class MessageDecoder
         return new DeviceRequests\GetHostInfo;
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceResponses\StateHostInfo
-     */
     private function decodeStateHostInfo(string $data, int $offset): DeviceResponses\StateHostInfo
     {
         [
@@ -234,12 +209,6 @@ final class MessageDecoder
         return new DeviceRequests\GetInfo;
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceResponses\StateInfo
-     * @throws InvalidValueException
-     */
     private function decodeStateInfo(string $data, int $offset): DeviceResponses\StateInfo
     {
         [
@@ -273,12 +242,6 @@ final class MessageDecoder
         return new DeviceRequests\GetLocation;
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceCommands\SetLocation
-     * @throws InvalidValueException
-     */
     private function decodeSetLocation(string $data, int $offset): DeviceCommands\SetLocation
     {
         [
@@ -294,12 +257,6 @@ final class MessageDecoder
         return new DeviceCommands\SetLocation(new DeviceDataTypes\Location($guid, $label, $updatedAt));
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceResponses\StateLocation
-     * @throws InvalidValueException
-     */
     private function decodeStateLocation(string $data, int $offset): DeviceResponses\StateLocation
     {
         [
@@ -370,12 +327,6 @@ final class MessageDecoder
         return new DeviceRequests\GetWifiFirmware;
     }
 
-    /**
-     * @param string $data
-     * @param int $offset
-     * @return DeviceResponses\StateWifiFirmware
-     * @throws InvalidValueException
-     */
     private function decodeStateWifiFirmware(string $data, int $offset): DeviceResponses\StateWifiFirmware
     {
         [
@@ -579,10 +530,6 @@ final class MessageDecoder
             );
         }
 
-        try {
-            return ([$this, 'decode' . $messageName])($data, $offset);
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (InvalidValueException $e) {
-            throw new MalformedMessagePayloadException($e->getMessage(), $e->getCode(), $e);
-        }
+        return ([$this, 'decode' . $messageName])($data, $offset);
     }
 }
