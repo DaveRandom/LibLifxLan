@@ -127,6 +127,19 @@ final class MessageDecoder
 
     private $uuidFactory;
 
+    private function createBitField(array $map): int
+    {
+        $result = 0;
+
+        foreach ($map as $flag => $enabled) {
+            if ($enabled) {
+                $result |= $flag;
+            }
+        }
+
+        return $result;
+    }
+
     private function decodeAcknowledgement(): DeviceResponses\Acknowledgement
     {
         return new DeviceResponses\Acknowledgement();
@@ -390,12 +403,11 @@ final class MessageDecoder
             'period' => $period, 'cycles' => $cycles, 'skewRatio' => $skewRatio, 'waveform' => $waveform,
         ] = \unpack(self::SET_WAVEFORM_FORMAT, $data, $offset);
 
-        $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
-
-        $skewRatio = uint16_to_int16($skewRatio);
-        $effect = new LightDataTypes\Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform);
-
-        return new LightCommmands\SetWaveform($effect);
+        return new LightCommmands\SetWaveform(new LightDataTypes\Effect(
+            (bool)$transient,
+            new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature),
+            $period, $cycles, uint16_to_int16($skewRatio), $waveform
+        ));
     }
 
     private function decodeSetWaveformOptional(string $data, int $offset): LightCommmands\SetWaveformOptional
@@ -407,17 +419,17 @@ final class MessageDecoder
             'setH' => $setHue, 'setS' => $setSaturation, 'setB' => $setBrightness, 'setK' => $setTemperature,
         ] = \unpack(self::SET_WAVEFORM_FORMAT . '/CsetH/CsetS/CsetB/CsetK', $data, $offset);
 
-        $color = new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature);
-        $skewRatio = uint16_to_int16($skewRatio);
-
-        $options = ($setHue ? LightDataTypes\Effect::SET_HUE : 0)
-            | ($setSaturation ? LightDataTypes\Effect::SET_SATURATION : 0)
-            | ($setBrightness ? LightDataTypes\Effect::SET_BRIGHTNESS : 0)
-            | ($setTemperature ? LightDataTypes\Effect::SET_TEMPERATURE : 0);
-
-        $effect = new LightDataTypes\Effect((bool)$transient, $color, $period, $cycles, $skewRatio, $waveform, $options);
-
-        return new LightCommmands\SetWaveformOptional($effect);
+        return new LightCommmands\SetWaveformOptional(new LightDataTypes\Effect(
+            (bool)$transient,
+            new LightDataTypes\HsbkColor($hue, $saturation, $brightness, $temperature),
+            $period, $cycles, uint16_to_int16($skewRatio), $waveform,
+            $this->createBitField([
+                LightDataTypes\Effect::SET_HUE => $setHue,
+                LightDataTypes\Effect::SET_SATURATION => $setSaturation,
+                LightDataTypes\Effect::SET_BRIGHTNESS => $setBrightness,
+                LightDataTypes\Effect::SET_TEMPERATURE => $setTemperature,
+            ])
+        ));
     }
 
     private function decodeState(string $data, int $offset): LightResponses\State
