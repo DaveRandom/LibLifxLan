@@ -12,22 +12,13 @@ final class Label
      * @param string $value
      * @throws InvalidValueException
      */
-    private function setValue(string $value): void
+    public function __construct(string $value)
     {
         if (\strlen($value) > 32) {
             throw new InvalidValueException("Label cannot be larger than 32 bytes, got " . \strlen($value) . " bytes");
         }
 
         $this->value = $value;
-    }
-
-    /**
-     * @param string $value
-     * @throws InvalidValueException
-     */
-    public function __construct(string $value)
-    {
-        $this->setValue($value);
     }
 
     public function getValue(): string

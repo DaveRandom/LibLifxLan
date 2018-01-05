@@ -11,21 +11,6 @@ final class Location
     private $label;
     private $updatedAt;
 
-    private function setGuid(UuidInterface $guid): void
-    {
-        $this->guid = $guid;
-    }
-
-    private function setLabel(Label $label): void
-    {
-        $this->label = $label;
-    }
-
-    private function setUpdatedAt(\DateTimeImmutable $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
     /**
      * @param UuidInterface $guid
      * @param Label $label
@@ -33,9 +18,9 @@ final class Location
      */
     public function __construct(UuidInterface $guid, Label $label, \DateTimeInterface $updatedAt)
     {
-        $this->setGuid($guid);
-        $this->setLabel($label);
-        $this->setUpdatedAt(datetimeinterface_to_datetimeimmutable($updatedAt));
+        $this->guid = $guid;
+        $this->label = $label;
+        $this->updatedAt = datetimeinterface_to_datetimeimmutable($updatedAt);
     }
 
     public function getGuid(): UuidInterface

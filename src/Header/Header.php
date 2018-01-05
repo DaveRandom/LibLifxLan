@@ -10,26 +10,11 @@ final class Header
     private $frameAddress;
     private $protocolHeader;
 
-    private function setFrame(Frame $frame): void
-    {
-        $this->frame = $frame;
-    }
-
-    private function setFrameAddress(FrameAddress $frameAddress): void
-    {
-        $this->frameAddress = $frameAddress;
-    }
-
-    private function setProtocolHeader(ProtocolHeader $protocolHeader): void
-    {
-        $this->protocolHeader = $protocolHeader;
-    }
-
     public function __construct(Frame $frame, FrameAddress $frameAddress, ProtocolHeader $protocolHeader)
     {
-        $this->setFrame($frame);
-        $this->setFrameAddress($frameAddress);
-        $this->setProtocolHeader($protocolHeader);
+        $this->frame = $frame;
+        $this->frameAddress = $frameAddress;
+        $this->protocolHeader = $protocolHeader;
     }
 
     public function getFrame(): Frame
