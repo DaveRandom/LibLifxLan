@@ -2,18 +2,11 @@
 
 namespace DaveRandom\LibLifxLan\Tests\Encoding;
 
-use DaveRandom\LibLifxLan\DataTypes\Light\ColorTransition;
-use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException;
 use DaveRandom\LibLifxLan\Decoding\HeaderDecoder;
 use DaveRandom\LibLifxLan\Decoding\MessageDecoder;
 use DaveRandom\LibLifxLan\Decoding\PacketDecoder;
-use DaveRandom\LibLifxLan\Header\Frame;
-use DaveRandom\LibLifxLan\Header\FrameAddress;
-use DaveRandom\LibLifxLan\Header\Header;
-use DaveRandom\LibLifxLan\Header\ProtocolHeader;
 use DaveRandom\LibLifxLan\Messages\Light\Commands\SetColor;
-use DaveRandom\LibLifxLan\Packet;
 use DaveRandom\LibLifxLan\Tests\Decoding\OffsetTestValues;
 use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;
 use DaveRandom\Network\MacAddress;
@@ -128,7 +121,7 @@ final class PacketDecoderTest extends TestCase
      */
     public function testDecodePacketDataTooShort(): void
     {
-        (new PacketDecoder)->decodePacket(\substr(ExampleWireData::PACKET_DATA, 0, -1));
+        (new PacketDecoder)->decodePacket(\substr(ExampleWireData::HEADER_DATA, 0, -1));
     }
 
     public function testDecodePacketDataTooShortWithOffset(): void
@@ -140,7 +133,7 @@ final class PacketDecoderTest extends TestCase
             $padding = \str_repeat("\x00", $offset);
 
             try {
-                $decoder->decodePacket($padding . \substr(ExampleWireData::PACKET_DATA, 0, -1), $offset);
+                $decoder->decodePacket($padding . \substr(ExampleWireData::HEADER_DATA, 0, -1), $offset);
             } catch (InsufficientDataException $e) {
                 $failures++;
             }

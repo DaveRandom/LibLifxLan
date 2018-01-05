@@ -45,6 +45,14 @@ final class EnumTest extends TestCase
         TestEnum::parseName('FOUR');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testParseNameWithNonExistentNameCaseInsensitive()
+    {
+        TestEnum::parseName('four', true);
+    }
+
     public function testParseValueWithExistingValue()
     {
         $this->assertSame(TestEnum::parseValue(1), 'ONE');
