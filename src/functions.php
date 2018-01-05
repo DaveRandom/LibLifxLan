@@ -2,8 +2,6 @@
 
 namespace DaveRandom\LibLifxLan;
 
-use DaveRandom\LibLifxLan\Exceptions\InvalidValueException;
-
 const UINT32_MIN = 0;
 const UINT32_MAX = 0xffffffff;
 
@@ -39,13 +37,12 @@ function datetimeinterface_to_datetimeimmutable(\DateTimeInterface $dateTime): \
 /**
  * @param int $timestamp
  * @return \DateTimeImmutable
- * @throws InvalidValueException
  */
 function nanotime_to_datetimeimmutable(int $timestamp): \DateTimeImmutable
 {
     static $utcTimeZone;
 
-    $usecs = (int)(($timestamp % 1000000000) / 1000);
+    $usecs = \abs((int)(($timestamp % 1000000000) / 1000));
     $secs = (int)($timestamp / 1000000000);
 
     $result = \DateTimeImmutable::createFromFormat(
@@ -54,9 +51,7 @@ function nanotime_to_datetimeimmutable(int $timestamp): \DateTimeImmutable
         $utcTimeZone ?? ($utcTimeZone = new \DateTimeZone('UTC'))
     );
 
-    if ($result === false) {
-        throw new InvalidValueException("Could not convert nanotime to DateTimeImmutable instance");
-    }
+    \assert($result !== false, new \Error("Could not convert nanotime to DateTimeImmutable instance"));
 
     return $result;
 }
