@@ -61,20 +61,9 @@ function nanotime_to_datetimeimmutable(int $timestamp): \DateTimeImmutable
     return $result;
 }
 
-/**
- * @param \DateTimeInterface $dateTime
- * @return int
- * @throws InvalidValueException
- */
 function datetimeinterface_to_nanotime(\DateTimeInterface $dateTime): int
 {
-    $result = (int)$dateTime->format('Uu000');
-
-    if ($result < 0) {
-        throw new InvalidValueException("Timestamp {$dateTime->format('Y-m-d H:i:s.u')} is negative");
-    }
-
-    return $result;
+    return (int)$dateTime->format('Uu000');
 }
 
 function int16_to_uint16(int $signed): int
