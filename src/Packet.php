@@ -25,23 +25,26 @@ final class Packet
         int $responsePattern
     ): Packet
     {
-        $frame = new Frame(
-            Header::WIRE_SIZE + $message->getWireSize(),
-            self::MESSAGE_ORIGIN,
-            /* tagged */ $destination === null,
-            /* addressable */ true,
-            self::PROTOCOL_NUMBER,
-            $sourceId
+        return new Packet(
+            new Header(
+                new Frame(
+                    Header::WIRE_SIZE + $message->getWireSize(),
+                    self::MESSAGE_ORIGIN,
+                    /* tagged */ $destination === null,
+                    /* addressable */ true,
+                    self::PROTOCOL_NUMBER,
+                    $sourceId
+                ),
+                new FrameAddress(
+                    $destination ?? new MacAddress(0, 0, 0, 0, 0, 0),
+                    (bool)($responsePattern & ResponsePattern::REQUIRE_ACK),
+                    (bool)($responsePattern & ResponsePattern::REQUIRE_RESPONSE),
+                    $sequenceNo
+                ),
+                new ProtocolHeader($message->getTypeId())
+            ),
+            $message
         );
-
-        $destination = $destination ?? new MacAddress(0, 0, 0, 0, 0, 0);
-        $isAckRequired = (bool)($responsePattern & ResponsePattern::REQUIRE_ACK);
-        $isResponseRequired = (bool)($responsePattern & ResponsePattern::REQUIRE_RESPONSE);
-
-        $frameAddress = new FrameAddress($destination, $isAckRequired, $isResponseRequired, $sequenceNo);
-        $protocolHeader = new ProtocolHeader($message->getTypeId());
-
-        return new Packet(new Header($frame, $frameAddress, $protocolHeader), $message);
     }
 
     public function __construct(Header $header, Message $message)
