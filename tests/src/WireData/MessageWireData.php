@@ -136,11 +136,23 @@ final class MessageWireData
                                 } else {
                                     yield $data => new Effect($transient, $color, $period, $cycles, $skew, $waveform);
                                 }
+
+                                break;
                             }
+
+                            break;
                         }
+
+                        break;
                     }
+
+                    break;
                 }
+
+                break;
             }
+
+            break;
         }
     }
 
