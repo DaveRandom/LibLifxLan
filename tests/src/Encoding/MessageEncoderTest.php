@@ -11,12 +11,19 @@ use DaveRandom\LibLifxLan\Messages\Device\Responses as DeviceResponses;
 use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommands;
 use DaveRandom\LibLifxLan\Messages\Light\Requests as LightRequests;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
+use DaveRandom\LibLifxLan\Messages\UnknownMessage;
 use DaveRandom\LibLifxLan\Tests\WireData\MessageWireData;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
 final class MessageEncoderTest extends TestCase
 {
+    public function testEncodeMessageWithUnknownMessage()
+    {
+        $payload = \random_bytes(64);
+        $this->assertSame((new MessageEncoder)->encodeMessage(new UnknownMessage(0, $payload)), $payload);
+    }
+
     public function testEncodeMessageWithSetGroupDeviceCommand()
     {
         $uuid = Uuid::fromBytes(MessageWireData::UUID_BYTES);
