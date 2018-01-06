@@ -502,6 +502,7 @@ final class MessageDecoder
      * @param int|null $dataLength
      * @return Message
      * @throws DecodingException
+     * @throws InvalidMessagePayloadLengthException
      */
     public function decodeMessage(int $type, string $data, int $offset = 0, int $dataLength = null): Message
     {
