@@ -2,21 +2,21 @@
 
 namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 
-use DaveRandom\LibLifxLan\DataTypes\WifiFirmware;
+use DaveRandom\LibLifxLan\DataTypes\HostFirmware;
 use PHPUnit\Framework\TestCase;
 
-class WifiFirmwareTest extends TestCase
+final class HostFirmwareTest extends TestCase
 {
     public function testBuildProperty(): void
     {
         $build = new \DateTimeImmutable;
-        $this->assertSame((new WifiFirmware($build, 0))->getBuild()->format('u U'), $build->format('u U'));
+        $this->assertSame((new HostFirmware($build, 0))->getBuild()->format('u U'), $build->format('u U'));
     }
 
     public function testVersionPropertyValidValues(): void
     {
         foreach ([0, 42, 0xffffffff] as $version) {
-            $this->assertSame((new WifiFirmware(new \DateTimeImmutable, $version))->getVersion(), $version);
+            $this->assertSame((new HostFirmware(new \DateTimeImmutable, $version))->getVersion(), $version);
         }
     }
 
@@ -25,7 +25,7 @@ class WifiFirmwareTest extends TestCase
      */
     public function testVersionPropertyValueTooLow(): void
     {
-        new WifiFirmware(new \DateTimeImmutable, 0 - 1);
+        new HostFirmware(new \DateTimeImmutable, 0 - 1);
     }
 
     /**
@@ -33,6 +33,6 @@ class WifiFirmwareTest extends TestCase
      */
     public function testVersionPropertyValueTooHigh(): void
     {
-        new WifiFirmware(new \DateTimeImmutable, 0xffffffff + 1);
+        new HostFirmware(new \DateTimeImmutable, 0xffffffff + 1);
     }
 }

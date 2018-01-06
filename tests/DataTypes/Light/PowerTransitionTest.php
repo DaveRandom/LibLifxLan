@@ -5,7 +5,7 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes\Light;
 use DaveRandom\LibLifxLan\DataTypes\Light\PowerTransition;
 use PHPUnit\Framework\TestCase;
 
-class PowerTransitionTest extends TestCase
+final class PowerTransitionTest extends TestCase
 {
     public function testPowerPropertyValidValues(): void
     {

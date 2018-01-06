@@ -5,7 +5,7 @@ namespace DaveRandom\LibLifxLan\Tests\Header;
 use DaveRandom\LibLifxLan\Header\Frame;
 use PHPUnit\Framework\TestCase;
 
-class FrameTest extends TestCase
+final class FrameTest extends TestCase
 {
     public function testSizePropertyValidValues(): void
     {

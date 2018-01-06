@@ -58,6 +58,9 @@ final class HeaderDecoderTest extends TestCase
         $this->assertInstanceOf(ProtocolHeaderDecoder::class, $headerDecoder->getProtocolHeaderDecoder());
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodeHeaderWithExampleData(): void
     {
         $header = (new HeaderDecoder)->decodeHeader(ExampleWireData::HEADER_DATA);
@@ -77,6 +80,9 @@ final class HeaderDecoderTest extends TestCase
         $this->assertSame($header->getProtocolHeader()->getType(), ExampleWireData::PROTOCOL_HEADER_MESSAGE_TYPE_ID);
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodeHeaderWithExampleDataWithOffset(): void
     {
         $decoder = new HeaderDecoder;
@@ -104,12 +110,16 @@ final class HeaderDecoderTest extends TestCase
 
     /**
      * @expectedException \DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
      */
     public function testDecodeHeaderDataTooShort(): void
     {
         (new HeaderDecoder)->decodeHeader(\substr(ExampleWireData::HEADER_DATA, 0, -1));
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodeHeaderDataTooShortWithOffset(): void
     {
         $failures = 0;

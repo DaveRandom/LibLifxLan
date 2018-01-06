@@ -7,7 +7,7 @@
 >
   <testsuites>
     <testsuite name="LibLifxLan Test Suite">
-      <directory>./tests/src</directory>
+      <directory>./tests</directory>
     </testsuite>
   </testsuites>
   <filter>

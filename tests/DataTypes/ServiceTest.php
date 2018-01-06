@@ -6,7 +6,7 @@ use DaveRandom\LibLifxLan\DataTypes\Service;
 use DaveRandom\LibLifxLan\DataTypes\ServiceTypes;
 use PHPUnit\Framework\TestCase;
 
-class ServiceTest extends TestCase
+final class ServiceTest extends TestCase
 {
     public function testTypeIdPropertyValidValues(): void
     {

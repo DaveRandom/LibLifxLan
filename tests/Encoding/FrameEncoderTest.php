@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 final class FrameEncoderTest extends TestCase
 {
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameEncodesSizeCorrectly(): void
     {
         $encoder = new FrameEncoder([
@@ -29,6 +32,9 @@ final class FrameEncoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameEncodesOriginCorrectly(): void
     {
         $encoder = new FrameEncoder([
@@ -48,6 +54,9 @@ final class FrameEncoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameEncodesFlagsCorrectly(): void
     {
         $encoder = new FrameEncoder([
@@ -66,6 +75,9 @@ final class FrameEncoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameEncodesProtocolNoCorrectly(): void
     {
         $encoder = new FrameEncoder([
@@ -85,6 +97,9 @@ final class FrameEncoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameEncodesSourceCorrectly(): void
     {
         $encoder = new FrameEncoder([
@@ -104,6 +119,9 @@ final class FrameEncoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameDoesNotThrowWhenOriginIs0AndAllowOriginVarianceExplicitlyDisabled(): void
     {
         $encoder = new FrameEncoder([
@@ -144,6 +162,9 @@ final class FrameEncoderTest extends TestCase
         $encoder->encodeFrame(new Frame($size, $origin, $taggedFlag, $addressableFlag, $protocolNo, $source));
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameDoesNotThrowWhenOriginIs0AndAllowOriginVarianceDefault(): void
     {
         $encoder = new FrameEncoder([
@@ -182,6 +203,9 @@ final class FrameEncoderTest extends TestCase
         $encoder->encodeFrame(new Frame($size, $origin, $taggedFlag, $addressableFlag, $protocolNo, $source));
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameDoesNotThrowWhenProtocolNoIs1024AndAllowProtocolNoVarianceExplicitlyDisabled(): void
     {
         $encoder = new FrameEncoder([
@@ -222,6 +246,9 @@ final class FrameEncoderTest extends TestCase
         $encoder->encodeFrame(new Frame($size, $origin, $taggedFlag, $addressableFlag, $protocolNo, $source));
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameDoesNotThrowWhenProtocolNoIs1024AndAllowProtocolNoVarianceDefault(): void
     {
         $encoder = new FrameEncoder([
@@ -260,6 +287,9 @@ final class FrameEncoderTest extends TestCase
         $encoder->encodeFrame(new Frame($size, $origin, $taggedFlag, $addressableFlag, $protocolNo, $source));
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeFrameWithExampleData(): void
     {
         $frame = new Frame(

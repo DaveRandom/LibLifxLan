@@ -6,7 +6,7 @@ use DaveRandom\LibLifxLan\DataTypes\Light\Effect;
 use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use PHPUnit\Framework\TestCase;
 
-class EffectTest extends TestCase
+final class EffectTest extends TestCase
 {
     protected $color;
 

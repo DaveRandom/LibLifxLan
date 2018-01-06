@@ -5,7 +5,7 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 use DaveRandom\LibLifxLan\DataTypes\Firmware;
 use PHPUnit\Framework\TestCase;
 
-class FirmwareTest extends TestCase
+final class FirmwareTest extends TestCase
 {
     protected function createFirmware(\DateTimeInterface $build, int $version): Firmware
     {

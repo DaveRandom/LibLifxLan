@@ -45,6 +45,9 @@ final class PacketDecoderTest extends TestCase
         $this->assertInstanceOf(MessageDecoder::class, $packetDecoder->getMessageDecoder());
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketWithExampleData(): void
     {
         $packet = (new PacketDecoder)->decodePacket(ExampleWireData::PACKET_DATA);
@@ -78,6 +81,9 @@ final class PacketDecoderTest extends TestCase
         $this->assertSame($message->getColorTransition()->getDuration(), ExampleWireData::PAYLOAD_TRANSITION_TIME);
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketWithExampleDataWithOffset(): void
     {
         $decoder = new PacketDecoder;
@@ -117,6 +123,9 @@ final class PacketDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketWithExampleDataWithLength(): void
     {
         $packet = (new PacketDecoder)->decodePacket(ExampleWireData::PACKET_DATA, 0, \strlen(ExampleWireData::PACKET_DATA));
@@ -150,6 +159,9 @@ final class PacketDecoderTest extends TestCase
         $this->assertSame($message->getColorTransition()->getDuration(), ExampleWireData::PAYLOAD_TRANSITION_TIME);
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketWithExampleDataWithOffsetAndLength(): void
     {
         $decoder = new PacketDecoder;
@@ -191,12 +203,16 @@ final class PacketDecoderTest extends TestCase
 
     /**
      * @expectedException \DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
      */
     public function testDecodePacketDataTooShort(): void
     {
         (new PacketDecoder)->decodePacket(\substr(ExampleWireData::HEADER_DATA, 0, -1));
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketDataTooShortWithOffset(): void
     {
         $failures = 0;
@@ -217,12 +233,16 @@ final class PacketDecoderTest extends TestCase
 
     /**
      * @expectedException \DaveRandom\LibLifxLan\Decoding\Exceptions\InsufficientDataException
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
      */
     public function testDecodePacketDataTooShortWithLength(): void
     {
         (new PacketDecoder)->decodePacket(ExampleWireData::HEADER_DATA, 0, \strlen(ExampleWireData::HEADER_DATA) - 1);
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketDataTooShortWithOffsetAndLength(): void
     {
         $failures = 0;
@@ -243,6 +263,7 @@ final class PacketDecoderTest extends TestCase
 
     /**
      * @expectedException \DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
      */
     public function testDecodePacketStatedLengthIncorrect(): void
     {
@@ -251,6 +272,9 @@ final class PacketDecoderTest extends TestCase
         (new PacketDecoder)->decodePacket($data);
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketStatedLengthIncorrectWithOffset(): void
     {
         $failures = 0;
@@ -272,6 +296,7 @@ final class PacketDecoderTest extends TestCase
 
     /**
      * @expectedException \DaveRandom\LibLifxLan\Decoding\Exceptions\InvalidMessagePayloadLengthException
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
      */
     public function testDecodePacketStatedLengthIncorrectWithLength(): void
     {
@@ -280,6 +305,9 @@ final class PacketDecoderTest extends TestCase
         (new PacketDecoder)->decodePacket($data, 0, \strlen(ExampleWireData::HEADER_DATA));
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Decoding\Exceptions\DecodingException
+     */
     public function testDecodePacketStatedLengthIncorrectWithOffsetAndLength(): void
     {
         $failures = 0;

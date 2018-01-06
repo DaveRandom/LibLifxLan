@@ -8,8 +8,11 @@ use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;
 use DaveRandom\LibLifxLan\Tests\WireData\FrameWireData;
 use PHPUnit\Framework\TestCase;
 
-class FrameDecoderTest extends TestCase
+final class FrameDecoderTest extends TestCase
 {
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesSizeCorrectly(): void
     {
         $decoder = new FrameDecoder;
@@ -31,6 +34,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesSizeCorrectlyWithOffset(): void
     {
         $decoder = new FrameDecoder;
@@ -56,6 +62,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesOriginCorrectly(): void
     {
         $decoder = new FrameDecoder;
@@ -77,6 +86,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesOriginCorrectlyWithOffset(): void
     {
         $decoder = new FrameDecoder;
@@ -102,6 +114,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesFlagsCorrectly(): void
     {
         $decoder = new FrameDecoder;
@@ -122,6 +137,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesFlagsCorrectlyWithOffset(): void
     {
         $decoder = new FrameDecoder;
@@ -146,6 +164,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesProtocolNoCorrectly(): void
     {
         $decoder = new FrameDecoder;
@@ -167,6 +188,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesProtocolNoCorrectlyWithOffset(): void
     {
         $decoder = new FrameDecoder;
@@ -192,6 +216,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesSourceCorrectly(): void
     {
         $decoder = new FrameDecoder;
@@ -213,6 +240,9 @@ class FrameDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameDecodesSourceCorrectlyWithOffset(): void
     {
         $decoder = new FrameDecoder;
@@ -264,6 +294,9 @@ class FrameDecoderTest extends TestCase
         $this->assertSame($failures, \count(OffsetTestValues::OFFSETS));
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameWithExampleData(): void
     {
         $frame = (new FrameDecoder)->decodeFrame(ExampleWireData::FRAME_DATA);

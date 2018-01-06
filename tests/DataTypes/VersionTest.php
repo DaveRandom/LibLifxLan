@@ -5,7 +5,7 @@ namespace DaveRandom\LibLifxLan\Tests\DataTypes;
 use DaveRandom\LibLifxLan\DataTypes\Version;
 use PHPUnit\Framework\TestCase;
 
-class VersionTest extends TestCase
+final class VersionTest extends TestCase
 {
     public function testVendorPropertyValidValues(): void
     {

@@ -12,6 +12,9 @@ use function DaveRandom\LibLifxLan\validate_int_range;
 
 final class IntValidationFunctionsTest extends TestCase
 {
+    /**
+     * @throws InvalidValueException
+     */
     public function testValidateIntRangeWithValidValues(): void
     {
         $tests = [
@@ -48,6 +51,9 @@ final class IntValidationFunctionsTest extends TestCase
         $this->assertSame($failures, \count($tests));
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     public function testValidateUint8WithValidValues(): void
     {
         $tests = [0, 42, 255];
@@ -74,6 +80,9 @@ final class IntValidationFunctionsTest extends TestCase
         $this->assertSame($failures, \count($tests));
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     public function testValidateInt16WithValidValues(): void
     {
         $tests = [-32768, 0, 42, 32767];
@@ -100,6 +109,9 @@ final class IntValidationFunctionsTest extends TestCase
         $this->assertSame($failures, \count($tests));
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     public function testValidateUint16WithValidValues(): void
     {
         $tests = [0, 42, 256, 65535];
@@ -126,6 +138,9 @@ final class IntValidationFunctionsTest extends TestCase
         $this->assertSame($failures, \count($tests));
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     public function testValidateUint32WithValidValues(): void
     {
         $tests = [0, 42, 256, 65536, 4294967295];

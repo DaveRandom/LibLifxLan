@@ -8,8 +8,11 @@ use DaveRandom\LibLifxLan\Tests\WireData\ExampleWireData;
 use DaveRandom\LibLifxLan\Tests\WireData\ProtocolHeaderWireData;
 use PHPUnit\Framework\TestCase;
 
-class ProtocolHeaderDecoderTest extends TestCase
+final class ProtocolHeaderDecoderTest extends TestCase
 {
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeProtocolHeaderDecodesMessageTypeIdCorrectly(): void
     {
         $decoder = new ProtocolHeaderDecoder;
@@ -19,6 +22,9 @@ class ProtocolHeaderDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeProtocolHeaderDecodesMessageTypeIdCorrectlyWithOffset(): void
     {
         $decoder = new ProtocolHeaderDecoder;
@@ -58,6 +64,9 @@ class ProtocolHeaderDecoderTest extends TestCase
         $this->assertSame($failures, \count(OffsetTestValues::OFFSETS));
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeProtocolHeaderWithExampleData(): void
     {
         $protocolHeader = (new ProtocolHeaderDecoder)->decodeProtocolHeader(ExampleWireData::PROTOCOL_HEADER_DATA);

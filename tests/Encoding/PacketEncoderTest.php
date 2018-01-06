@@ -49,6 +49,9 @@ final class PacketEncoderTest extends TestCase
         $this->assertInstanceOf(MessageEncoder::class, $packetEncoder->getMessageEncoder());
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeHeaderWithExampleData(): void
     {
         $packet = new Packet(

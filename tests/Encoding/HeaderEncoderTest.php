@@ -61,6 +61,9 @@ final class HeaderEncoderTest extends TestCase
         $this->assertInstanceOf(ProtocolHeaderEncoder::class, $headerEncoder->getProtocolHeaderEncoder());
     }
 
+    /**
+     * @throws \DaveRandom\LibLifxLan\Encoding\Exceptions\InvalidMessageHeaderException
+     */
     public function testEncodeHeaderWithExampleData(): void
     {
         $header = new Header(

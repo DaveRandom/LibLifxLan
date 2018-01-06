@@ -6,7 +6,7 @@ use DaveRandom\LibLifxLan\DataTypes\Light\ColorTransition;
 use DaveRandom\LibLifxLan\DataTypes\Light\HsbkColor;
 use PHPUnit\Framework\TestCase;
 
-class ColorTransitionTest extends TestCase
+final class ColorTransitionTest extends TestCase
 {
     public function testColorProperty(): void
     {

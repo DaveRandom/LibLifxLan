@@ -11,6 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 final class FrameAddressDecoderTest extends TestCase
 {
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameAddressDecodesMacAddressCorrectly()
     {
         $decoder = new FrameAddressDecoder();
@@ -29,6 +32,9 @@ final class FrameAddressDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameAddressDecodesMacAddressCorrectlyWithOffset()
     {
         $decoder = new FrameAddressDecoder();
@@ -51,6 +57,9 @@ final class FrameAddressDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameAddressDecodesFlagsCorrectly()
     {
         $decoder = new FrameAddressDecoder();
@@ -67,6 +76,9 @@ final class FrameAddressDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameAddressDecodesFlagsCorrectlyWithOffset()
     {
         $decoder = new FrameAddressDecoder();
@@ -87,6 +99,9 @@ final class FrameAddressDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameAddressDecodesSequenceNumberCorrectly()
     {
         $decoder = new FrameAddressDecoder();
@@ -104,6 +119,9 @@ final class FrameAddressDecoderTest extends TestCase
         }
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameAddressDecodesSequenceNumberCorrectlyWithOffset()
     {
         $decoder = new FrameAddressDecoder();
@@ -151,6 +169,9 @@ final class FrameAddressDecoderTest extends TestCase
         $this->assertSame($failures, \count(OffsetTestValues::OFFSETS));
     }
 
+    /**
+     * @throws InsufficientDataException
+     */
     public function testDecodeFrameAddressWithExampleData(): void
     {
         $frameAddress = (new FrameAddressDecoder)->decodeFrameAddress(ExampleWireData::FRAME_ADDRESS_DATA);

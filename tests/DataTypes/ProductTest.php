@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 final class ProductTest extends TestCase
 {
+    /**
+     * @throws \DaveRandom\LibLifxLan\Exceptions\InvalidValueException
+     */
     public function testCreateFromKnownVersionSucceeds(): void
     {
         $this->assertInstanceOf(Product::class, Product::createFromVersion(new Version(1, 1, 0)));

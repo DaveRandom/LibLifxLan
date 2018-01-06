@@ -14,7 +14,7 @@
     "files": [ "src/functions.php" ]
   },
   "autoload-dev": {
-    "psr-4": { "DaveRandom\\LibLifxLan\\Tests\\": "tests/src/" }
+    "psr-4": { "DaveRandom\\LibLifxLan\\Tests\\": "tests/" }
   },
   "require": {
     "php-64bit": ">=7.1",
