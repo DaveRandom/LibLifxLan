@@ -12,7 +12,7 @@ use DaveRandom\LibLifxLan\Messages\Light\Commands as LightCommands;
 use DaveRandom\LibLifxLan\Messages\Light\Requests as LightRequests;
 use DaveRandom\LibLifxLan\Messages\Light\Responses as LightResponses;
 use DaveRandom\LibLifxLan\Messages\UnknownMessage;
-use DaveRandom\LibLifxLan\Tests\WireData\MessageWireData;
+use DaveRandom\LibLifxLan\Tests\WireData\MessageWireData as Data;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -26,50 +26,45 @@ final class MessageEncoderTest extends TestCase
 
     public function testEncodeMessageWithSetGroupDeviceCommand()
     {
-        $uuid = Uuid::fromBytes(MessageWireData::UUID_BYTES);
-        $label = new DeviceDataTypes\Label(MessageWireData::LABEL_VALUE);
-        $updatedAt = \DateTimeImmutable::createFromFormat(MessageWireData::DATETIME_FORMAT, MessageWireData::DATETIME_VALUE);
+        $uuid = Uuid::fromBytes(Data::UUID_BYTES);
+        $label = new DeviceDataTypes\Label(Data::LABEL_VALUE);
+        $updatedAt = \DateTimeImmutable::createFromFormat(Data::DATETIME_FORMAT, Data::DATETIME_VALUE);
 
         $group = new DeviceDataTypes\Group($uuid, $label, $updatedAt);
         $this->assertSame(
             (new MessageEncoder)->encodeMessage(new DeviceCommands\SetGroup($group)),
-            MessageWireData::UUID_BYTES . MessageWireData::LABEL_BYTES . MessageWireData::DATETIME_BYTES
+            Data::UUID_BYTES . Data::LABEL_BYTES . Data::DATETIME_BYTES
         );
     }
 
     public function testEncodeMessageWithSetLabelDeviceCommand()
     {
-        $label = new DeviceDataTypes\Label(MessageWireData::LABEL_VALUE);
+        $label = new DeviceDataTypes\Label(Data::LABEL_VALUE);
         $this->assertSame((new MessageEncoder)->encodeMessage(
             new DeviceCommands\SetLabel($label)),
-            MessageWireData::LABEL_BYTES
+            Data::LABEL_BYTES
         );
     }
 
     public function testEncodeMessageWithSetLocationDeviceCommand()
     {
-        $uuid = Uuid::fromBytes(MessageWireData::UUID_BYTES);
-        $label = new DeviceDataTypes\Label(MessageWireData::LABEL_VALUE);
-        $updatedAt = \DateTimeImmutable::createFromFormat(MessageWireData::DATETIME_FORMAT, MessageWireData::DATETIME_VALUE);
+        $uuid = Uuid::fromBytes(Data::UUID_BYTES);
+        $label = new DeviceDataTypes\Label(Data::LABEL_VALUE);
+        $updatedAt = \DateTimeImmutable::createFromFormat(Data::DATETIME_FORMAT, Data::DATETIME_VALUE);
 
         $location = new DeviceDataTypes\Location($uuid, $label, $updatedAt);
         $this->assertSame(
             (new MessageEncoder)->encodeMessage(new DeviceCommands\SetLocation($location)),
-            MessageWireData::UUID_BYTES . MessageWireData::LABEL_BYTES . MessageWireData::DATETIME_BYTES
+            Data::UUID_BYTES . Data::LABEL_BYTES . Data::DATETIME_BYTES
         );
     }
 
     public function testEncodeMessageWithSetPowerDeviceCommand()
     {
-        $encoder = new MessageEncoder();
-
-        foreach (MessageWireData::UINT16_TEST_VALUES as $levelBytes => $level) {
-            $this->assertSame(
-                $encoder->encodeMessage(new DeviceCommands\SetPower($level)),
-                $levelBytes,
-                "level={$level}"
-            );
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new DeviceCommands\SetPower(Data::UINT16_VALUE)),
+            Data::UINT16_BYTES
+        );
     }
 
     public function testEncodeMessageWithEchoRequestDeviceRequest()
@@ -146,238 +141,160 @@ final class MessageEncoderTest extends TestCase
 
     public function testEncodeMessageWithStateGroupDeviceResponse()
     {
-        $uuid = Uuid::fromBytes(MessageWireData::UUID_BYTES);
-        $label = new DeviceDataTypes\Label(MessageWireData::LABEL_VALUE);
-        $updatedAt = \DateTimeImmutable::createFromFormat(MessageWireData::DATETIME_FORMAT, MessageWireData::DATETIME_VALUE);
+        $uuid = Uuid::fromBytes(Data::UUID_BYTES);
+        $label = new DeviceDataTypes\Label(Data::LABEL_VALUE);
+        $updatedAt = \DateTimeImmutable::createFromFormat(Data::DATETIME_FORMAT, Data::DATETIME_VALUE);
 
         $group = new DeviceDataTypes\Group($uuid, $label, $updatedAt);
         $this->assertSame(
             (new MessageEncoder)->encodeMessage(new DeviceResponses\StateGroup($group)),
-            MessageWireData::UUID_BYTES . MessageWireData::LABEL_BYTES . MessageWireData::DATETIME_BYTES
+            Data::UUID_BYTES . Data::LABEL_BYTES . Data::DATETIME_BYTES
         );
     }
 
     public function testEncodeMessageWithStateHostFirmwareDeviceResponse()
     {
-        $encoder = new MessageEncoder();
-        $build = \DateTimeImmutable::createFromFormat(MessageWireData::DATETIME_FORMAT, MessageWireData::DATETIME_VALUE);
+        $build = \DateTimeImmutable::createFromFormat(Data::DATETIME_FORMAT, Data::DATETIME_VALUE);
+        $firmware = new DeviceDataTypes\HostFirmware($build, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::UINT32_TEST_VALUES as $versionBytes => $version) {
-            $firmware = new DeviceDataTypes\HostFirmware($build, $version);
-
-            $this->assertSame($encoder->encodeMessage(
-                new DeviceResponses\StateHostFirmware($firmware)),
-                MessageWireData::DATETIME_BYTES . MessageWireData::reservedBytes(8) . $versionBytes,
-                "version={$version}"
-            );
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new DeviceResponses\StateHostFirmware($firmware)),
+            Data::DATETIME_BYTES . Data::reservedBytes(8) . Data::UINT32_BYTES
+        );
     }
 
     public function testEncodeMessageWithStateHostInfoDeviceResponse()
     {
-        $encoder = new MessageEncoder();
+        $info = new DeviceDataTypes\HostInfo(Data::FLOAT32_VALUE, Data::UINT32_VALUE, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::FLOAT32_TEST_VALUES as $signalBytes => $signal) {
-            foreach (MessageWireData::UINT32_TEST_VALUES as $txBytes => $tx) {
-                foreach (MessageWireData::UINT32_TEST_VALUES as $rxBytes => $rx) {
-                    $info = new DeviceDataTypes\HostInfo($signal, $tx, $rx);
-
-                    $this->assertSame($encoder->encodeMessage(
-                        new DeviceResponses\StateHostInfo($info)),
-                        $signalBytes . $txBytes . $rxBytes . MessageWireData::reservedBytes(2),
-                        "signal={$signal}, tx={$tx}, rx={$rx}"
-                    );
-                }
-            }
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new DeviceResponses\StateHostInfo($info)),
+            Data::FLOAT32_BYTES . Data::UINT32_BYTES . Data::UINT32_BYTES . Data::reservedBytes(2)
+        );
     }
 
     public function testEncodeMessageWithStateInfoDeviceResponse()
     {
-        $encoder = new MessageEncoder();
-        $time = \DateTimeImmutable::createFromFormat(MessageWireData::DATETIME_FORMAT, MessageWireData::DATETIME_VALUE);
+        $time = \DateTimeImmutable::createFromFormat(Data::DATETIME_FORMAT, Data::DATETIME_VALUE);
+        $info = new DeviceDataTypes\TimeInfo($time, Data::UINT64_VALUE, Data::UINT64_VALUE);
 
-        foreach (MessageWireData::UINT64_TEST_VALUES as $uptimeBytes => $uptime) {
-            foreach (MessageWireData::UINT64_TEST_VALUES as $downtimeBytes => $downtime) {
-                $info = new DeviceDataTypes\TimeInfo($time, $uptime, $downtime);
-
-                $this->assertSame($encoder->encodeMessage(
-                    new DeviceResponses\StateInfo($info)),
-                    MessageWireData::DATETIME_BYTES . $uptimeBytes . $downtimeBytes,
-                    "uptime={$uptime}, downtime={$downtime}"
-                );
-            }
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new DeviceResponses\StateInfo($info)),
+            Data::DATETIME_BYTES . Data::UINT64_BYTES . Data::UINT64_BYTES
+        );
     }
 
     public function testEncodeMessageWithStateLabelDeviceResponse()
     {
-        $label = new DeviceDataTypes\Label(MessageWireData::LABEL_VALUE);
+        $label = new DeviceDataTypes\Label(Data::LABEL_VALUE);
         $this->assertSame((new MessageEncoder)->encodeMessage(
             new DeviceResponses\StateLabel($label)),
-            MessageWireData::LABEL_BYTES
+            Data::LABEL_BYTES
         );
     }
 
     public function testEncodeMessageWithStateLocationDeviceResponse()
     {
-        $uuid = Uuid::fromBytes(MessageWireData::UUID_BYTES);
-        $label = new DeviceDataTypes\Label(MessageWireData::LABEL_VALUE);
-        $updatedAt = \DateTimeImmutable::createFromFormat(MessageWireData::DATETIME_FORMAT, MessageWireData::DATETIME_VALUE);
+        $uuid = Uuid::fromBytes(Data::UUID_BYTES);
+        $label = new DeviceDataTypes\Label(Data::LABEL_VALUE);
+        $updatedAt = \DateTimeImmutable::createFromFormat(Data::DATETIME_FORMAT, Data::DATETIME_VALUE);
 
         $location = new DeviceDataTypes\Location($uuid, $label, $updatedAt);
         $this->assertSame(
             (new MessageEncoder)->encodeMessage(new DeviceResponses\StateLocation($location)),
-            MessageWireData::UUID_BYTES . MessageWireData::LABEL_BYTES . MessageWireData::DATETIME_BYTES
+            Data::UUID_BYTES . Data::LABEL_BYTES . Data::DATETIME_BYTES
         );
     }
 
     public function testEncodeMessageWithStatePowerDeviceResponse()
     {
-        $encoder = new MessageEncoder();
-
-        foreach (MessageWireData::UINT16_TEST_VALUES as $levelBytes => $level) {
-            $this->assertSame(
-                $encoder->encodeMessage(new DeviceResponses\StatePower($level)),
-                $levelBytes,
-                "level={$level}"
-            );
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new DeviceResponses\StatePower(Data::UINT16_VALUE)),
+            Data::UINT16_BYTES
+        );
     }
 
     public function testEncodeMessageWithStateServiceDeviceResponse()
     {
-        $encoder = new MessageEncoder();
+        $service = new DeviceDataTypes\Service(Data::UINT8_VALUE, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::UINT8_TEST_VALUES as $typeIdBytes => $typeId) {
-            foreach (MessageWireData::UINT32_TEST_VALUES as $portBytes => $port) {
-                $service = new DeviceDataTypes\Service($typeId, $port);
-
-                $this->assertSame(
-                    $encoder->encodeMessage(new DeviceResponses\StateService($service)),
-                    $typeIdBytes . $portBytes,
-                    "typeId={$typeId}, port={$port}"
-                );
-            }
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new DeviceResponses\StateService($service)),
+            Data::UINT8_BYTES . Data::UINT32_BYTES
+        );
     }
 
     public function testEncodeMessageWithStateVersionDeviceResponse()
     {
-        $encoder = new MessageEncoder();
+        $version = new DeviceDataTypes\Version(Data::UINT32_VALUE, Data::UINT32_VALUE, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::UINT32_TEST_VALUES as $vendorBytes => $vendor) {
-            foreach (MessageWireData::UINT32_TEST_VALUES as $productBytes => $product) {
-                foreach (MessageWireData::UINT32_TEST_VALUES as $versionNoBytes => $versionNo) {
-                    $version = new DeviceDataTypes\Version($vendor, $product, $versionNo);
-
-                    $this->assertSame(
-                        $encoder->encodeMessage(new DeviceResponses\StateVersion($version)),
-                        $vendorBytes . $productBytes . $versionNoBytes,
-                        "vendor={$vendor}, product={$product}, version={$versionNo}"
-                    );
-                }
-            }
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new DeviceResponses\StateVersion($version)),
+            Data::UINT32_BYTES . Data::UINT32_BYTES . Data::UINT32_BYTES
+        );
     }
 
     public function testEncodeMessageWithStateWifiFirmwareDeviceResponse()
     {
-        $encoder = new MessageEncoder();
-        $build = \DateTimeImmutable::createFromFormat(MessageWireData::DATETIME_FORMAT, MessageWireData::DATETIME_VALUE);
+        $build = \DateTimeImmutable::createFromFormat(Data::DATETIME_FORMAT, Data::DATETIME_VALUE);
+        $firmware = new DeviceDataTypes\WifiFirmware($build, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::UINT32_TEST_VALUES as $versionBytes => $version) {
-            $firmware = new DeviceDataTypes\WifiFirmware($build, $version);
-
-            $this->assertSame($encoder->encodeMessage(
-                new DeviceResponses\StateWifiFirmware($firmware)),
-                MessageWireData::DATETIME_BYTES . MessageWireData::reservedBytes(8) . $versionBytes,
-                "version={$version}"
-            );
-        }
+        $this->assertSame((new MessageEncoder)->encodeMessage(
+            new DeviceResponses\StateWifiFirmware($firmware)),
+            Data::DATETIME_BYTES . Data::reservedBytes(8) . Data::UINT32_BYTES
+        );
     }
 
     public function testEncodeMessageWithStateWifiInfoDeviceResponse()
     {
-        $encoder = new MessageEncoder();
+        $info = new DeviceDataTypes\WifiInfo(Data::FLOAT32_VALUE, Data::UINT32_VALUE, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::FLOAT32_TEST_VALUES as $signalBytes => $signal) {
-            foreach (MessageWireData::UINT32_TEST_VALUES as $txBytes => $tx) {
-                foreach (MessageWireData::UINT32_TEST_VALUES as $rxBytes => $rx) {
-                    $info = new DeviceDataTypes\WifiInfo($signal, $tx, $rx);
-
-                    $this->assertSame($encoder->encodeMessage(
-                        new DeviceResponses\StateWifiInfo($info)),
-                        $signalBytes . $txBytes . $rxBytes . MessageWireData::reservedBytes(2),
-                        "signal={$signal}, tx={$tx}, rx={$rx}"
-                    );
-                }
-            }
-        }
+        $this->assertSame((new MessageEncoder)->encodeMessage(
+            new DeviceResponses\StateWifiInfo($info)),
+            Data::FLOAT32_BYTES . Data::UINT32_BYTES . Data::UINT32_BYTES . Data::reservedBytes(2)
+        );
     }
 
     public function testEncodeMessageWithSetColorLightCommand()
     {
-        $encoder = new MessageEncoder();
+        [$colorBytes, $color] = Data::generateTestHsbkColor();
+        $transition = new LightDataTypes\ColorTransition($color, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::generateTestHsbkColors() as $colorBytes => $color) {
-            foreach (MessageWireData::UINT32_TEST_VALUES as $durationBytes => $duration) {
-                $transition = new LightDataTypes\ColorTransition($color, $duration);
-
-                $this->assertSame($encoder->encodeMessage(
-                    new LightCommands\SetColor($transition)),
-                    MessageWireData::reservedBytes(1) . $colorBytes . $durationBytes,
-                    "h={$color->getHue()}, s={$color->getSaturation()}, b={$color->getBrightness()}, k={$color->getTemperature()}, duration={$duration}"
-                );
-            }
-        }
+        $this->assertSame((new MessageEncoder)->encodeMessage(
+            new LightCommands\SetColor($transition)),
+            Data::reservedBytes(1) . $colorBytes . Data::UINT32_BYTES
+        );
     }
 
     public function testEncodeMessageWithSetInfraredLightCommand()
     {
-        $encoder = new MessageEncoder();
-
-        foreach (MessageWireData::UINT16_TEST_VALUES as $brightnessBytes => $brightness) {
-            $this->assertSame(
-                $encoder->encodeMessage(new LightCommands\SetInfrared($brightness)),
-                $brightnessBytes,
-                "brightness={$brightness}"
-            );
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new LightCommands\SetInfrared(Data::UINT16_VALUE)),
+            Data::UINT16_BYTES
+        );
     }
 
     public function testEncodeMessageWithSetPowerLightCommand()
     {
-        $encoder = new MessageEncoder();
+        $transition = new LightDataTypes\PowerTransition(Data::UINT16_VALUE, Data::UINT32_VALUE);
 
-        foreach (MessageWireData::UINT16_TEST_VALUES as $levelBytes => $level) {
-            foreach (MessageWireData::UINT32_TEST_VALUES as $durationBytes => $duration) {
-                $transition = new LightDataTypes\PowerTransition($level, $duration);
-
-                $this->assertSame(
-                    $encoder->encodeMessage(new LightCommands\SetPower($transition)),
-                    $levelBytes . $durationBytes,
-                    "level={$level}, duration={$duration}"
-                );
-            }
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new LightCommands\SetPower($transition)),
+            Data::UINT16_BYTES . Data::UINT32_BYTES
+        );
     }
 
     public function testEncodeMessageWithSetWaveformLightCommand()
     {
-        $encoder = new MessageEncoder();
-
-        foreach (MessageWireData::generateTestEffects(false) as $data => $effect) {
-            $this->assertSame($encoder->encodeMessage(new LightCommands\SetWaveform($effect)), $data);
+        foreach (Data::generateTestEffects(false) as $data => $effect) {
+            $this->assertSame((new MessageEncoder)->encodeMessage(new LightCommands\SetWaveform($effect)), $data);
         }
     }
 
     public function testEncodeMessageWithSetWaveformOptionalLightCommand()
     {
-        $encoder = new MessageEncoder();
-
-        foreach (MessageWireData::generateTestEffects(true) as $data => $effect) {
-            $this->assertSame($encoder->encodeMessage(new LightCommands\SetWaveformOptional($effect)), $data);
+        foreach (Data::generateTestEffects(true) as $data => $effect) {
+            $this->assertSame((new MessageEncoder)->encodeMessage(new LightCommands\SetWaveformOptional($effect)), $data);
         }
     }
 
@@ -398,45 +315,30 @@ final class MessageEncoderTest extends TestCase
 
     public function testEncodeMessageWithStateLightResponse()
     {
-        $encoder = new MessageEncoder();
-        $label = new DeviceDataTypes\Label(MessageWireData::LABEL_VALUE);
+        [$colorBytes, $color] = Data::generateTestHsbkColor();
+        $label = new DeviceDataTypes\Label(Data::LABEL_VALUE);
 
-        foreach (MessageWireData::generateTestHsbkColors() as $colorBytes => $color) {
-            foreach (MessageWireData::UINT16_TEST_VALUES as $powerBytes => $power) {
-                $state = new LightDataTypes\State($color, $power, $label);
+        $state = new LightDataTypes\State($color, Data::UINT16_VALUE, $label);
 
-                $this->assertSame(
-                    $encoder->encodeMessage(new LightResponses\State($state)),
-                    $colorBytes . MessageWireData::reservedBytes(2) . $powerBytes . MessageWireData::LABEL_BYTES . MessageWireData::reservedBytes(8),
-                    "h={$color->getHue()}, s={$color->getSaturation()}, b={$color->getBrightness()}, k={$color->getTemperature()}, power={$power}"
-                );
-            }
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new LightResponses\State($state)),
+            $colorBytes . Data::reservedBytes(2) . Data::UINT16_BYTES . Data::LABEL_BYTES . Data::reservedBytes(8)
+        );
     }
 
     public function testEncodeMessageWithStateInfraredLightResponse()
     {
-        $encoder = new MessageEncoder();
-
-        foreach (MessageWireData::UINT16_TEST_VALUES as $brightnessBytes => $brightness) {
-            $this->assertSame(
-                $encoder->encodeMessage(new LightResponses\StateInfrared($brightness)),
-                $brightnessBytes,
-                "brightness={$brightness}"
-            );
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new LightResponses\StateInfrared(Data::UINT16_VALUE)),
+            Data::UINT16_BYTES
+        );
     }
 
     public function testEncodeMessageWithStatePowerLightResponse()
     {
-        $encoder = new MessageEncoder();
-
-        foreach (MessageWireData::UINT16_TEST_VALUES as $levelBytes => $level) {
-            $this->assertSame(
-                $encoder->encodeMessage(new LightResponses\StatePower($level)),
-                $levelBytes,
-                "level={$level}"
-            );
-        }
+        $this->assertSame(
+            (new MessageEncoder)->encodeMessage(new LightResponses\StatePower(Data::UINT16_VALUE)),
+            Data::UINT16_BYTES
+        );
     }
 }

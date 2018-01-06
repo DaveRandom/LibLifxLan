@@ -16,75 +16,38 @@ final class MessageWireData
     public const LABEL_VALUE = 'Test';
     public const LABEL_BYTES = "\x54\x65\x73\x74\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
 
-    public const UINT8_TEST_VALUES = [
-        "\x00" => 0x00,
-        "\x2a" => 0x2a,
-        "\xff" => 0xff,
-    ];
+    public const UINT8_VALUE = 0x2a;
+    public const UINT8_BYTES = "\x2a";
 
-    public const INT16_TEST_VALUES = [
-        "\x00\x80" => -0x8000,
-        "\x00\x00" => 0x0000,
-        "\x2a\x00" => 0x002a,
-        "\xff\x7f" => 0x7fff,
-    ];
+    public const INT16_VALUE = -0x8000;
+    public const INT16_BYTES = "\x00\x80";
 
-    public const UINT16_TEST_VALUES = [
-        "\x00\x00" => 0x0000,
-        "\x2a\x00" => 0x002a,
-        "\xff\x7f" => 0x7fff,
-        "\xff\xff" => 0xffff,
-    ];
+    public const UINT16_VALUE = 0x8000;
+    public const UINT16_BYTES = "\x00\x80";
 
-    public const UINT32_TEST_VALUES = [
-        "\x00\x00\x00\x00" => 0x00000000,
-        "\x2a\x00\x00\x00" => 0x0000002a,
-        "\x78\x56\x34\x12" => 0x12345678,
-        "\xff\xff\xff\xff" => 0xffffffff,
-    ];
+    public const UINT32_VALUE = 0x12345678;
+    public const UINT32_BYTES = "\x78\x56\x34\x12";
 
-    public const UINT64_TEST_VALUES = [
-        "\x00\x00\x00\x00\x00\x00\x00\x00" => 0x0000000000000000,
-        "\x2a\x00\x00\x00\x00\x00\x00\x00" => 0x000000000000002a,
-        "\xf0\xde\xbc\x9a\x78\x56\x34\x12" => 0x123456789abcdef0,
-        "\xff\xff\xff\xff\xff\xff\xff\x7f" => 0x7fffffffffffffff,
-    ];
+    public const UINT64_VALUE = 0x123456789abcdef0;
+    public const UINT64_BYTES = "\xf0\xde\xbc\x9a\x78\x56\x34\x12";
 
-    public const FLOAT32_TEST_VALUES = [
-        "\x00\x00\x00\x00" => 0.0,
-        "\x00\x00\x00\x80" => -0.0,
-        "\xdb\x0f\x49\x40" => 3.1415926535897968907,
-    ];
+    public const FLOAT32_VALUE = 3.1415926535897968907;
+    public const FLOAT32_BYTES = "\xdb\x0f\x49\x40";
 
-    private const COLOR_TEMPERATURE_TEST_VALUES = [
-        "\xc4\x09" => 2500,
-        "\x94\x11" => 4500,
-        "\x4c\x1d" => 7500,
-        "\x1c\x25" => 9500,
-    ];
+    public const COLOR_TEMPERATURE_VALUE = 4500;
+    public const COLOR_TEMPERATURE_BYTES = "\x94\x11";
 
     private const BOOL_TEST_VALUES = [
         "\x00" => false,
         "\x01" => true,
     ];
 
-    /**
-     * @return \Generator|HsbkColor[]
-     */
-    public static function generateTestHsbkColors(): \Generator
+    public static function generateTestHsbkColor(): array
     {
-        foreach (self::UINT16_TEST_VALUES as $hBytes => $h) {
-            foreach (self::UINT16_TEST_VALUES as $sBytes => $s) {
-                foreach (self::UINT16_TEST_VALUES as $bBytes => $b) {
-                    foreach (self::COLOR_TEMPERATURE_TEST_VALUES as $kBytes => $k) {
-                        $color = new HsbkColor($h, $s, $b, $k);
-                        $data = $hBytes . $sBytes . $bBytes . $kBytes;
-
-                        yield $data => $color;
-                    }
-                }
-            }
-        }
+        return [
+            self::UINT16_BYTES . self::UINT16_BYTES . self::UINT16_BYTES . "\x94\x11",
+            new HsbkColor(self::UINT16_VALUE, self::UINT16_VALUE, self::UINT16_VALUE, 4500),
+        ];
     }
 
     private static function generateTestEffectsWithOptions($data, $transient, $color, $period, $cycles, $skew, $waveform): \Generator
@@ -123,36 +86,16 @@ final class MessageWireData
 
     public static function generateTestEffects(bool $withOptions): \Generator
     {
+        [$colorBytes, $color] = self::generateTestHsbkColor();
+
         foreach (self::BOOL_TEST_VALUES as $transientBytes => $transient) {
-            foreach (self::generateTestHsbkColors() as $colorBytes => $color) {
-                foreach (self::UINT32_TEST_VALUES as $periodBytes => $period) {
-                    foreach (self::FLOAT32_TEST_VALUES as $cyclesBytes => $cycles) {
-                        foreach (self::INT16_TEST_VALUES as $skewBytes => $skew) {
-                            foreach (self::UINT8_TEST_VALUES as $waveformBytes => $waveform) {
-                                $data = "\x00" . $transientBytes . $colorBytes . $periodBytes . $cyclesBytes . $skewBytes . $waveformBytes;
+            $data = "\x00" . $transientBytes . $colorBytes . self::UINT32_BYTES . self::FLOAT32_BYTES . self::INT16_BYTES . self::UINT8_BYTES;
 
-                                if ($withOptions) {
-                                    yield from self::generateTestEffectsWithOptions($data, $transient, $color, $period, $cycles, $skew, $waveform);
-                                } else {
-                                    yield $data => new Effect($transient, $color, $period, $cycles, $skew, $waveform);
-                                }
-
-                                break;
-                            }
-
-                            break;
-                        }
-
-                        break;
-                    }
-
-                    break;
-                }
-
-                break;
+            if ($withOptions) {
+                yield from self::generateTestEffectsWithOptions($data, $transient, $color, self::UINT32_VALUE, self::FLOAT32_VALUE, self::INT16_VALUE, self::UINT8_VALUE);
+            } else {
+                yield $data => new Effect($transient, $color, self::UINT32_VALUE, self::FLOAT32_VALUE, self::INT16_VALUE, self::UINT8_VALUE);
             }
-
-            break;
         }
     }
 
