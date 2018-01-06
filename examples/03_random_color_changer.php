@@ -53,14 +53,14 @@ function broadcast_message(PacketEncoder $encoder, $socket, Message $message)
 broadcast_message($encoder, $socket, new SetPower(65535));
 
 while (true) {
-    $hue = \rand(HUE_MIN, HUE_MAX);
-    $saturation = \rand(SATURATION_MIN, SATURATION_MAX);
-    $brightness = \rand(BRIGHTNESS_MIN, BRIGHTNESS_MAX);
-    $temperature = \rand(TEMPERATURE_MIN, TEMPERATURE_MAX);
+    $hue = \random_int(HUE_MIN, HUE_MAX);
+    $saturation = \random_int(SATURATION_MIN, SATURATION_MAX);
+    $brightness = \random_int(BRIGHTNESS_MIN, BRIGHTNESS_MAX);
+    $temperature = \random_int(TEMPERATURE_MIN, TEMPERATURE_MAX);
 
     $color = new HsbkColor($hue, $saturation, $brightness, $temperature);
 
     broadcast_message($encoder, $socket, new SetColor(new ColorTransition($color, (int)(TRANSITION_TIME * 1000))));
 
-    \sleep(\rand(INTERVAL_MIN, INTERVAL_MAX));
+    \sleep(\random_int(INTERVAL_MIN, INTERVAL_MAX));
 }
