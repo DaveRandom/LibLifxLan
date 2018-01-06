@@ -21,6 +21,7 @@ final class SetColor implements Message
     {
         return $this->colorTransition;
     }
+
     public function getTypeId(): int
     {
         return self::MESSAGE_TYPE_ID;
