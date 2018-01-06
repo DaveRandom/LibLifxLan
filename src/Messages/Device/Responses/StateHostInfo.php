@@ -7,7 +7,7 @@ use DaveRandom\LibLifxLan\Messages\Message;
 
 final class StateHostInfo implements Message
 {
-    public const MESSAGE_TYPE_ID = 12;
+    public const MESSAGE_TYPE_ID = 13;
     public const WIRE_SIZE = 14;
 
     private $hostInfo;

@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\Message;
 final class SetGroup implements Message
 {
     public const MESSAGE_TYPE_ID = 52;
-    public const WIRE_SIZE = 28;
+    public const WIRE_SIZE = 56;
 
     private $group;
 

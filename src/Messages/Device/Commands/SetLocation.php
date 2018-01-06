@@ -8,7 +8,7 @@ use DaveRandom\LibLifxLan\Messages\Message;
 final class SetLocation implements Message
 {
     public const MESSAGE_TYPE_ID = 49;
-    public const WIRE_SIZE = 28;
+    public const WIRE_SIZE = 56;
 
     private $location;
 
