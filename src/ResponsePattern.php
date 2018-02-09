@@ -2,6 +2,8 @@
 
 namespace DaveRandom\LibLifxLan;
 
+use DaveRandom\Enum\Enum;
+
 final class ResponsePattern extends Enum
 {
     public const REQUIRE_ACK = 0b01;

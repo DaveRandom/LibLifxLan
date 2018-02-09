@@ -2,7 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\DataTypes\Light;
 
-use DaveRandom\LibLifxLan\Enum;
+use DaveRandom\Enum\Enum;
 
 final class Waveforms extends Enum
 {

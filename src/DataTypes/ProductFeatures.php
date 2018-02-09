@@ -2,7 +2,7 @@
 
 namespace DaveRandom\LibLifxLan\DataTypes;
 
-use DaveRandom\LibLifxLan\Enum;
+use DaveRandom\Enum\Enum;
 
 final class ProductFeatures extends Enum
 {
