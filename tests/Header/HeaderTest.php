@@ -18,7 +18,7 @@ final class HeaderTest extends TestCase
     protected function setUp(): void
     {
         $this->frame = new Frame(0, 0, false, false, 0, 0);
-        $this->frameAddress = new FrameAddress(new MacAddress(1, 2, 3, 4, 5, 6), false, false, 0);
+        $this->frameAddress = new FrameAddress(MacAddress::fromOctets(1, 2, 3, 4, 5, 6), false, false, 0);
         $this->protocolHeader = new ProtocolHeader(0);
     }
 

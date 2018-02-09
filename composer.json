@@ -1,8 +1,7 @@
 {
   "name": "daverandom/lifx-lan-protocol",
   "description": "LIFX LAN protocol implementation",
-  "minimum-stability": "stable",
-  "license": "mit",
+  "license": "MIT",
   "authors": [
     {
       "name": "Chris Wright",
@@ -20,7 +19,7 @@
     "php-64bit": ">=7.1",
     "ramsey/uuid": "^3",
     "daverandom/enum": "^1",
-    "daverandom/network-primitives": "dev-master"
+    "daverandom/network-primitives": "dev-master#b8b364038b8c60443f3dae7b0ad49475a1b1b425"
   },
   "require-dev": {
     "phpunit/phpunit": "^6"

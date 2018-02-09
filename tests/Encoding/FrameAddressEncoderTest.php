@@ -20,7 +20,7 @@ final class FrameAddressEncoderTest extends TestCase
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (FrameAddressWireData::VALID_MAC_ADDRESS_DATA as $expectedData => $macAddressOctets) {
-            $frameAddress = new FrameAddress(new MacAddress(...$macAddressOctets), $ackFlag, $resFlag, $sequenceNo);
+            $frameAddress = new FrameAddress(MacAddress::fromOctets(...$macAddressOctets), $ackFlag, $resFlag, $sequenceNo);
             $this->assertSame($encoder->encodeFrameAddress($frameAddress), $expectedData);
         }
     }
@@ -29,7 +29,7 @@ final class FrameAddressEncoderTest extends TestCase
     {
         $encoder = new FrameAddressEncoder();
 
-        $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
+        $macAddress = MacAddress::fromOctets(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (FrameAddressWireData::VALID_FLAGS_DATA as $expectedData => ['ack' => $ackFlag, 'res' => $resFlag]) {
@@ -42,7 +42,7 @@ final class FrameAddressEncoderTest extends TestCase
     {
         $encoder = new FrameAddressEncoder();
 
-        $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
+        $macAddress = MacAddress::fromOctets(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
         $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
         $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
 
@@ -55,7 +55,7 @@ final class FrameAddressEncoderTest extends TestCase
     public function testEncodeFrameAddressWithExampleData(): void
     {
         $frameAddress = new FrameAddress(
-            new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS),
+            MacAddress::fromOctets(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS),
             ExampleWireData::FRAME_ADDRESS_ACK_FLAG,
             ExampleWireData::FRAME_ADDRESS_RES_FLAG,
             ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO

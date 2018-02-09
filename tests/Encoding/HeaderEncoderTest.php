@@ -76,7 +76,7 @@ final class HeaderEncoderTest extends TestCase
                 ExampleWireData::FRAME_SOURCE
             ),
             new FrameAddress(
-                new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS),
+                MacAddress::fromOctets(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS),
                 ExampleWireData::FRAME_ADDRESS_ACK_FLAG,
                 ExampleWireData::FRAME_ADDRESS_RES_FLAG,
                 ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO

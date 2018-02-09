@@ -29,7 +29,7 @@ final class PacketTest extends TestCase
 
     public function testCreateFromMessageWithDestination(): void
     {
-        $address = new MacAddress(1, 2, 3, 4, 5, 6);
+        $address = MacAddress::fromOctets(1, 2, 3, 4, 5, 6);
 
         $packet = Packet::createFromMessage(new GetService, 0, $address, 0, 0);
 
@@ -42,7 +42,7 @@ final class PacketTest extends TestCase
         $packet = Packet::createFromMessage(new GetService, 0, null, 0, 0);
 
         $this->assertTrue($packet->getHeader()->getFrame()->isTagged());
-        $this->assertTrue($packet->getHeader()->getFrameAddress()->getTarget()->equals(new MacAddress(0, 0, 0, 0, 0, 0)));
+        $this->assertTrue($packet->getHeader()->getFrameAddress()->getTarget()->equals(MacAddress::fromOctets(0, 0, 0, 0, 0, 0)));
     }
 
     public function testCreateFromMessageIsAddressable(): void
@@ -104,7 +104,7 @@ final class PacketTest extends TestCase
     {
         return new Header(
             new Frame(0, 0, false, false, 0, 0),
-            new FrameAddress(new MacAddress(1, 2, 3, 4, 5, 6), false, false, 0),
+            new FrameAddress(MacAddress::fromOctets(1, 2, 3, 4, 5, 6), false, false, 0),
             new ProtocolHeader(0)
         );
     }

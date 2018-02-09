@@ -23,7 +23,7 @@ final class FrameAddressDecoderTest extends TestCase
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (FrameAddressWireData::VALID_MAC_ADDRESS_DATA as $data => $macAddressOctets) {
-            $macAddress = new MacAddress(...$macAddressOctets);
+            $macAddress = MacAddress::fromOctets(...$macAddressOctets);
             $frameAddress = $decoder->decodeFrameAddress($data);
             $this->assertTrue($frameAddress->getTarget()->equals($macAddress));
             $this->assertSame($frameAddress->isAckRequired(), $ackFlag);
@@ -47,7 +47,7 @@ final class FrameAddressDecoderTest extends TestCase
             $padding = \str_repeat("\x00", $offset);
 
             foreach (FrameAddressWireData::VALID_MAC_ADDRESS_DATA as $data => $macAddressOctets) {
-                $macAddress = new MacAddress(...$macAddressOctets);
+                $macAddress = MacAddress::fromOctets(...$macAddressOctets);
                 $frameAddress = $decoder->decodeFrameAddress($padding . $data, $offset);
                 $this->assertTrue($frameAddress->getTarget()->equals($macAddress));
                 $this->assertSame($frameAddress->isAckRequired(), $ackFlag);
@@ -64,7 +64,7 @@ final class FrameAddressDecoderTest extends TestCase
     {
         $decoder = new FrameAddressDecoder();
 
-        $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
+        $macAddress = MacAddress::fromOctets(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (FrameAddressWireData::VALID_FLAGS_DATA as $data => ['ack' => $ackFlag, 'res' => $resFlag]) {
@@ -83,7 +83,7 @@ final class FrameAddressDecoderTest extends TestCase
     {
         $decoder = new FrameAddressDecoder();
 
-        $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
+        $macAddress = MacAddress::fromOctets(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
         $sequenceNo = FrameAddressWireData::DEFAULT_SEQUENCE_NUMBER;
 
         foreach (OffsetTestValues::OFFSETS as $offset) {
@@ -106,7 +106,7 @@ final class FrameAddressDecoderTest extends TestCase
     {
         $decoder = new FrameAddressDecoder();
 
-        $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
+        $macAddress = MacAddress::fromOctets(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
         $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
         $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
 
@@ -126,7 +126,7 @@ final class FrameAddressDecoderTest extends TestCase
     {
         $decoder = new FrameAddressDecoder();
 
-        $macAddress = new MacAddress(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
+        $macAddress = MacAddress::fromOctets(...FrameAddressWireData::DEFAULT_MAC_ADDRESS_OCTETS);
         $ackFlag = FrameAddressWireData::DEFAULT_ACK_FLAG;
         $resFlag = FrameAddressWireData::DEFAULT_RES_FLAG;
 
@@ -176,7 +176,7 @@ final class FrameAddressDecoderTest extends TestCase
     {
         $frameAddress = (new FrameAddressDecoder)->decodeFrameAddress(ExampleWireData::FRAME_ADDRESS_DATA);
 
-        $this->assertTrue($frameAddress->getTarget()->equals(new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
+        $this->assertTrue($frameAddress->getTarget()->equals(MacAddress::fromOctets(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
         $this->assertSame($frameAddress->isAckRequired(), ExampleWireData::FRAME_ADDRESS_ACK_FLAG);
         $this->assertSame($frameAddress->isResponseRequired(), ExampleWireData::FRAME_ADDRESS_RES_FLAG);
         $this->assertSame($frameAddress->getSequenceNo(), ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO);

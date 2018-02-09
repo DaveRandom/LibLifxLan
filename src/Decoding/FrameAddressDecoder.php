@@ -29,7 +29,7 @@ final class FrameAddressDecoder
             'sequence' => $sequence,
         ] = \unpack('C8mac/C6reserved/Cflags/Csequence', $data, $offset);
 
-        $target = new MacAddress($mac1, $mac2, $mac3, $mac4, $mac5, $mac6);
+        $target = MacAddress::fromOctets($mac1, $mac2, $mac3, $mac4, $mac5, $mac6);
         $isAckRequired = (bool)($flags & 0x02);
         $isResponseRequired = (bool)($flags & 0x01);
 

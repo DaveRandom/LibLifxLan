@@ -8,17 +8,7 @@ final class FrameAddressEncoder
 {
     private function encodeTarget(FrameAddress $frameAddress): string
     {
-        $target = $frameAddress->getTarget();
-
-        return \pack(
-            'C6',
-            $target->getOctet1(),
-            $target->getOctet2(),
-            $target->getOctet3(),
-            $target->getOctet4(),
-            $target->getOctet5(),
-            $target->getOctet6()
-        ) . "\x00\x00";
+        return "{$frameAddress->getTarget()->toBinary()}\x00\x00";
     }
 
     private function encodeFlags(FrameAddress $frameAddress): string

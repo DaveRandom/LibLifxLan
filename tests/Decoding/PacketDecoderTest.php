@@ -63,7 +63,7 @@ final class PacketDecoderTest extends TestCase
         $this->assertSame($header->getFrame()->getProtocolNo(), ExampleWireData::FRAME_PROTOCOL_NUMBER);
         $this->assertSame($header->getFrame()->getSource(), ExampleWireData::FRAME_SOURCE);
 
-        $this->assertTrue($header->getFrameAddress()->getTarget()->equals(new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
+        $this->assertTrue($header->getFrameAddress()->getTarget()->equals(MacAddress::fromOctets(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
         $this->assertSame($header->getFrameAddress()->isAckRequired(), ExampleWireData::FRAME_ADDRESS_ACK_FLAG);
         $this->assertSame($header->getFrameAddress()->isResponseRequired(), ExampleWireData::FRAME_ADDRESS_RES_FLAG);
         $this->assertSame($header->getFrameAddress()->getSequenceNo(), ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO);
@@ -104,7 +104,7 @@ final class PacketDecoderTest extends TestCase
             $this->assertSame($header->getFrame()->getProtocolNo(), ExampleWireData::FRAME_PROTOCOL_NUMBER);
             $this->assertSame($header->getFrame()->getSource(), ExampleWireData::FRAME_SOURCE);
 
-            $this->assertTrue($header->getFrameAddress()->getTarget()->equals(new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
+            $this->assertTrue($header->getFrameAddress()->getTarget()->equals(MacAddress::fromOctets(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
             $this->assertSame($header->getFrameAddress()->isAckRequired(), ExampleWireData::FRAME_ADDRESS_ACK_FLAG);
             $this->assertSame($header->getFrameAddress()->isResponseRequired(), ExampleWireData::FRAME_ADDRESS_RES_FLAG);
             $this->assertSame($header->getFrameAddress()->getSequenceNo(), ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO);
@@ -141,7 +141,7 @@ final class PacketDecoderTest extends TestCase
         $this->assertSame($header->getFrame()->getProtocolNo(), ExampleWireData::FRAME_PROTOCOL_NUMBER);
         $this->assertSame($header->getFrame()->getSource(), ExampleWireData::FRAME_SOURCE);
 
-        $this->assertTrue($header->getFrameAddress()->getTarget()->equals(new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
+        $this->assertTrue($header->getFrameAddress()->getTarget()->equals(MacAddress::fromOctets(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
         $this->assertSame($header->getFrameAddress()->isAckRequired(), ExampleWireData::FRAME_ADDRESS_ACK_FLAG);
         $this->assertSame($header->getFrameAddress()->isResponseRequired(), ExampleWireData::FRAME_ADDRESS_RES_FLAG);
         $this->assertSame($header->getFrameAddress()->getSequenceNo(), ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO);
@@ -182,7 +182,7 @@ final class PacketDecoderTest extends TestCase
             $this->assertSame($header->getFrame()->getProtocolNo(), ExampleWireData::FRAME_PROTOCOL_NUMBER);
             $this->assertSame($header->getFrame()->getSource(), ExampleWireData::FRAME_SOURCE);
 
-            $this->assertTrue($header->getFrameAddress()->getTarget()->equals(new MacAddress(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
+            $this->assertTrue($header->getFrameAddress()->getTarget()->equals(MacAddress::fromOctets(...ExampleWireData::FRAME_ADDRESS_TARGET_OCTETS)));
             $this->assertSame($header->getFrameAddress()->isAckRequired(), ExampleWireData::FRAME_ADDRESS_ACK_FLAG);
             $this->assertSame($header->getFrameAddress()->isResponseRequired(), ExampleWireData::FRAME_ADDRESS_RES_FLAG);
             $this->assertSame($header->getFrameAddress()->getSequenceNo(), ExampleWireData::FRAME_ADDRESS_SEQUENCE_NO);

@@ -32,7 +32,7 @@ final class Packet
     private static function createFrameAddress(?MacAddress $destination, int $responsePattern, int $sequenceNo): FrameAddress
     {
         return new FrameAddress(
-            $destination ?? new MacAddress(0, 0, 0, 0, 0, 0),
+            $destination ?? MacAddress::fromOctets(0, 0, 0, 0, 0, 0),
             (bool)($responsePattern & ResponsePattern::REQUIRE_ACK),
             (bool)($responsePattern & ResponsePattern::REQUIRE_RESPONSE),
             $sequenceNo

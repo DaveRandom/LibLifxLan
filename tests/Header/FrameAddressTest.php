@@ -12,7 +12,7 @@ final class FrameAddressTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->target = new MacAddress(0, 1, 2, 3, 4, 5);
+        $this->target = MacAddress::fromOctets(0, 1, 2, 3, 4, 5);
     }
 
     public function testTargetProperty(): void
